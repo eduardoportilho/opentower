@@ -100,6 +100,14 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+// ✔︎ - expose draw method
+// draw grid
+// draw object's paths (or call object draw)
+// - towers
+// - goons
+// - bullets?
+// receive user click and call game methods
+
 var Grid = function () {
   function Grid(canvas, dimensions) {
     _classCallCheck(this, Grid);
@@ -110,23 +118,13 @@ var Grid = function () {
 
   _createClass(Grid, [{
     key: "draw",
-    value: function draw() {
-      console.log("draw");
-    }
+    value: function draw() {}
   }]);
 
   return Grid;
 }();
 
 exports.default = Grid;
-
-// expose draw method ✔︎
-// draw grid
-// draw object's paths (or call object draw)
-// - towers
-// - goons
-// - bullets?
-// receive user click and call game methods
 
 /***/ })
 /******/ ]);
