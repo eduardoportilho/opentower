@@ -10,6 +10,14 @@
  * @property {number} col - The column Coordinate.
  */
 
+import {buildSquarePath} from './square-path'
+
+/**
+ * Size of the (square) cell edge.
+ * @type {number}
+ */
+const CELL_EDGE_SIZE = 50
+
 /**
  * Grid cell.
  */
@@ -20,10 +28,10 @@ class Cell {
    * @param {Path2D} path - Cell path.
    * @param {Point} position - Cell position (upper left).
    */
-  constructor (row, col, path, position) {
+  constructor (row, col, position) {
     this.row = row
     this.col = col
-    this.path = path
+    this.path = buildSquarePath(position, CELL_EDGE_SIZE)
     this.position = position
   }
 

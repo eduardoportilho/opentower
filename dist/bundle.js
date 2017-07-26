@@ -241,8 +241,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
  * @property {number} col - The column Coordinate.
  */
 
-var _squarePath = __webpack_require__(0);
-
 var _cell = __webpack_require__(5);
 
 var _cell2 = _interopRequireDefault(_cell);
@@ -313,9 +311,8 @@ var Grid = function () {
       var cells = [];
       for (var row = 0; row < this.rowCount; row++) {
         for (var col = 0; col < this.colCount; col++) {
-          var position = this.getCellStartPosition(row, col);
-          var path = (0, _squarePath.buildSquarePath)(position, CELL_EDGE_SIZE);
-          cells.push(new _cell2.default(row, col, path, position));
+          var position = this.getCellUpperLeftPosition(row, col);
+          cells.push(new _cell2.default(row, col, position));
         }
       }
       return cells;
@@ -392,8 +389,8 @@ var Grid = function () {
      */
 
   }, {
-    key: 'getCellStartPosition',
-    value: function getCellStartPosition(row, col) {
+    key: 'getCellUpperLeftPosition',
+    value: function getCellUpperLeftPosition(row, col) {
       return {
         x: col * CELL_EDGE_SIZE,
         y: row * CELL_EDGE_SIZE
@@ -456,15 +453,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- * @typedef {Object} Point
- * @property {number} x - The X Coordinate.
- * @property {number} y - The Y Coordinate.
- */
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @typedef {Object} Point
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} x - The X Coordinate.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} y - The Y Coordinate.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
 /**
  * @typedef {Object} Coord
@@ -472,9 +465,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @property {number} col - The column Coordinate.
  */
 
+var _squarePath = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * Size of the (square) cell edge.
+ * @type {number}
+ */
+var CELL_EDGE_SIZE = 50;
+
 /**
  * Grid cell.
  */
+
 var Cell = function () {
   /**
    * @param {number} row - Row number.
@@ -482,12 +486,12 @@ var Cell = function () {
    * @param {Path2D} path - Cell path.
    * @param {Point} position - Cell position (upper left).
    */
-  function Cell(row, col, path, position) {
+  function Cell(row, col, position) {
     _classCallCheck(this, Cell);
 
     this.row = row;
     this.col = col;
-    this.path = path;
+    this.path = (0, _squarePath.buildSquarePath)(position, CELL_EDGE_SIZE);
     this.position = position;
   }
 
@@ -498,7 +502,7 @@ var Cell = function () {
 
 
   _createClass(Cell, [{
-    key: "getCoord",
+    key: 'getCoord',
     value: function getCoord() {
       return {
         row: this.row,
@@ -513,7 +517,7 @@ var Cell = function () {
      */
 
   }, {
-    key: "isOnCoord",
+    key: 'isOnCoord',
     value: function isOnCoord(coord) {
       return coord && this.row === coord.row && this.col === coord.col;
     }

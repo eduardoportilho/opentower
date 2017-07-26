@@ -10,7 +10,6 @@
  * @property {number} col - The column Coordinate.
  */
 
-import {buildSquarePath} from './square-path'
 import Cell from './cell'
 
 /**
@@ -69,9 +68,8 @@ class Grid {
     const cells = []
     for (let row = 0; row < this.rowCount; row++) {
       for (let col = 0; col < this.colCount; col++) {
-        let position = this.getCellStartPosition(row, col)
-        let path = buildSquarePath(position, CELL_EDGE_SIZE)
-        cells.push(new Cell(row, col, path, position))
+        let position = this.getCellUpperLeftPosition(row, col)
+        cells.push(new Cell(row, col, position))
       }
     }
     return cells
@@ -135,7 +133,7 @@ class Grid {
    * @param  {number} col - Cell column.
    * @return {Point} Cell start point.
    */
-  getCellStartPosition (row, col) {
+  getCellUpperLeftPosition (row, col) {
     return {
       x: col * CELL_EDGE_SIZE,
       y: row * CELL_EDGE_SIZE
