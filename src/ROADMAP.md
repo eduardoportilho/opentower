@@ -13,10 +13,13 @@
     ✔ + grid draw external objects
     ✔ + grid draw layers
     + avoid deploying on occupied cell
+    + Draw a tower
+        * SVG to Path2D?
 - spawn goon (on timeout)
     + make goon walk across arena
     + spawn goon on different location
         * Calculate (shortest) path
+    + Draw a goon
 - make goon avoid towers
     + recalculate path (on clock? on deployed tower)
     + detect blocked goon
