@@ -24,15 +24,20 @@ const CELL_EDGE_SIZE = 50
  * @type {Object}
  */
 const CELL_STYLES = {
-  'default': {
+  'cell': {
     'fill': 'lightgray',
     'stroke': 'gray',
     'lineWidth': 0.5
   },
-  'highlight': {
+  'cellHighlighted': {
     'fill': 'gray',
     'stroke': 'lightgray',
     'lineWidth': 0.5
+  },
+  'tower': {
+    'fill': 'lightblue',
+    'stroke': 'blue',
+    'lineWidth': 1.5
   }
 }
 
@@ -41,14 +46,14 @@ class Grid {
    * Grid constructor
    * @param  {HTMLCanvasElement} canvas - HTML canvas.
    */
-  constructor (canvas) {
+  constructor (canvas, game) {
     this.canvas = canvas
+    this.game = game
     this.context = this.canvas.getContext('2d')
     this.rowCount = Math.floor(canvas.height / CELL_EDGE_SIZE)
     this.colCount = Math.floor(canvas.width / CELL_EDGE_SIZE)
     this.cells = this.createCells()
     this.highlightedCoord = undefined
-    this.onclick = undefined
 
     // bind events
     this.canvas.onclick = this.onCanvasClick.bind(this)
@@ -64,9 +69,9 @@ class Grid {
     const cells = []
     for (let row = 0; row < this.rowCount; row++) {
       for (let col = 0; col < this.colCount; col++) {
-        let cellStartPosition = this.getCellStartPosition(row, col)
-        let path = buildSquarePath(cellStartPosition, CELL_EDGE_SIZE)
-        cells.push(new Cell(row, col, path))
+        let position = this.getCellStartPosition(row, col)
+        let path = buildSquarePath(position, CELL_EDGE_SIZE)
+        cells.push(new Cell(row, col, path, position))
       }
     }
     return cells
@@ -77,14 +82,22 @@ class Grid {
    */
   draw () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    // 1st layer: cells
     this.cells.forEach((cell) => {
       if (cell.isOnCoord(this.highlightedCoord)) {
-        this.setContextStyle(CELL_STYLES.highlight)
+        this.setContextStyle(CELL_STYLES.cellHighlighted)
       } else {
-        this.setContextStyle(CELL_STYLES.default)
+        this.setContextStyle(CELL_STYLES.cell)
       }
       this.context.fill(cell.path)
       this.context.stroke(cell.path)
+    })
+
+    // 2nd layer: towers
+    this.setContextStyle(CELL_STYLES.tower)
+    this.game.towers.forEach((tower) => {
+      this.context.fill(tower.path)
+      this.context.stroke(tower.path)
     })
   }
 
@@ -112,7 +125,8 @@ class Grid {
       y: event.clientY - event.target.offsetTop
     }
     const cell = this.getCellAtPosition(mousePosition)
-    this.onclick && this.onclick(cell)
+    this.game.onUserClick(cell.position)
+    this.draw()
   }
 
   /**
