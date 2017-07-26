@@ -1,4 +1,4 @@
-/* global Image */
+import {imageCache} from './image-cache.js'
 
 export default class Tower {
   constructor (position) {
@@ -6,8 +6,7 @@ export default class Tower {
   }
 
   draw (context) {
-    var img = new Image()
-    img.onload = () => { context.drawImage(img, this.position.x, this.position.y) }
-    img.src = '../images/tower-1.png'
+    var img = imageCache['tower-1']
+    context.drawImage(img, this.position.x, this.position.y)
   }
 }

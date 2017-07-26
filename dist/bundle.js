@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,25 +70,78 @@
 "use strict";
 
 
-var _game = __webpack_require__(1);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.loadImageCache = loadImageCache;
+/* global Image */
+
+/**
+ * List of images to load.
+ * @type {Object}
+ */
+var imageUrls = {
+  'tower-1': '../images/tower-1.png',
+  'goon-1': '../images/goon-1.png'
+
+  /**
+   * Global image cache.
+   * @type {Object}
+   */
+};var imageCache = exports.imageCache = {};
+
+/**
+ * Load the images on the cache and call the callback when ready.
+ * @param  {function} onLoadComplete
+ */
+function loadImageCache(onLoadComplete) {
+  var _loop = function _loop(key) {
+    var url = imageUrls[key];
+    var img = new Image();
+    img.onload = function () {
+      imageCache[key] = img;
+      if (Object.keys(imageCache).length === Object.keys(imageUrls).length) {
+        onLoadComplete();
+      }
+    };
+    img.src = url;
+  };
+
+  for (var key in imageUrls) {
+    _loop(key);
+  }
+}
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _imageCache = __webpack_require__(0);
+
+var _game = __webpack_require__(2);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _grid = __webpack_require__(3);
+var _grid = __webpack_require__(4);
 
 var _grid2 = _interopRequireDefault(_grid);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var canvas = document.getElementById('canvas');
+(0, _imageCache.loadImageCache)(init);
 
-var game = new _game2.default();
-var grid = new _grid2.default(canvas, game);
-
-grid.draw();
+function init() {
+  var canvas = document.getElementById('canvas');
+  var game = new _game2.default();
+  var grid = new _grid2.default(canvas, game);
+  grid.draw();
+}
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -100,7 +153,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _tower = __webpack_require__(2);
+var _tower = __webpack_require__(3);
 
 var _tower2 = _interopRequireDefault(_tower);
 
@@ -156,7 +209,7 @@ var Game = function () {
 exports.default = Game;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -168,9 +221,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _imageCache = __webpack_require__(0);
 
-/* global Image */
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Tower = function () {
   function Tower(position) {
@@ -182,13 +235,8 @@ var Tower = function () {
   _createClass(Tower, [{
     key: 'draw',
     value: function draw(context) {
-      var _this = this;
-
-      var img = new Image();
-      img.onload = function () {
-        context.drawImage(img, _this.position.x, _this.position.y);
-      };
-      img.src = '../images/tower-1.png';
+      var img = _imageCache.imageCache['tower-1'];
+      context.drawImage(img, this.position.x, this.position.y);
     }
   }]);
 
@@ -198,7 +246,7 @@ var Tower = function () {
 exports.default = Tower;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -220,7 +268,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
  * @property {number} col - The column Coordinate.
  */
 
-var _cell = __webpack_require__(4);
+var _cell = __webpack_require__(5);
 
 var _cell2 = _interopRequireDefault(_cell);
 
@@ -421,7 +469,7 @@ var Grid = function () {
 exports.default = Grid;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -443,7 +491,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
  * @property {number} col - The column Coordinate.
  */
 
-var _squarePath = __webpack_require__(5);
+var _squarePath = __webpack_require__(6);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -507,7 +555,7 @@ var Cell = function () {
 exports.default = Cell;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
