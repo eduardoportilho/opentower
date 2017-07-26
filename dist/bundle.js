@@ -78,6 +78,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var canvas = document.getElementById('canvas');
 var grid = new _grid2.default(canvas);
+grid.onclick = function (cell) {
+  return console.log('Click on cel [' + cell.row + ', ' + cell.col + ']');
+};
 grid.draw();
 
 /***/ }),
@@ -91,21 +94,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // ROADMAP:
-// ✔︎ - expose draw method
-// ✔︎ - draw grid
-// ✔︎ - on cell hover -> style
-// - on cell click -> event
-// - draw object's paths (or call object draw)
-//  - towers
-//  - goons
-//  - bullets?
-
-/**
- * @typedef {Object} Point
- * @property {number} x - The X Coordinate.
- * @property {number} y - The Y Coordinate.
- */
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @typedef {Object} Point
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} x - The X Coordinate.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} y - The Y Coordinate.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
 /**
  * @typedef {Object} Coord
@@ -160,8 +153,10 @@ var Grid = function () {
     this.colCount = Math.floor(canvas.width / CELL_EDGE_SIZE);
     this.cells = this.createCells();
     this.highlightedCoord = undefined;
+    this.onclick = undefined;
 
     // bind events
+    this.canvas.onclick = this.onCanvasClick.bind(this);
     this.canvas.onmousemove = this.onMouseMove.bind(this);
     this.canvas.onmouseout = this.onMouseMove.bind(this);
   }
@@ -177,7 +172,7 @@ var Grid = function () {
     value: function createCells() {
       var cells = [];
       for (var row = 0; row < this.rowCount; row++) {
-        for (var col = 0; col < this.rowCount; col++) {
+        for (var col = 0; col < this.colCount; col++) {
           var cellStartPosition = this.getCellStartPosition(row, col);
           var path = (0, _squarePath.buildSquarePath)(cellStartPosition, CELL_EDGE_SIZE);
           cells.push(new _cell2.default(row, col, path));
@@ -219,8 +214,25 @@ var Grid = function () {
         x: event.clientX - event.target.offsetLeft,
         y: event.clientY - event.target.offsetTop
       };
-      this.highlightedCoord = this.getCoordAtPosition(mousePosition);
+      var cell = this.getCellAtPosition(mousePosition);
+      this.highlightedCoord = cell ? cell.getCoord() : undefined;
       this.draw();
+    }
+
+    /**
+     * Trigger onclick on canvas click.
+     * @param {MouseEvent} event
+     */
+
+  }, {
+    key: 'onCanvasClick',
+    value: function onCanvasClick(event) {
+      var mousePosition = {
+        x: event.clientX - event.target.offsetLeft,
+        y: event.clientY - event.target.offsetTop
+      };
+      var cell = this.getCellAtPosition(mousePosition);
+      this.onclick && this.onclick(cell);
     }
 
     /**
@@ -240,24 +252,23 @@ var Grid = function () {
     }
 
     /**
-     * Get coordinate at position.
+     * Get cell at position.
      * @param  {number} x
      * @param  {number} y
-     * @return {Coord} coordinate or undefined.
+     * @return {Cell} Cell or undefined.
      */
 
   }, {
-    key: 'getCoordAtPosition',
-    value: function getCoordAtPosition(_ref) {
+    key: 'getCellAtPosition',
+    value: function getCellAtPosition(_ref) {
       var _this2 = this;
 
       var x = _ref.x,
           y = _ref.y;
 
-      var cell = this.cells.find(function (cell) {
+      return this.cells.find(function (cell) {
         return _this2.context.isPointInPath(cell.path, x, y);
       });
-      return cell ? cell.getCoord() : undefined;
     }
 
     /**
@@ -301,10 +312,22 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 /* global Path2D */
 
+/**
+ * @typedef {Object} Point
+ * @property {number} x - The X Coordinate.
+ * @property {number} y - The Y Coordinate.
+ */
+
+/**
+ * Build a square path.
+ * @param  {Point} startPosition
+ * @param  {number} edgeSize
+ * @return {Path2D}
+ */
 function buildSquarePath(startPosition, edgeSize) {
   var path = new Path2D();
   var startCorner = [startPosition.x, startPosition.y];
-  var corners = [[startPosition.x + edgeSize, startPosition.y], [startPosition.x + edgeSize, startPosition.y - edgeSize], [startPosition.x, startPosition.y - edgeSize], [startPosition.x, startPosition.y]];
+  var corners = [[startPosition.x + edgeSize, startPosition.y], [startPosition.x + edgeSize, startPosition.y + edgeSize], [startPosition.x, startPosition.y + edgeSize], [startPosition.x, startPosition.y]];
   path.moveTo.apply(path, startCorner);
   corners.forEach(function (corner) {
     path.lineTo.apply(path, _toConsumableArray(corner));
@@ -326,6 +349,12 @@ Object.defineProperty(exports, "__esModule", {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @typedef {Object} Coord
+ * @property {number} row - The row Coordinate.
+ * @property {number} col - The column Coordinate.
+ */
 
 /**
  * Grid cell.

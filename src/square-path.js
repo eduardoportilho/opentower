@@ -1,5 +1,17 @@
 /* global Path2D */
 
+/**
+ * @typedef {Object} Point
+ * @property {number} x - The X Coordinate.
+ * @property {number} y - The Y Coordinate.
+ */
+
+/**
+ * Build a square path.
+ * @param  {Point} startPosition
+ * @param  {number} edgeSize
+ * @return {Path2D}
+ */
 export function buildSquarePath (startPosition, edgeSize) {
   const path = new Path2D()
   const startCorner = [startPosition.x, startPosition.y]

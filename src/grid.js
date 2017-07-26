@@ -1,13 +1,3 @@
-// ROADMAP:
-// ✔︎ - expose draw method
-// ✔︎ - draw grid
-// ✔︎ - on cell hover -> style
-// - on cell click -> event
-// - draw object's paths (or call object draw)
-//  - towers
-//  - goons
-//  - bullets?
-
 /**
  * @typedef {Object} Point
  * @property {number} x - The X Coordinate.
@@ -58,8 +48,10 @@ class Grid {
     this.colCount = Math.floor(canvas.width / CELL_EDGE_SIZE)
     this.cells = this.createCells()
     this.highlightedCoord = undefined
+    this.onclick = undefined
 
     // bind events
+    this.canvas.onclick = this.onCanvasClick.bind(this)
     this.canvas.onmousemove = this.onMouseMove.bind(this)
     this.canvas.onmouseout = this.onMouseMove.bind(this)
   }
@@ -71,7 +63,7 @@ class Grid {
   createCells () {
     const cells = []
     for (let row = 0; row < this.rowCount; row++) {
-      for (let col = 0; col < this.rowCount; col++) {
+      for (let col = 0; col < this.colCount; col++) {
         let cellStartPosition = this.getCellStartPosition(row, col)
         let path = buildSquarePath(cellStartPosition, CELL_EDGE_SIZE)
         cells.push(new Cell(row, col, path))
@@ -105,8 +97,22 @@ class Grid {
       x: event.clientX - event.target.offsetLeft,
       y: event.clientY - event.target.offsetTop
     }
-    this.highlightedCoord = this.getCoordAtPosition(mousePosition)
+    const cell = this.getCellAtPosition(mousePosition)
+    this.highlightedCoord = cell ? cell.getCoord() : undefined
     this.draw()
+  }
+
+  /**
+   * Trigger onclick on canvas click.
+   * @param {MouseEvent} event
+   */
+  onCanvasClick (event) {
+    var mousePosition = {
+      x: event.clientX - event.target.offsetLeft,
+      y: event.clientY - event.target.offsetTop
+    }
+    const cell = this.getCellAtPosition(mousePosition)
+    this.onclick && this.onclick(cell)
   }
 
   /**
@@ -123,14 +129,13 @@ class Grid {
   }
 
   /**
-   * Get coordinate at position.
+   * Get cell at position.
    * @param  {number} x
    * @param  {number} y
-   * @return {Coord} coordinate or undefined.
+   * @return {Cell} Cell or undefined.
    */
-  getCoordAtPosition ({x, y}) {
-    const cell = this.cells.find((cell) => this.context.isPointInPath(cell.path, x, y))
-    return cell ? cell.getCoord() : undefined
+  getCellAtPosition ({x, y}) {
+    return this.cells.find((cell) => this.context.isPointInPath(cell.path, x, y))
   }
 
   /**

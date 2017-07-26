@@ -1,4 +1,10 @@
 /**
+ * @typedef {Object} Coord
+ * @property {number} row - The row Coordinate.
+ * @property {number} col - The column Coordinate.
+ */
+
+/**
  * Grid cell.
  */
 class Cell {
