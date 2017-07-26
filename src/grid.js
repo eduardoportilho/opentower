@@ -1,11 +1,12 @@
 // ROADMAP:
 // ✔︎ - expose draw method
 // ✔︎ - draw grid
+// - on cell hover -> style
+// - on cell click -> event
 // - draw object's paths (or call object draw)
 //  - towers
 //  - goons
 //  - bullets?
-// - receive user click and call game methods
 
 /**
  * @typedef {Object} Point
