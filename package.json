@@ -4,8 +4,9 @@
   "description": "Open arena tower defence game",
   "main": "index.js",
   "scripts": {
+    "watch": "webpack --watch",
     "build": "standard && webpack",
-    "dist": "webpack -p"
+    "dist": "standard && webpack -p"
   },
   "repository": {
     "type": "git",
