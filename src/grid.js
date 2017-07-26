@@ -94,8 +94,7 @@ class Grid {
     // 2nd layer: towers
     this.setContextStyle(CELL_STYLES.tower)
     this.game.towers.forEach((tower) => {
-      this.context.fill(tower.path)
-      this.context.stroke(tower.path)
+      tower.draw(this.context)
     })
   }
 

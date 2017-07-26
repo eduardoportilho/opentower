@@ -1,8 +1,13 @@
-import {buildSquarePath} from './square-path'
+/* global Image */
 
 export default class Tower {
   constructor (position) {
     this.position = position
-    this.path = buildSquarePath(position, 50)
+  }
+
+  draw (context) {
+    var img = new Image()
+    img.onload = () => { context.drawImage(img, this.position.x, this.position.y) }
+    img.src = '../images/tower-1.png'
   }
 }
