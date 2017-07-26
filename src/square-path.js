@@ -5,8 +5,8 @@ export function buildSquarePath (startPosition, edgeSize) {
   const startCorner = [startPosition.x, startPosition.y]
   const corners = [
     [startPosition.x + edgeSize, startPosition.y],
-    [startPosition.x + edgeSize, startPosition.y - edgeSize],
-    [startPosition.x, startPosition.y - edgeSize],
+    [startPosition.x + edgeSize, startPosition.y + edgeSize],
+    [startPosition.x, startPosition.y + edgeSize],
     [startPosition.x, startPosition.y]
   ]
   path.moveTo(...startCorner)
