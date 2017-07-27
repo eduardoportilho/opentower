@@ -26,11 +26,6 @@ const CELL_STYLES = {
     'fill': 'gray',
     'stroke': 'lightgray',
     'lineWidth': 0.5
-  },
-  'tower': {
-    'fill': 'lightblue',
-    'stroke': 'blue',
-    'lineWidth': 1.5
   }
 }
 
@@ -86,9 +81,13 @@ class Grid {
     })
 
     // 2nd layer: towers
-    this.setContextStyle(CELL_STYLES.tower)
     this.game.towers.forEach((tower) => {
       tower.draw(this.context)
+    })
+
+    // 3rd layer: goons
+    this.game.goons.forEach((goon) => {
+      goon.draw(this.context)
     })
   }
 

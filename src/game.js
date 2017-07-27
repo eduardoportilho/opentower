@@ -5,11 +5,15 @@
  */
 
 import Tower from './tower'
+import Goon from './goon'
 
 export default class Game {
   constructor () {
     this.towers = []
+    this.goons = []
     this.occupiedCoords = []
+
+    window.setTimeout(this.spawnGoon.bind(this), 800)
   }
 
   /**
@@ -23,6 +27,10 @@ export default class Game {
       this.occupiedCoords.push(coord)
       this.towers.push(new Tower(position))
     }
+  }
+
+  spawnGoon () {
+    this.goons.push(new Goon({x: 50, y: 300}))
   }
 }
 

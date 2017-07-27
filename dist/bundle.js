@@ -125,7 +125,7 @@ var _game = __webpack_require__(2);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _grid = __webpack_require__(4);
+var _grid = __webpack_require__(5);
 
 var _grid2 = _interopRequireDefault(_grid);
 
@@ -161,6 +161,10 @@ var _tower = __webpack_require__(3);
 
 var _tower2 = _interopRequireDefault(_tower);
 
+var _goon = __webpack_require__(4);
+
+var _goon2 = _interopRequireDefault(_goon);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -170,7 +174,10 @@ var Game = function () {
     _classCallCheck(this, Game);
 
     this.towers = [];
+    this.goons = [];
     this.occupiedCoords = [];
+
+    window.setTimeout(this.spawnGoon.bind(this), 800);
   }
 
   /**
@@ -190,6 +197,11 @@ var Game = function () {
         this.occupiedCoords.push(coord);
         this.towers.push(new _tower2.default(position));
       }
+    }
+  }, {
+    key: 'spawnGoon',
+    value: function spawnGoon() {
+      this.goons.push(new _goon2.default({ x: 50, y: 300 }));
     }
   }]);
 
@@ -274,13 +286,50 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _imageCache = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Goon = function () {
+  function Goon(position) {
+    _classCallCheck(this, Goon);
+
+    this.position = position;
+  }
+
+  _createClass(Goon, [{
+    key: 'draw',
+    value: function draw(context) {
+      var img = _imageCache.imageCache['goon-1'];
+      context.drawImage(img, this.position.x, this.position.y);
+    }
+  }]);
+
+  return Goon;
+}();
+
+exports.default = Goon;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @typedef {Object} Point
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} x - The X Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _cell = __webpack_require__(5);
+var _cell = __webpack_require__(6);
 
 var _cell2 = _interopRequireDefault(_cell);
 
@@ -308,11 +357,6 @@ var CELL_STYLES = {
     'fill': 'gray',
     'stroke': 'lightgray',
     'lineWidth': 0.5
-  },
-  'tower': {
-    'fill': 'lightblue',
-    'stroke': 'blue',
-    'lineWidth': 1.5
   }
 };
 
@@ -379,9 +423,13 @@ var Grid = function () {
       });
 
       // 2nd layer: towers
-      this.setContextStyle(CELL_STYLES.tower);
       this.game.towers.forEach(function (tower) {
         tower.draw(_this.context);
+      });
+
+      // 3rd layer: goons
+      this.game.goons.forEach(function (goon) {
+        goon.draw(_this.context);
       });
     }
 
@@ -481,7 +529,7 @@ var Grid = function () {
 exports.default = Grid;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -497,9 +545,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _squarePath = __webpack_require__(6);
+var _squarePath = __webpack_require__(7);
 
-var _coord = __webpack_require__(7);
+var _coord = __webpack_require__(8);
 
 var _coord2 = _interopRequireDefault(_coord);
 
@@ -552,7 +600,7 @@ var Cell = function () {
 exports.default = Cell;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -591,7 +639,7 @@ function buildSquarePath(startPosition, edgeSize) {
 }
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
