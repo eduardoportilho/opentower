@@ -13,7 +13,7 @@ export default class Game {
     this.goons = []
     this.occupiedCoords = []
 
-    window.setTimeout(this.spawnGoon.bind(this), 800)
+    this.intervalId = window.setInterval(this.spawnGoon.bind(this), 800)
   }
 
   /**
@@ -29,34 +29,20 @@ export default class Game {
     }
   }
 
+  /**
+   * Spawn a new goon.
+   */
   spawnGoon () {
-    this.goons.push(new Goon({x: 50, y: 300}))
+    this.goons.push(new Goon({x: 0, y: 300}))
+    if (this.goons.length >= 10) {
+      window.clearInterval(this.intervalId)
+    }
+  }
+
+  /**
+   * Update the state of the game entities.
+   */
+  update () {
+    this.goons.forEach((goon) => goon.update())
   }
 }
-
-// class Goon {
-//   constructor() {
-//     this.x = 0
-//     this.y = 0
-//     this.life = 100
-//   }
-//
-//   move() {
-//     //recalculate position
-//   }
-// }
-//
-// class Tower {
-//   constructor() {
-//     this.row = 0
-//     this.col = 0
-//     this.readyToFire = true
-//   }
-//
-//   patrol() {
-//     // if ready,
-//     // get the closest goon in range
-//     // fire
-//     // start reloading
-//   }
-// }

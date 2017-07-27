@@ -137,7 +137,7 @@ function init() {
   var canvas = document.getElementById('canvas');
   var game = new _game2.default();
   var grid = new _grid2.default(canvas, game);
-  grid.draw();
+  grid.start();
 }
 
 /***/ }),
@@ -177,7 +177,7 @@ var Game = function () {
     this.goons = [];
     this.occupiedCoords = [];
 
-    window.setTimeout(this.spawnGoon.bind(this), 800);
+    this.intervalId = window.setInterval(this.spawnGoon.bind(this), 800);
   }
 
   /**
@@ -198,43 +198,35 @@ var Game = function () {
         this.towers.push(new _tower2.default(position));
       }
     }
+
+    /**
+     * Spawn a new goon.
+     */
+
   }, {
     key: 'spawnGoon',
     value: function spawnGoon() {
-      this.goons.push(new _goon2.default({ x: 50, y: 300 }));
+      this.goons.push(new _goon2.default({ x: 0, y: 300 }));
+      if (this.goons.length >= 10) {
+        window.clearInterval(this.intervalId);
+      }
+    }
+
+    /**
+     * Update the state of the game entities.
+     */
+
+  }, {
+    key: 'update',
+    value: function update() {
+      this.goons.forEach(function (goon) {
+        return goon.update();
+      });
     }
   }]);
 
   return Game;
 }();
-
-// class Goon {
-//   constructor() {
-//     this.x = 0
-//     this.y = 0
-//     this.life = 100
-//   }
-//
-//   move() {
-//     //recalculate position
-//   }
-// }
-//
-// class Tower {
-//   constructor() {
-//     this.row = 0
-//     this.col = 0
-//     this.readyToFire = true
-//   }
-//
-//   patrol() {
-//     // if ready,
-//     // get the closest goon in range
-//     // fire
-//     // start reloading
-//   }
-// }
-
 
 exports.default = Game;
 
@@ -261,6 +253,12 @@ var Tower = function () {
 
     this.position = position;
   }
+
+  /**
+   * Draw the goon on position.
+   * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
+   */
+
 
   _createClass(Tower, [{
     key: 'draw',
@@ -299,11 +297,30 @@ var Goon = function () {
     this.position = position;
   }
 
+  /**
+   * Draw the goon on position.
+   * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
+   */
+
+
   _createClass(Goon, [{
     key: 'draw',
     value: function draw(context) {
       var img = _imageCache.imageCache['goon-1'];
       context.drawImage(img, this.position.x, this.position.y);
+    }
+
+    /**
+     * Update goon state.
+     */
+
+  }, {
+    key: 'update',
+    value: function update() {
+      this.position = {
+        x: this.position.x + 3,
+        y: this.position.y
+      };
     }
   }]);
 
@@ -323,11 +340,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @typedef {Object} Point
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} x - The X Coordinate.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} y - The Y Coordinate.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* global requestAnimationFrame */
+
+/**
+ * @typedef {Object} Point
+ * @property {number} x - The X Coordinate.
+ * @property {number} y - The Y Coordinate.
+ */
 
 var _cell = __webpack_require__(6);
 
@@ -383,12 +402,34 @@ var Grid = function () {
   }
 
   /**
-   * Create cells for all coordinates.
-   * @return {Cell[]} cells.
+   * Start running events.
    */
 
 
   _createClass(Grid, [{
+    key: 'start',
+    value: function start() {
+      this.animationId = requestAnimationFrame(this.tick.bind(this));
+    }
+
+    /**
+     * Update state a render.
+     */
+
+  }, {
+    key: 'tick',
+    value: function tick() {
+      this.game.update();
+      this.render();
+      this.animationId = requestAnimationFrame(this.tick.bind(this));
+    }
+
+    /**
+     * Create cells for all coordinates.
+     * @return {Cell[]} cells.
+     */
+
+  }, {
     key: 'createCells',
     value: function createCells() {
       var cells = [];
@@ -406,8 +447,8 @@ var Grid = function () {
      */
 
   }, {
-    key: 'draw',
-    value: function draw() {
+    key: 'render',
+    value: function render() {
       var _this = this;
 
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -447,7 +488,6 @@ var Grid = function () {
       };
       var cell = this.getCellAtPosition(mousePosition);
       this.highlightedCoord = cell ? cell.coord : undefined;
-      this.draw();
     }
 
     /**
@@ -464,7 +504,6 @@ var Grid = function () {
       };
       var cell = this.getCellAtPosition(mousePosition);
       this.game.onUserClick(cell.position, cell.coord);
-      this.draw();
     }
 
     /**

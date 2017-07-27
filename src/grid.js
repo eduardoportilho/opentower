@@ -1,3 +1,5 @@
+/* global requestAnimationFrame */
+
 /**
  * @typedef {Object} Point
  * @property {number} x - The X Coordinate.
@@ -50,6 +52,22 @@ class Grid {
   }
 
   /**
+   * Start running events.
+   */
+  start () {
+    this.animationId = requestAnimationFrame(this.tick.bind(this))
+  }
+
+  /**
+   * Update state a render.
+   */
+  tick () {
+    this.game.update()
+    this.render()
+    this.animationId = requestAnimationFrame(this.tick.bind(this))
+  }
+
+  /**
    * Create cells for all coordinates.
    * @return {Cell[]} cells.
    */
@@ -67,7 +85,7 @@ class Grid {
   /**
    * Draw the grid.
    */
-  draw () {
+  render () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
     // 1st layer: cells
     this.cells.forEach((cell) => {
@@ -102,7 +120,6 @@ class Grid {
     }
     const cell = this.getCellAtPosition(mousePosition)
     this.highlightedCoord = cell ? cell.coord : undefined
-    this.draw()
   }
 
   /**
@@ -116,7 +133,6 @@ class Grid {
     }
     const cell = this.getCellAtPosition(mousePosition)
     this.game.onUserClick(cell.position, cell.coord)
-    this.draw()
   }
 
   /**
