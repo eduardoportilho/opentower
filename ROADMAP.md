@@ -14,12 +14,11 @@
     ✔ + grid draw layers
     ✔ + avoid deploying on occupied cell
     ✔ + Draw a tower
-- spawn goon (on timeout)
+✔ - spawn goon (on timeout)
     ✔ + Draw a goon
     ✔ + make goon walk across arena
-    + spawn goon on different location
-    + make goons walk to same destination
-        * Calculate path
+    ✔ + spawn goons on different positions
+    ✔ + make goons walk to same target
 - make goon avoid towers
     + recalculate path (on clock? on deployed tower)
     + detect blocked goon
