@@ -33,7 +33,11 @@ export default class Game {
    * Spawn a new goon.
    */
   spawnGoon () {
-    this.goons.push(new Goon({x: 0, y: 300}))
+    const spawnPosition = {
+      x: 100 + Math.floor(Math.random() * 400),
+      y: 0
+    }
+    this.goons.push(new Goon(spawnPosition))
     if (this.goons.length >= 10) {
       window.clearInterval(this.intervalId)
     }

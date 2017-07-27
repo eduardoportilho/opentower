@@ -206,7 +206,11 @@ var Game = function () {
   }, {
     key: 'spawnGoon',
     value: function spawnGoon() {
-      this.goons.push(new _goon2.default({ x: 0, y: 300 }));
+      var spawnPosition = {
+        x: 100 + Math.floor(Math.random() * 400),
+        y: 0
+      };
+      this.goons.push(new _goon2.default(spawnPosition));
       if (this.goons.length >= 10) {
         window.clearInterval(this.intervalId);
       }
@@ -290,11 +294,27 @@ var _imageCache = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * Point where the goons are heading to.
+ * @type {Object}
+ */
+var GOON_TARGET_POSITION = {
+  x: 600,
+  y: 100
+
+  /**
+   * Number of steps to complete the arena.
+   * @type {Number}
+   */
+};var STEP_COUNT = 400;
+
 var Goon = function () {
   function Goon(position) {
     _classCallCheck(this, Goon);
 
     this.position = position;
+    this.stepX = (GOON_TARGET_POSITION.x - this.position.x) / STEP_COUNT;
+    this.stepY = (GOON_TARGET_POSITION.y - this.position.y) / STEP_COUNT;
   }
 
   /**
@@ -318,8 +338,8 @@ var Goon = function () {
     key: 'update',
     value: function update() {
       this.position = {
-        x: this.position.x + 3,
-        y: this.position.y
+        x: this.position.x + this.stepX,
+        y: this.position.y + this.stepY
       };
     }
   }]);

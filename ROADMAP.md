@@ -18,7 +18,7 @@
     ✔ + Draw a goon
     ✔ + make goon walk across arena
     + spawn goon on different location
-    + make goon walk to same destination
+    + make goons walk to same destination
         * Calculate path
 - make goon avoid towers
     + recalculate path (on clock? on deployed tower)
