@@ -175,6 +175,7 @@ var Game = function () {
 
     this.towers = [];
     this.goons = [];
+    this.spawnedGoons = 0;
     this.occupiedCoords = [];
 
     this.intervalId = window.setInterval(this.spawnGoon.bind(this), 800);
@@ -207,12 +208,23 @@ var Game = function () {
     key: 'spawnGoon',
     value: function spawnGoon() {
       var spawnPosition = {
-        x: 100 + Math.floor(Math.random() * 400),
-        y: 0
+        x: 0,
+        y: 100 + Math.floor(Math.random() * 400)
       };
-      this.goons.push(new _goon2.default(spawnPosition));
-      if (this.goons.length >= 10) {
+      var id = Date.now();
+      this.goons.push(new _goon2.default(id, spawnPosition, this));
+      if (++this.spawnedGoons >= 10) {
         window.clearInterval(this.intervalId);
+      }
+    }
+  }, {
+    key: 'removeGoon',
+    value: function removeGoon(goon) {
+      var index = this.goons.findIndex(function (aGoon) {
+        return aGoon.id === goon.id;
+      });
+      if (index >= 0) {
+        this.goons.splice(index, 1);
       }
     }
 
@@ -300,7 +312,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 var GOON_TARGET_POSITION = {
   x: 600,
-  y: 100
+  y: 275
 
   /**
    * Number of steps to complete the arena.
@@ -309,10 +321,12 @@ var GOON_TARGET_POSITION = {
 };var STEP_COUNT = 400;
 
 var Goon = function () {
-  function Goon(position) {
+  function Goon(id, position, game) {
     _classCallCheck(this, Goon);
 
+    this.id = id;
     this.position = position;
+    this.game = game;
     this.stepX = (GOON_TARGET_POSITION.x - this.position.x) / STEP_COUNT;
     this.stepY = (GOON_TARGET_POSITION.y - this.position.y) / STEP_COUNT;
   }
@@ -341,6 +355,9 @@ var Goon = function () {
         x: this.position.x + this.stepX,
         y: this.position.y + this.stepY
       };
+      if (this.position.x > GOON_TARGET_POSITION.x) {
+        this.game.removeGoon(this);
+      }
     }
   }]);
 

@@ -11,6 +11,7 @@ export default class Game {
   constructor () {
     this.towers = []
     this.goons = []
+    this.spawnedGoons = 0
     this.occupiedCoords = []
 
     this.intervalId = window.setInterval(this.spawnGoon.bind(this), 800)
@@ -34,12 +35,20 @@ export default class Game {
    */
   spawnGoon () {
     const spawnPosition = {
-      x: 100 + Math.floor(Math.random() * 400),
-      y: 0
+      x: 0,
+      y: 100 + Math.floor(Math.random() * 400)
     }
-    this.goons.push(new Goon(spawnPosition))
-    if (this.goons.length >= 10) {
+    const id = Date.now();
+    this.goons.push(new Goon(id, spawnPosition, this))
+    if (++this.spawnedGoons >= 10) {
       window.clearInterval(this.intervalId)
+    }
+  }
+
+  removeGoon(goon) {
+    const index = this.goons.findIndex((aGoon) => aGoon.id === goon.id)
+    if (index >= 0) {
+      this.goons.splice(index, 1)
     }
   }
 

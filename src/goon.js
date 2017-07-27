@@ -6,7 +6,7 @@ import {imageCache} from './image-cache.js'
  */
 const GOON_TARGET_POSITION = {
   x: 600,
-  y: 100
+  y: 275
 }
 
 /**
@@ -16,11 +16,12 @@ const GOON_TARGET_POSITION = {
 const STEP_COUNT = 400
 
 export default class Goon {
-  constructor (position) {
+  constructor (id, position, game) {
+    this.id = id
     this.position = position
+    this.game = game
     this.stepX = (GOON_TARGET_POSITION.x - this.position.x) / STEP_COUNT
     this.stepY = (GOON_TARGET_POSITION.y - this.position.y) / STEP_COUNT
-
   }
 
   /**
@@ -39,6 +40,9 @@ export default class Goon {
     this.position = {
       x: this.position.x + this.stepX,
       y: this.position.y + this.stepY
+    }
+    if (this.position.x > GOON_TARGET_POSITION.x) {
+      this.game.removeGoon(this)
     }
   }
 }
