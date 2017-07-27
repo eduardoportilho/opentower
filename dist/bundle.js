@@ -151,7 +151,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @typedef {Object} Point
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} x - The X Coordinate.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} y - The Y Coordinate.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
 var _tower = __webpack_require__(3);
 
@@ -166,12 +170,26 @@ var Game = function () {
     _classCallCheck(this, Game);
 
     this.towers = [];
+    this.occupiedCoords = [];
   }
+
+  /**
+   * When a user lick a cell.
+   * @param  {Point} position - Cell upper-left position.
+   * @param  {Coord} coord - Cell coordinates.
+   */
+
 
   _createClass(Game, [{
     key: 'onUserClick',
-    value: function onUserClick(position) {
-      this.towers.push(new _tower2.default(position));
+    value: function onUserClick(position, coord) {
+      var isOccupied = this.occupiedCoords.some(function (occupied) {
+        return occupied.equals(coord);
+      });
+      if (!isOccupied) {
+        this.occupiedCoords.push(coord);
+        this.towers.push(new _tower2.default(position));
+      }
     }
   }]);
 
@@ -261,12 +279,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} x - The X Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
-
-/**
- * @typedef {Object} Coord
- * @property {number} row - The row Coordinate.
- * @property {number} col - The column Coordinate.
- */
 
 var _cell = __webpack_require__(5);
 
@@ -386,7 +398,7 @@ var Grid = function () {
         y: event.clientY - event.target.offsetTop
       };
       var cell = this.getCellAtPosition(mousePosition);
-      this.highlightedCoord = cell ? cell.getCoord() : undefined;
+      this.highlightedCoord = cell ? cell.coord : undefined;
       this.draw();
     }
 
@@ -403,7 +415,7 @@ var Grid = function () {
         y: event.clientY - event.target.offsetTop
       };
       var cell = this.getCellAtPosition(mousePosition);
-      this.game.onUserClick(cell.position);
+      this.game.onUserClick(cell.position, cell.coord);
       this.draw();
     }
 
@@ -485,13 +497,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-/**
- * @typedef {Object} Coord
- * @property {number} row - The row Coordinate.
- * @property {number} col - The column Coordinate.
- */
-
 var _squarePath = __webpack_require__(6);
+
+var _coord = __webpack_require__(7);
+
+var _coord2 = _interopRequireDefault(_coord);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -515,37 +527,22 @@ var Cell = function () {
   function Cell(row, col, position) {
     _classCallCheck(this, Cell);
 
-    this.row = row;
-    this.col = col;
-    this.path = (0, _squarePath.buildSquarePath)(position, CELL_EDGE_SIZE);
+    this.coord = new _coord2.default(row, col);
     this.position = position;
+    this.path = (0, _squarePath.buildSquarePath)(position, CELL_EDGE_SIZE);
   }
 
   /**
-   * Cell coordinate.
-   * @return {Coord}
+   * Check cell coordinates.
+   * @param {Coord} coord
+   * @return {Boolean}
    */
 
 
   _createClass(Cell, [{
-    key: 'getCoord',
-    value: function getCoord() {
-      return {
-        row: this.row,
-        col: this.col
-      };
-    }
-
-    /**
-     * Check cell coordinates.
-     * @param {Coord} coord
-     * @return {Boolean}
-     */
-
-  }, {
     key: 'isOnCoord',
     value: function isOnCoord(coord) {
-      return coord && this.row === coord.row && this.col === coord.col;
+      return this.coord.equals(coord);
     }
   }]);
 
@@ -592,6 +589,52 @@ function buildSquarePath(startPosition, edgeSize) {
   });
   return path;
 }
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Coord = function () {
+  /**
+   * @param {number} row
+   * @param {number} col
+   */
+  function Coord(row, col) {
+    _classCallCheck(this, Coord);
+
+    this.row = row;
+    this.col = col;
+  }
+
+  /**
+   * Compare two coordinates.
+   * @param {Coord} coord
+   * @return {Boolean}
+   */
+
+
+  _createClass(Coord, [{
+    key: "equals",
+    value: function equals(coord) {
+      return coord && this.row === coord.row && this.col === coord.col;
+    }
+  }]);
+
+  return Coord;
+}();
+
+exports.default = Coord;
 
 /***/ })
 /******/ ]);

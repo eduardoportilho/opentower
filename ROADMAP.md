@@ -12,9 +12,8 @@
     ✔ + Store deployed towers
     ✔ + grid draw external objects
     ✔ + grid draw layers
-    + avoid deploying on occupied cell
-    + Draw a tower
-        * SVG to Path2D?
+    ✔ + avoid deploying on occupied cell
+    ✔ + Draw a tower
 - spawn goon (on timeout)
     + make goon walk across arena
     + spawn goon on different location

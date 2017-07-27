@@ -4,13 +4,8 @@
  * @property {number} y - The Y Coordinate.
  */
 
-/**
- * @typedef {Object} Coord
- * @property {number} row - The row Coordinate.
- * @property {number} col - The column Coordinate.
- */
-
 import {buildSquarePath} from './square-path'
+import Coord from './coord'
 
 /**
  * Size of the (square) cell edge.
@@ -29,21 +24,9 @@ class Cell {
    * @param {Point} position - Cell position (upper left).
    */
   constructor (row, col, position) {
-    this.row = row
-    this.col = col
-    this.path = buildSquarePath(position, CELL_EDGE_SIZE)
+    this.coord = new Coord(row, col)
     this.position = position
-  }
-
-  /**
-   * Cell coordinate.
-   * @return {Coord}
-   */
-  getCoord () {
-    return {
-      row: this.row,
-      col: this.col
-    }
+    this.path = buildSquarePath(position, CELL_EDGE_SIZE)
   }
 
   /**
@@ -52,7 +35,7 @@ class Cell {
    * @return {Boolean}
    */
   isOnCoord (coord) {
-    return coord && this.row === coord.row && this.col === coord.col
+    return this.coord.equals(coord)
   }
 }
 

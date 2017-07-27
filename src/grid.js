@@ -4,12 +4,6 @@
  * @property {number} y - The Y Coordinate.
  */
 
-/**
- * @typedef {Object} Coord
- * @property {number} row - The row Coordinate.
- * @property {number} col - The column Coordinate.
- */
-
 import Cell from './cell'
 
 /**
@@ -108,7 +102,7 @@ class Grid {
       y: event.clientY - event.target.offsetTop
     }
     const cell = this.getCellAtPosition(mousePosition)
-    this.highlightedCoord = cell ? cell.getCoord() : undefined
+    this.highlightedCoord = cell ? cell.coord : undefined
     this.draw()
   }
 
@@ -122,7 +116,7 @@ class Grid {
       y: event.clientY - event.target.offsetTop
     }
     const cell = this.getCellAtPosition(mousePosition)
-    this.game.onUserClick(cell.position)
+    this.game.onUserClick(cell.position, cell.coord)
     this.draw()
   }
 

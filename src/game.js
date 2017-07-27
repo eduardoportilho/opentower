@@ -1,12 +1,28 @@
+/**
+ * @typedef {Object} Point
+ * @property {number} x - The X Coordinate.
+ * @property {number} y - The Y Coordinate.
+ */
+
 import Tower from './tower'
 
 export default class Game {
   constructor () {
     this.towers = []
+    this.occupiedCoords = []
   }
 
-  onUserClick (position) {
-    this.towers.push(new Tower(position))
+  /**
+   * When a user lick a cell.
+   * @param  {Point} position - Cell upper-left position.
+   * @param  {Coord} coord - Cell coordinates.
+   */
+  onUserClick (position, coord) {
+    const isOccupied = this.occupiedCoords.some((occupied) => occupied.equals(coord))
+    if (!isOccupied) {
+      this.occupiedCoords.push(coord)
+      this.towers.push(new Tower(position))
+    }
   }
 }
 
