@@ -23,7 +23,7 @@ class PathFinder {
     }
     // init bfs
     this.frontier = [TARGET_POS]
-    this.grid[TARGET_POS.x][TARGET_POS.y] = {dist: 0, nextStep: null, ...TARGET_POS}
+    this.grid[TARGET_POS.x][TARGET_POS.y] = {dist: 0, nextStep: undefined, ...TARGET_POS}
 
     while (this.frontier.length > 0) {
       let current = this.frontier.shift()

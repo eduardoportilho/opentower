@@ -158,7 +158,7 @@ var PathFinder = function () {
       }
       // init bfs
       this.frontier = [TARGET_POS];
-      this.grid[TARGET_POS.x][TARGET_POS.y] = _extends({ dist: 0, nextStep: null }, TARGET_POS);
+      this.grid[TARGET_POS.x][TARGET_POS.y] = _extends({ dist: 0, nextStep: undefined }, TARGET_POS);
 
       while (this.frontier.length > 0) {
         var current = this.frontier.shift();
@@ -463,7 +463,7 @@ var Goon = function () {
     key: 'update',
     value: function update() {
       var newPosition = _pathFinder2.default.nextPosition(this.position);
-      if (newPosition !== undefined) {
+      if (newPosition) {
         this.position = newPosition;
       } else {
         this.game.removeGoon(this);

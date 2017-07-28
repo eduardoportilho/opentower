@@ -39,7 +39,7 @@ export default class Goon {
    */
   update () {
     let newPosition = pathFinder.nextPosition(this.position)
-    if (newPosition !== undefined) {
+    if (newPosition) {
       this.position = newPosition
     } else {
       this.game.removeGoon(this)
