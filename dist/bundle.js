@@ -136,9 +136,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var TARGET_POS = {
   x: 600,
   y: 275
-};
 
-var GRID_SIZE_X = 600;
+  /**
+   * Grid size on X axis
+   * @type {Number}
+   */
+};var GRID_SIZE_X = 600;
+
+/**
+ * Grid size on Y axis
+ * @type {Number}
+ */
 var GRID_SIZE_Y = 600;
 
 var PathFinder = function () {
@@ -147,6 +155,11 @@ var PathFinder = function () {
 
     this.recalculate();
   }
+
+  /**
+   * Recalculate all paths
+   */
+
 
   _createClass(PathFinder, [{
     key: "recalculate",
@@ -191,6 +204,14 @@ var PathFinder = function () {
         }
       }
     }
+
+    /**
+     * Get the coordinate of the neighbours of the position that are
+     * in the grid and not initialized.
+     * @param  {Point} position
+     * @return {Point[]}
+     */
+
   }, {
     key: "_neighbourPositions",
     value: function _neighbourPositions(position) {
@@ -200,6 +221,14 @@ var PathFinder = function () {
         return nPos.x >= 0 && nPos.x <= GRID_SIZE_X && nPos.y >= 0 && nPos.y <= GRID_SIZE_Y && _this.grid[nPos.x][nPos.y] === undefined;
       });
     }
+
+    /**
+     * Get the next position in the path to the target
+     * @param  {Point} position - Current position.
+     * @param  {Number} steps - Number of steps to perform.
+     * @return {Point}
+     */
+
   }, {
     key: "nextPosition",
     value: function nextPosition(position) {

@@ -7,7 +7,16 @@ const TARGET_POS = {
   y: 275
 }
 
+/**
+ * Grid size on X axis
+ * @type {Number}
+ */
 const GRID_SIZE_X = 600
+
+/**
+ * Grid size on Y axis
+ * @type {Number}
+ */
 const GRID_SIZE_Y = 600
 
 class PathFinder {
@@ -15,6 +24,9 @@ class PathFinder {
     this.recalculate()
   }
 
+  /**
+   * Recalculate all paths
+   */
   recalculate () {
     // init grid
     this.grid = new Array(GRID_SIZE_X + 1)
@@ -36,6 +48,12 @@ class PathFinder {
     }
   }
 
+  /**
+   * Get the coordinate of the neighbours of the position that are
+   * in the grid and not initialized.
+   * @param  {Point} position
+   * @return {Point[]}
+   */
   _neighbourPositions (position) {
     return [
       {x: position.x - 1, y: position.y},
@@ -51,6 +69,12 @@ class PathFinder {
     ))
   }
 
+  /**
+   * Get the next position in the path to the target
+   * @param  {Point} position - Current position.
+   * @param  {Number} steps - Number of steps to perform.
+   * @return {Point}
+   */
   nextPosition (position, steps = 1) {
     let nextStep = this.grid[position.x][position.y]
     while (steps-- > 0 && nextStep.nextStep) {
