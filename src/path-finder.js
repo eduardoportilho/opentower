@@ -51,8 +51,12 @@ class PathFinder {
     ))
   }
 
-  nextPosition (position) {
-    return this.grid[position.x][position.y].nextStep
+  nextPosition (position, steps = 1) {
+    let nextStep = this.grid[position.x][position.y]
+    while (steps-- > 0 && nextStep.nextStep) {
+      nextStep = nextStep.nextStep
+    }
+    return nextStep
   }
 }
 

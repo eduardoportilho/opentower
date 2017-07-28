@@ -203,7 +203,13 @@ var PathFinder = function () {
   }, {
     key: "nextPosition",
     value: function nextPosition(position) {
-      return this.grid[position.x][position.y].nextStep;
+      var steps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+
+      var nextStep = this.grid[position.x][position.y];
+      while (steps-- > 0 && nextStep.nextStep) {
+        nextStep = nextStep.nextStep;
+      }
+      return nextStep;
     }
   }]);
 
@@ -418,18 +424,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
- * Point where the goons are heading to.
- * @type {Object}
+ * Number of steps to complete the arena.
+ * @type {Number}
  */
-var GOON_TARGET_POSITION = {
-  x: 600,
-  y: 275
-
-  /**
-   * Number of steps to complete the arena.
-   * @type {Number}
-   */
-};var STEP_COUNT = 400;
+var STEP_COUNT = 400;
 
 var Goon = function () {
   function Goon(id, position, game) {
@@ -438,8 +436,7 @@ var Goon = function () {
     this.id = id;
     this.position = position;
     this.game = game;
-    this.stepX = (GOON_TARGET_POSITION.x - this.position.x) / STEP_COUNT;
-    this.stepY = (GOON_TARGET_POSITION.y - this.position.y) / STEP_COUNT;
+    this.stepsPerUpdate = 3;
   }
 
   /**
@@ -462,7 +459,7 @@ var Goon = function () {
   }, {
     key: 'update',
     value: function update() {
-      var newPosition = _pathFinder2.default.nextPosition(this.position);
+      var newPosition = _pathFinder2.default.nextPosition(this.position, this.stepsPerUpdate);
       if (newPosition) {
         this.position = newPosition;
       } else {

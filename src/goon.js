@@ -2,15 +2,6 @@ import {imageCache} from './image-cache.js'
 import pathFinder from './path-finder'
 
 /**
- * Point where the goons are heading to.
- * @type {Object}
- */
-const GOON_TARGET_POSITION = {
-  x: 600,
-  y: 275
-}
-
-/**
  * Number of steps to complete the arena.
  * @type {Number}
  */
@@ -21,8 +12,7 @@ export default class Goon {
     this.id = id
     this.position = position
     this.game = game
-    this.stepX = (GOON_TARGET_POSITION.x - this.position.x) / STEP_COUNT
-    this.stepY = (GOON_TARGET_POSITION.y - this.position.y) / STEP_COUNT
+    this.stepsPerUpdate = 3
   }
 
   /**
@@ -38,7 +28,7 @@ export default class Goon {
    * Update goon state.
    */
   update () {
-    let newPosition = pathFinder.nextPosition(this.position)
+    let newPosition = pathFinder.nextPosition(this.position, this.stepsPerUpdate)
     if (newPosition) {
       this.position = newPosition
     } else {
