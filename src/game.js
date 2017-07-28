@@ -6,6 +6,7 @@
 
 import Tower from './tower'
 import Goon from './goon'
+import pathFinder from './path-finder'
 
 export default class Game {
   constructor () {
@@ -27,6 +28,7 @@ export default class Game {
     if (!isOccupied) {
       this.occupiedCoords.push(coord)
       this.towers.push(new Tower(position))
+      pathFinder.recalculate()
     }
   }
 
@@ -38,14 +40,14 @@ export default class Game {
       x: 0,
       y: 100 + Math.floor(Math.random() * 400)
     }
-    const id = Date.now();
+    const id = Date.now()
     this.goons.push(new Goon(id, spawnPosition, this))
     if (++this.spawnedGoons >= 10) {
       window.clearInterval(this.intervalId)
     }
   }
 
-  removeGoon(goon) {
+  removeGoon (goon) {
     const index = this.goons.findIndex((aGoon) => aGoon.id === goon.id)
     if (index >= 0) {
       this.goons.splice(index, 1)

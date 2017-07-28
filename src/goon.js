@@ -1,4 +1,5 @@
 import {imageCache} from './image-cache.js'
+import pathFinder from './path-finder'
 
 /**
  * Point where the goons are heading to.
@@ -37,11 +38,10 @@ export default class Goon {
    * Update goon state.
    */
   update () {
-    this.position = {
-      x: this.position.x + this.stepX,
-      y: this.position.y + this.stepY
-    }
-    if (this.position.x > GOON_TARGET_POSITION.x) {
+    let newPosition = pathFinder.nextPosition(this.position)
+    if (newPosition !== undefined) {
+      this.position = newPosition
+    } else {
       this.game.removeGoon(this)
     }
   }

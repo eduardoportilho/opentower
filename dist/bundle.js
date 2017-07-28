@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -119,13 +119,113 @@ function loadImageCache(onLoadComplete) {
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * Point where the goons are heading to.
+ * @type {Object}
+ */
+var TARGET_POS = {
+  x: 600,
+  y: 275
+};
+
+var GRID_SIZE_X = 600;
+var GRID_SIZE_Y = 600;
+
+var PathFinder = function () {
+  function PathFinder() {
+    _classCallCheck(this, PathFinder);
+
+    this.recalculate();
+  }
+
+  _createClass(PathFinder, [{
+    key: "recalculate",
+    value: function recalculate() {
+      // init grid
+      this.grid = new Array(GRID_SIZE_X + 1);
+      for (var i = 0; i <= GRID_SIZE_X; i++) {
+        this.grid[i] = new Array(GRID_SIZE_Y + 1);
+      }
+      // init bfs
+      this.frontier = [TARGET_POS];
+      this.grid[TARGET_POS.x][TARGET_POS.y] = _extends({ dist: 0, nextStep: null }, TARGET_POS);
+
+      while (this.frontier.length > 0) {
+        var current = this.frontier.shift();
+        var neighbourPositions = this._neighbourPositions(current);
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = neighbourPositions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var nPos = _step.value;
+
+            var neighbour = _extends({}, nPos, { dist: current.dist + 1, nextStep: current });
+            this.grid[nPos.x][nPos.y] = neighbour;
+            this.frontier.push(neighbour);
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      }
+    }
+  }, {
+    key: "_neighbourPositions",
+    value: function _neighbourPositions(position) {
+      var _this = this;
+
+      return [{ x: position.x - 1, y: position.y }, { x: position.x, y: position.y - 1 }, { x: position.x + 1, y: position.y }, { x: position.x, y: position.y + 1 }].filter(function (nPos) {
+        return nPos.x >= 0 && nPos.x <= GRID_SIZE_X && nPos.y >= 0 && nPos.y <= GRID_SIZE_Y && _this.grid[nPos.x][nPos.y] === undefined;
+      });
+    }
+  }, {
+    key: "nextPosition",
+    value: function nextPosition(position) {
+      return this.grid[position.x][position.y].nextStep;
+    }
+  }]);
+
+  return PathFinder;
+}();
+
+exports.default = new PathFinder();
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _imageCache = __webpack_require__(0);
 
-var _game = __webpack_require__(2);
+var _game = __webpack_require__(3);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _grid = __webpack_require__(5);
+var _grid = __webpack_require__(6);
 
 var _grid2 = _interopRequireDefault(_grid);
 
@@ -141,7 +241,7 @@ function init() {
 }
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -157,13 +257,17 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _tower = __webpack_require__(3);
+var _tower = __webpack_require__(4);
 
 var _tower2 = _interopRequireDefault(_tower);
 
-var _goon = __webpack_require__(4);
+var _goon = __webpack_require__(5);
 
 var _goon2 = _interopRequireDefault(_goon);
+
+var _pathFinder = __webpack_require__(1);
+
+var _pathFinder2 = _interopRequireDefault(_pathFinder);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -197,6 +301,7 @@ var Game = function () {
       if (!isOccupied) {
         this.occupiedCoords.push(coord);
         this.towers.push(new _tower2.default(position));
+        _pathFinder2.default.recalculate();
       }
     }
 
@@ -247,7 +352,7 @@ var Game = function () {
 exports.default = Game;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -290,7 +395,7 @@ var Tower = function () {
 exports.default = Tower;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -303,6 +408,12 @@ Object.defineProperty(exports, "__esModule", {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _imageCache = __webpack_require__(0);
+
+var _pathFinder = __webpack_require__(1);
+
+var _pathFinder2 = _interopRequireDefault(_pathFinder);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -351,11 +462,10 @@ var Goon = function () {
   }, {
     key: 'update',
     value: function update() {
-      this.position = {
-        x: this.position.x + this.stepX,
-        y: this.position.y + this.stepY
-      };
-      if (this.position.x > GOON_TARGET_POSITION.x) {
+      var newPosition = _pathFinder2.default.nextPosition(this.position);
+      if (newPosition !== undefined) {
+        this.position = newPosition;
+      } else {
         this.game.removeGoon(this);
       }
     }
@@ -367,7 +477,7 @@ var Goon = function () {
 exports.default = Goon;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -385,7 +495,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
  * @property {number} y - The Y Coordinate.
  */
 
-var _cell = __webpack_require__(6);
+var _cell = __webpack_require__(7);
 
 var _cell2 = _interopRequireDefault(_cell);
 
@@ -605,7 +715,7 @@ var Grid = function () {
 exports.default = Grid;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -621,9 +731,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _squarePath = __webpack_require__(7);
+var _squarePath = __webpack_require__(8);
 
-var _coord = __webpack_require__(8);
+var _coord = __webpack_require__(9);
 
 var _coord2 = _interopRequireDefault(_coord);
 
@@ -676,7 +786,7 @@ var Cell = function () {
 exports.default = Cell;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -715,7 +825,7 @@ function buildSquarePath(startPosition, edgeSize) {
 }
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
