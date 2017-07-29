@@ -6,7 +6,7 @@
  * @property {number} y - The Y Coordinate.
  */
 
-class Grid {
+class Renderer {
   /**
    * Grid constructor
    * @param  {HTMLCanvasElement} canvas - HTML canvas.
@@ -65,4 +65,4 @@ class Grid {
   }
 }
 
-export default Grid
+export default Renderer

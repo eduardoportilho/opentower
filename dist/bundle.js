@@ -260,9 +260,9 @@ var _game = __webpack_require__(3);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _grid = __webpack_require__(6);
+var _renderer = __webpack_require__(6);
 
-var _grid2 = _interopRequireDefault(_grid);
+var _renderer2 = _interopRequireDefault(_renderer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -271,8 +271,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function init() {
   var canvas = document.getElementById('canvas');
   var game = new _game2.default();
-  var grid = new _grid2.default(canvas, game);
-  grid.start();
+  var renderer = new _renderer2.default(canvas, game);
+  renderer.start();
 }
 
 /***/ }),
@@ -511,13 +511,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @property {number} y - The Y Coordinate.
  */
 
-var Grid = function () {
+var Renderer = function () {
   /**
    * Grid constructor
    * @param  {HTMLCanvasElement} canvas - HTML canvas.
    */
-  function Grid(canvas, game) {
-    _classCallCheck(this, Grid);
+  function Renderer(canvas, game) {
+    _classCallCheck(this, Renderer);
 
     this.canvas = canvas;
     this.game = game;
@@ -532,7 +532,7 @@ var Grid = function () {
    */
 
 
-  _createClass(Grid, [{
+  _createClass(Renderer, [{
     key: 'start',
     value: function start() {
       this.animationId = requestAnimationFrame(this.tick.bind(this));
@@ -587,10 +587,10 @@ var Grid = function () {
     }
   }]);
 
-  return Grid;
+  return Renderer;
 }();
 
-exports.default = Grid;
+exports.default = Renderer;
 
 /***/ })
 /******/ ]);
