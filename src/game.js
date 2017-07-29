@@ -13,7 +13,6 @@ export default class Game {
     this.towers = []
     this.goons = []
     this.spawnedGoons = 0
-    this.occupiedCoords = []
 
     this.intervalId = window.setInterval(this.spawnGoon.bind(this), 800)
   }
@@ -21,15 +20,10 @@ export default class Game {
   /**
    * When a user lick a cell.
    * @param  {Point} position - Cell upper-left position.
-   * @param  {Coord} coord - Cell coordinates.
    */
-  onUserClick (position, coord) {
-    const isOccupied = this.occupiedCoords.some((occupied) => occupied.equals(coord))
-    if (!isOccupied) {
-      this.occupiedCoords.push(coord)
-      this.towers.push(new Tower(position))
-      pathFinder.recalculate()
-    }
+  onUserClick (position) {
+    this.towers.push(new Tower(position))
+    pathFinder.recalculate()
   }
 
   /**

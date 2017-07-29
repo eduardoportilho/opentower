@@ -1,12 +1,6 @@
 import {imageCache} from './image-cache.js'
 import pathFinder from './path-finder'
 
-/**
- * Number of steps to complete the arena.
- * @type {Number}
- */
-const STEP_COUNT = 400
-
 export default class Goon {
   constructor (id, position, game) {
     this.id = id

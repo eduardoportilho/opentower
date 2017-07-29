@@ -315,7 +315,6 @@ var Game = function () {
     this.towers = [];
     this.goons = [];
     this.spawnedGoons = 0;
-    this.occupiedCoords = [];
 
     this.intervalId = window.setInterval(this.spawnGoon.bind(this), 800);
   }
@@ -323,21 +322,14 @@ var Game = function () {
   /**
    * When a user lick a cell.
    * @param  {Point} position - Cell upper-left position.
-   * @param  {Coord} coord - Cell coordinates.
    */
 
 
   _createClass(Game, [{
     key: 'onUserClick',
-    value: function onUserClick(position, coord) {
-      var isOccupied = this.occupiedCoords.some(function (occupied) {
-        return occupied.equals(coord);
-      });
-      if (!isOccupied) {
-        this.occupiedCoords.push(coord);
-        this.towers.push(new _tower2.default(position));
-        _pathFinder2.default.recalculate();
-      }
+    value: function onUserClick(position) {
+      this.towers.push(new _tower2.default(position));
+      _pathFinder2.default.recalculate();
     }
 
     /**
@@ -452,12 +444,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/**
- * Number of steps to complete the arena.
- * @type {Number}
- */
-var STEP_COUNT = 400;
-
 var Goon = function () {
   function Goon(id, position, game) {
     _classCallCheck(this, Goon);
@@ -513,44 +499,17 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* global requestAnimationFrame */
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/* global requestAnimationFrame */
 
 /**
  * @typedef {Object} Point
  * @property {number} x - The X Coordinate.
  * @property {number} y - The Y Coordinate.
  */
-
-var _cell = __webpack_require__(7);
-
-var _cell2 = _interopRequireDefault(_cell);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- * Size of the (square) cell edge.
- * @type {number}
- */
-var CELL_EDGE_SIZE = 50;
-
-/**
- * Style for cell type
- * @type {Object}
- */
-var CELL_STYLES = {
-  'cell': {
-    'fill': 'lightgray',
-    'stroke': 'gray',
-    'lineWidth': 0.5
-  },
-  'cellHighlighted': {
-    'fill': 'gray',
-    'stroke': 'lightgray',
-    'lineWidth': 0.5
-  }
-};
 
 var Grid = function () {
   /**
@@ -563,19 +522,13 @@ var Grid = function () {
     this.canvas = canvas;
     this.game = game;
     this.context = this.canvas.getContext('2d');
-    this.rowCount = Math.floor(canvas.height / CELL_EDGE_SIZE);
-    this.colCount = Math.floor(canvas.width / CELL_EDGE_SIZE);
-    this.cells = this.createCells();
-    this.highlightedCoord = undefined;
 
     // bind events
     this.canvas.onclick = this.onCanvasClick.bind(this);
-    this.canvas.onmousemove = this.onMouseMove.bind(this);
-    this.canvas.onmouseout = this.onMouseMove.bind(this);
   }
 
   /**
-   * Start running events.
+   * Start the game loop.
    */
 
 
@@ -586,7 +539,7 @@ var Grid = function () {
     }
 
     /**
-     * Update state a render.
+     * Update state, render and restart the game loop every X ms.
      */
 
   }, {
@@ -595,24 +548,6 @@ var Grid = function () {
       this.game.update();
       this.render();
       this.animationId = requestAnimationFrame(this.tick.bind(this));
-    }
-
-    /**
-     * Create cells for all coordinates.
-     * @return {Cell[]} cells.
-     */
-
-  }, {
-    key: 'createCells',
-    value: function createCells() {
-      var cells = [];
-      for (var row = 0; row < this.rowCount; row++) {
-        for (var col = 0; col < this.colCount; col++) {
-          var position = this.getCellUpperLeftPosition(row, col);
-          cells.push(new _cell2.default(row, col, position));
-        }
-      }
-      return cells;
     }
 
     /**
@@ -625,42 +560,15 @@ var Grid = function () {
       var _this = this;
 
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      // 1st layer: cells
-      this.cells.forEach(function (cell) {
-        if (cell.isOnCoord(_this.highlightedCoord)) {
-          _this.setContextStyle(CELL_STYLES.cellHighlighted);
-        } else {
-          _this.setContextStyle(CELL_STYLES.cell);
-        }
-        _this.context.fill(cell.path);
-        _this.context.stroke(cell.path);
-      });
-
-      // 2nd layer: towers
+      // 1st layer: towers
       this.game.towers.forEach(function (tower) {
         tower.draw(_this.context);
       });
 
-      // 3rd layer: goons
+      // 2nd layer: goons
       this.game.goons.forEach(function (goon) {
         goon.draw(_this.context);
       });
-    }
-
-    /**
-     * Set highlighted cell on mouse move.
-     * @param {MouseEvent} event
-     */
-
-  }, {
-    key: 'onMouseMove',
-    value: function onMouseMove(event) {
-      var mousePosition = {
-        x: event.clientX - event.target.offsetLeft,
-        y: event.clientY - event.target.offsetTop
-      };
-      var cell = this.getCellAtPosition(mousePosition);
-      this.highlightedCoord = cell ? cell.coord : undefined;
     }
 
     /**
@@ -675,63 +583,7 @@ var Grid = function () {
         x: event.clientX - event.target.offsetLeft,
         y: event.clientY - event.target.offsetTop
       };
-      var cell = this.getCellAtPosition(mousePosition);
-      this.game.onUserClick(cell.position, cell.coord);
-    }
-
-    /**
-     * Get the cell start point (upper left).
-     * @param  {number} row - Cell row.
-     * @param  {number} col - Cell column.
-     * @return {Point} Cell start point.
-     */
-
-  }, {
-    key: 'getCellUpperLeftPosition',
-    value: function getCellUpperLeftPosition(row, col) {
-      return {
-        x: col * CELL_EDGE_SIZE,
-        y: row * CELL_EDGE_SIZE
-      };
-    }
-
-    /**
-     * Get cell at position.
-     * @param  {number} x
-     * @param  {number} y
-     * @return {Cell} Cell or undefined.
-     */
-
-  }, {
-    key: 'getCellAtPosition',
-    value: function getCellAtPosition(_ref) {
-      var _this2 = this;
-
-      var x = _ref.x,
-          y = _ref.y;
-
-      return this.cells.find(function (cell) {
-        return _this2.context.isPointInPath(cell.path, x, y);
-      });
-    }
-
-    /**
-     * Set context style.
-     * @param {string} fill - Fill color.
-     * @param {string} stroke - Stroke color.
-     * @param {number} lineWidth - Line width.
-     */
-
-  }, {
-    key: 'setContextStyle',
-    value: function setContextStyle(_ref2) {
-      var fill = _ref2.fill,
-          stroke = _ref2.stroke,
-          lineWidth = _ref2.lineWidth;
-
-      this.context.lineWidth = lineWidth;
-      this.context.fillStyle = fill;
-      this.context.strokeStyle = stroke;
+      this.game.onUserClick(mousePosition);
     }
   }]);
 
@@ -739,162 +591,6 @@ var Grid = function () {
 }();
 
 exports.default = Grid;
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @typedef {Object} Point
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} x - The X Coordinate.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} y - The Y Coordinate.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
-
-var _squarePath = __webpack_require__(8);
-
-var _coord = __webpack_require__(9);
-
-var _coord2 = _interopRequireDefault(_coord);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- * Size of the (square) cell edge.
- * @type {number}
- */
-var CELL_EDGE_SIZE = 50;
-
-/**
- * Grid cell.
- */
-
-var Cell = function () {
-  /**
-   * @param {number} row - Row number.
-   * @param {number} col - Column number.
-   * @param {Path2D} path - Cell path.
-   * @param {Point} position - Cell position (upper left).
-   */
-  function Cell(row, col, position) {
-    _classCallCheck(this, Cell);
-
-    this.coord = new _coord2.default(row, col);
-    this.position = position;
-    this.path = (0, _squarePath.buildSquarePath)(position, CELL_EDGE_SIZE);
-  }
-
-  /**
-   * Check cell coordinates.
-   * @param {Coord} coord
-   * @return {Boolean}
-   */
-
-
-  _createClass(Cell, [{
-    key: 'isOnCoord',
-    value: function isOnCoord(coord) {
-      return this.coord.equals(coord);
-    }
-  }]);
-
-  return Cell;
-}();
-
-exports.default = Cell;
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.buildSquarePath = buildSquarePath;
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-/* global Path2D */
-
-/**
- * @typedef {Object} Point
- * @property {number} x - The X Coordinate.
- * @property {number} y - The Y Coordinate.
- */
-
-/**
- * Build a square path.
- * @param  {Point} startPosition
- * @param  {number} edgeSize
- * @return {Path2D}
- */
-function buildSquarePath(startPosition, edgeSize) {
-  var path = new Path2D();
-  var startCorner = [startPosition.x, startPosition.y];
-  var corners = [[startPosition.x + edgeSize, startPosition.y], [startPosition.x + edgeSize, startPosition.y + edgeSize], [startPosition.x, startPosition.y + edgeSize], [startPosition.x, startPosition.y]];
-  path.moveTo.apply(path, startCorner);
-  corners.forEach(function (corner) {
-    path.lineTo.apply(path, _toConsumableArray(corner));
-  });
-  return path;
-}
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Coord = function () {
-  /**
-   * @param {number} row
-   * @param {number} col
-   */
-  function Coord(row, col) {
-    _classCallCheck(this, Coord);
-
-    this.row = row;
-    this.col = col;
-  }
-
-  /**
-   * Compare two coordinates.
-   * @param {Coord} coord
-   * @return {Boolean}
-   */
-
-
-  _createClass(Coord, [{
-    key: "equals",
-    value: function equals(coord) {
-      return coord && this.row === coord.row && this.col === coord.col;
-    }
-  }]);
-
-  return Coord;
-}();
-
-exports.default = Coord;
 
 /***/ })
 /******/ ]);
