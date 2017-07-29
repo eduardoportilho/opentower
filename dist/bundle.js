@@ -127,6 +127,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _grid = __webpack_require__(6);
+
+var _grid2 = _interopRequireDefault(_grid);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
@@ -136,23 +142,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var TARGET_POS = {
   x: 600,
   y: 275
-
-  /**
-   * Grid size on X axis
-   * @type {Number}
-   */
-};var GRID_SIZE_X = 600;
-
-/**
- * Grid size on Y axis
- * @type {Number}
- */
-var GRID_SIZE_Y = 600;
+};
 
 var PathFinder = function () {
   function PathFinder() {
     _classCallCheck(this, PathFinder);
 
+    this.grid = new _grid2.default(600, 600);
     this.recalculate();
   }
 
@@ -162,30 +158,33 @@ var PathFinder = function () {
 
 
   _createClass(PathFinder, [{
-    key: "recalculate",
+    key: 'recalculate',
     value: function recalculate() {
       // init grid
-      this.grid = new Array(GRID_SIZE_X + 1);
-      for (var i = 0; i <= GRID_SIZE_X; i++) {
-        this.grid[i] = new Array(GRID_SIZE_Y + 1);
-      }
+      this.grid.reset();
       // init bfs
-      this.frontier = [TARGET_POS];
-      this.grid[TARGET_POS.x][TARGET_POS.y] = _extends({ dist: 0, nextStep: undefined }, TARGET_POS);
+      var target = {
+        x: TARGET_POS.x,
+        y: TARGET_POS.y,
+        dist: 0,
+        nextStep: undefined
+      };
+      this.frontier = [target];
+      this.grid.set(target);
 
       while (this.frontier.length > 0) {
         var current = this.frontier.shift();
-        var neighbourPositions = this._neighbourPositions(current);
+        var unvisitedNeighboursCoords = this.grid.getUnvisitedNeighboursCoords(current);
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
 
         try {
-          for (var _iterator = neighbourPositions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          for (var _iterator = unvisitedNeighboursCoords[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var nPos = _step.value;
 
             var neighbour = _extends({}, nPos, { dist: current.dist + 1, nextStep: current });
-            this.grid[nPos.x][nPos.y] = neighbour;
+            this.grid.set(neighbour);
             this.frontier.push(neighbour);
           }
         } catch (err) {
@@ -206,39 +205,22 @@ var PathFinder = function () {
     }
 
     /**
-     * Get the coordinate of the neighbours of the position that are
-     * in the grid and not initialized.
-     * @param  {Point} position
-     * @return {Point[]}
-     */
-
-  }, {
-    key: "_neighbourPositions",
-    value: function _neighbourPositions(position) {
-      var _this = this;
-
-      return [{ x: position.x - 1, y: position.y }, { x: position.x, y: position.y - 1 }, { x: position.x + 1, y: position.y }, { x: position.x, y: position.y + 1 }].filter(function (nPos) {
-        return nPos.x >= 0 && nPos.x <= GRID_SIZE_X && nPos.y >= 0 && nPos.y <= GRID_SIZE_Y && _this.grid[nPos.x][nPos.y] === undefined;
-      });
-    }
-
-    /**
      * Get the next position in the path to the target
-     * @param  {Point} position - Current position.
+     * @param  {Point} currentPosition - Current position.
      * @param  {Number} steps - Number of steps to perform.
      * @return {Point}
      */
 
   }, {
-    key: "nextPosition",
-    value: function nextPosition(position) {
+    key: 'nextPosition',
+    value: function nextPosition(currentPosition) {
       var steps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
 
-      var nextStep = this.grid[position.x][position.y];
-      while (steps-- > 0 && nextStep.nextStep) {
-        nextStep = nextStep.nextStep;
+      var nextPosition = this.grid.get(currentPosition.x, currentPosition.y);
+      while (steps-- > 0 && nextPosition.nextStep) {
+        nextPosition = nextPosition.nextStep;
       }
-      return nextStep;
+      return nextPosition;
     }
   }]);
 
@@ -260,7 +242,7 @@ var _game = __webpack_require__(3);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _renderer = __webpack_require__(6);
+var _renderer = __webpack_require__(7);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
@@ -490,6 +472,102 @@ exports.default = Goon;
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @typedef {Object} CellData
+ * @property {number} x - The X Coordinate.
+ * @property {number} y - The Y Coordinate.
+ * @property {number} dist - Number of steps until target.
+ * @property {number} nextStep - Next cell on the path to target.
+ */
+
+var Grid = function () {
+  function Grid(xMax, yMax) {
+    _classCallCheck(this, Grid);
+
+    this.xMax = xMax;
+    this.yMax = yMax;
+  }
+
+  /**
+   * Reset grid data.
+   */
+
+
+  _createClass(Grid, [{
+    key: "reset",
+    value: function reset() {
+      this.grid = new Array(this.xMax + 1);
+      for (var x = 0; x <= this.xMax; x++) {
+        this.grid[x] = new Array(this.yMax + 1);
+      }
+    }
+
+    /**
+     * Get cell data at position.
+     * @param  {number} x - X coordinate.
+     * @param  {number} y - Y coordinate.
+     * @return {CellData}
+     */
+
+  }, {
+    key: "get",
+    value: function get(x, y) {
+      return this.grid[x][y];
+    }
+
+    /**
+     * Set cell data at position.
+     * @param {CellData} data
+     */
+
+  }, {
+    key: "set",
+    value: function set(_ref) {
+      var x = _ref.x,
+          y = _ref.y,
+          dist = _ref.dist,
+          nextStep = _ref.nextStep;
+
+      this.grid[x][y] = { x: x, y: y, dist: dist, nextStep: nextStep };
+    }
+
+    /**
+     * Get the coordinates of the uninitialized neighbours of the position.
+     * @param  {Point} position
+     * @return {Point[]}
+     */
+
+  }, {
+    key: "getUnvisitedNeighboursCoords",
+    value: function getUnvisitedNeighboursCoords(position) {
+      var _this = this;
+
+      return [{ x: position.x - 1, y: position.y }, { x: position.x, y: position.y - 1 }, { x: position.x + 1, y: position.y }, { x: position.x, y: position.y + 1 }].filter(function (nPos) {
+        return nPos.x >= 0 && nPos.x <= _this.xMax && nPos.y >= 0 && nPos.y <= _this.yMax && _this.get(nPos.x, nPos.y) === undefined;
+      });
+    }
+  }]);
+
+  return Grid;
+}();
+
+exports.default = Grid;
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
