@@ -22,6 +22,7 @@ export default class Game {
    * @param  {Point} position - Cell upper-left position.
    */
   onUserClick (position) {
+    // TODO: get cell at position
     this.towers.push(new Tower(position))
     pathFinder.recalculate()
   }
@@ -30,6 +31,7 @@ export default class Game {
    * Spawn a new goon.
    */
   spawnGoon () {
+    // TODO: replace position by cell
     const spawnPosition = {
       x: 0,
       y: 100 + Math.floor(Math.random() * 400)

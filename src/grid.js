@@ -6,57 +6,76 @@
  * @property {number} nextStep - Next cell on the path to target.
  */
 
+import {Cell, CELL_EDGE_SIZE} from './cell'
+
 export default class Grid {
-  constructor (xMax, yMax) {
-    this.xMax = xMax
-    this.yMax = yMax
+  constructor (canvasSize) {
+    this.canvasSize = canvasSize
+    this.colCount = Math.floor(canvasSize.width / CELL_EDGE_SIZE)
+    this.rowCount = Math.floor(canvasSize.height / CELL_EDGE_SIZE)
+    this.init()
+  }
+
+  init () {
+    this.grid = new Array(this.rowCount)
+    for (var row = 0; row < this.rowCount; row++) {
+      this.grid[row] = Array(this.colCount)
+      for (var col = 0; col < this.colCount; col++) {
+        this.grid[row][col] = new Cell(row, col)
+      }
+    }
   }
 
   /**
    * Reset grid data.
    */
   reset () {
-    this.grid = new Array(this.xMax + 1)
-    for (let x = 0; x <= this.xMax; x++) {
-      this.grid[x] = new Array(this.yMax + 1)
+    for (var row = 0; row < this.rowCount; row++) {
+      for (var col = 0; col < this.colCount; col++) {
+        this.grid[row][col].reachable = false
+        this.grid[row][col].dist = undefined
+        this.grid[row][col].nextStep = undefined
+      }
     }
   }
 
   /**
-   * Get cell data at position.
+   * Get cell at position.
    * @param  {number} x - X coordinate.
    * @param  {number} y - Y coordinate.
-   * @return {CellData}
+   * @return {Cell}
    */
-  get (x, y) {
-    return this.grid[x][y]
+  get (row, col) {
+    return this.grid[row][col]
+  }
+  /**
+   * Get target cell.
+   * @return {Cell}
+   */
+  getTarget () {
+    let row = Math.round(this.rowCount / 2)
+    let col = this.colCount - 1
+    return this.get(row, col)
   }
 
   /**
-   * Set cell data at position.
-   * @param {CellData} data
-   */
-  set ({x, y, dist, nextStep}) {
-    this.grid[x][y] = {x, y, dist, nextStep}
-  }
-
-  /**
-   * Get the coordinates of the uninitialized neighbours of the position.
+   * Get the unvisited neighbour cells of the position.
    * @param  {Point} position
-   * @return {Point[]}
+   * @return {Cell[]}
    */
-  getUnvisitedNeighboursCoords (position) {
+  getUnvisitedNeighboursCells (coord) {
     return [
-      {x: position.x - 1, y: position.y},
-      {x: position.x, y: position.y - 1},
-      {x: position.x + 1, y: position.y},
-      {x: position.x, y: position.y + 1}
-    ].filter((nPos) => (
-      nPos.x >= 0 &&
-      nPos.x <= this.xMax &&
-      nPos.y >= 0 &&
-      nPos.y <= this.yMax &&
-      this.get(nPos.x, nPos.y) === undefined
-    ))
+      {row: coord.row, col: coord.col - 1},
+      {row: coord.row - 1, col: coord.col},
+      {row: coord.row, col: coord.col + 1},
+      {row: coord.row + 1, col: coord.col}
+    ].filter((nCoord) => (
+      nCoord.col >= 0 &&
+      nCoord.col < this.colCount &&
+      nCoord.row >= 0 &&
+      nCoord.row < this.rowCount
+    )).map((nCoord) => (
+      this.get(nCoord.row, nCoord.col)
+    )).filter((cell) => cell.dist === undefined)
   }
 }

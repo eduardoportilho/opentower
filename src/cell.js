@@ -4,29 +4,27 @@
  * @property {number} y - The Y Coordinate.
  */
 
-import {buildSquarePath} from './square-path'
 import Coord from './coord'
 
 /**
  * Size of the (square) cell edge.
  * @type {number}
  */
-const CELL_EDGE_SIZE = 50
+export const CELL_EDGE_SIZE = 10
 
 /**
  * Grid cell.
  */
-class Cell {
+export class Cell {
   /**
    * @param {number} row - Row number.
    * @param {number} col - Column number.
-   * @param {Path2D} path - Cell path.
-   * @param {Point} position - Cell position (upper left).
    */
-  constructor (row, col, position) {
+  constructor (row, col) {
     this.coord = new Coord(row, col)
-    this.position = position
-    this.path = buildSquarePath(position, CELL_EDGE_SIZE)
+    this.reachable = false
+    this.dist = undefined
+    this.nextStep = undefined
   }
 
   /**
@@ -37,6 +35,14 @@ class Cell {
   isOnCoord (coord) {
     return this.coord.equals(coord)
   }
-}
 
-export default Cell
+  /**
+   * Get the position of the center of the cell in pixels.
+   * @return {Point}
+   */
+  getCenterPosition () {
+    let x = Math.round((this.coord.col * CELL_EDGE_SIZE) + (CELL_EDGE_SIZE / 2))
+    let y = Math.round((this.coord.row * CELL_EDGE_SIZE) + (CELL_EDGE_SIZE / 2))
+    return {x, y}
+  }
+}

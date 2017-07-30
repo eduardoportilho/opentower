@@ -1,17 +1,8 @@
 import Grid from './grid'
 
-/**
- * Point where the goons are heading to.
- * @type {Object}
- */
-const TARGET_POS = {
-  x: 600,
-  y: 275
-}
-
 class PathFinder {
   constructor () {
-    this.grid = new Grid(600, 600)
+    this.grid = new Grid({width: 600, height: 600})
     this.recalculate()
   }
 
@@ -19,25 +10,18 @@ class PathFinder {
    * Recalculate all paths
    */
   recalculate () {
-    // init grid
     this.grid.reset()
-    // init bfs
-    let target = {
-      x: TARGET_POS.x,
-      y: TARGET_POS.y,
-      dist: 0,
-      nextStep: undefined
-    }
-    this.frontier = [target]
-    this.grid.set(target)
+    let targetCell = this.grid.getTarget()
+    targetCell.dist = 0
+    this.frontier = [targetCell]
 
     while (this.frontier.length > 0) {
       let current = this.frontier.shift()
-      let unvisitedNeighboursCoords = this.grid.getUnvisitedNeighboursCoords(current)
-      for (let nPos of unvisitedNeighboursCoords) {
-        let neighbour = {...nPos, dist: current.dist + 1, nextStep: current}
-        this.grid.set(neighbour)
-        this.frontier.push(neighbour)
+      let getUnvisitedNeighboursCells = this.grid.getUnvisitedNeighboursCoords(current)
+      for (let neighbourCell of getUnvisitedNeighboursCells) {
+        neighbourCell.dist = current.dist + 1
+        neighbourCell.nextStep = current
+        this.frontier.push(neighbourCell)
       }
     }
   }
@@ -49,6 +33,7 @@ class PathFinder {
    * @return {Point}
    */
   nextPosition (currentPosition, steps = 1) {
+    // TODO: rename to get next cell, use coords
     let nextPosition = this.grid.get(currentPosition.x, currentPosition.y)
     while (steps-- > 0 && nextPosition.nextStep) {
       nextPosition = nextPosition.nextStep
