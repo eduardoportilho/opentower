@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -114,6 +114,568 @@ function loadImageCache(onLoadComplete) {
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _imageCache = __webpack_require__(0);
+
+var _game = __webpack_require__(2);
+
+var _game2 = _interopRequireDefault(_game);
+
+var _renderer = __webpack_require__(9);
+
+var _renderer2 = _interopRequireDefault(_renderer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+(0, _imageCache.loadImageCache)(init);
+
+function init() {
+  var canvas = document.getElementById('canvas');
+  var game = new _game2.default();
+  var renderer = new _renderer2.default(canvas, game);
+  renderer.start();
+}
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @typedef {Object} Point
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} x - The X Coordinate.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} y - The Y Coordinate.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
+
+var _grid = __webpack_require__(3);
+
+var _grid2 = _interopRequireDefault(_grid);
+
+var _tower = __webpack_require__(6);
+
+var _tower2 = _interopRequireDefault(_tower);
+
+var _goon = __webpack_require__(7);
+
+var _goon2 = _interopRequireDefault(_goon);
+
+var _pathFinder = __webpack_require__(8);
+
+var _pathFinder2 = _interopRequireDefault(_pathFinder);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Game = function () {
+  function Game() {
+    _classCallCheck(this, Game);
+
+    this.grid = new _grid2.default({ width: 600, height: 600 });
+    this.pathFinder = new _pathFinder2.default(this.grid);
+    this.towers = [];
+    this.goons = [];
+    this.spawnedGoons = 0;
+
+    this.intervalId = window.setInterval(this.spawnGoon.bind(this), 800);
+  }
+
+  /**
+   * When a user click a cell.
+   * @param  {Point} position - Cell upper-left position.
+   */
+
+
+  _createClass(Game, [{
+    key: 'onUserClick',
+    value: function onUserClick(position) {
+      var tower = new _tower2.default(position);
+      this.towers.push(tower);
+
+      var towerBoundaries = tower.getBoundaries();
+      this.grid.block(towerBoundaries);
+
+      this.pathFinder.recalculate();
+    }
+
+    /**
+     * Spawn a new goon.
+     */
+
+  }, {
+    key: 'spawnGoon',
+    value: function spawnGoon() {
+      var spawnCoords = {
+        row: Math.floor(Math.random() * this.grid.rowCount),
+        col: 0
+      };
+      var spawnCell = this.grid.get(spawnCoords.row, spawnCoords.col);
+      var id = Date.now();
+      var goon = new _goon2.default(id, spawnCell, this, this.pathFinder);
+      this.goons.push(goon);
+      if (++this.spawnedGoons >= 10) {
+        window.clearInterval(this.intervalId);
+      }
+    }
+  }, {
+    key: 'removeGoon',
+    value: function removeGoon(goon) {
+      var index = this.goons.findIndex(function (aGoon) {
+        return aGoon.id === goon.id;
+      });
+      if (index >= 0) {
+        this.goons.splice(index, 1);
+      }
+    }
+
+    /**
+     * Update the state of the game entities.
+     */
+
+  }, {
+    key: 'update',
+    value: function update() {
+      this.goons.forEach(function (goon) {
+        return goon.update();
+      });
+    }
+  }]);
+
+  return Game;
+}();
+
+exports.default = Game;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @typedef {Object} CellData
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} x - The X Coordinate.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} y - The Y Coordinate.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} dist - Number of steps until target.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} nextStep - Next cell on the path to target.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
+
+var _cell = __webpack_require__(4);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Grid = function () {
+  function Grid(canvasSize) {
+    _classCallCheck(this, Grid);
+
+    this.canvasSize = canvasSize;
+    this.colCount = Math.floor(canvasSize.width / _cell.CELL_EDGE_SIZE);
+    this.rowCount = Math.floor(canvasSize.height / _cell.CELL_EDGE_SIZE);
+    this.init();
+  }
+
+  _createClass(Grid, [{
+    key: 'init',
+    value: function init() {
+      this.grid = new Array(this.rowCount);
+      for (var row = 0; row < this.rowCount; row++) {
+        this.grid[row] = Array(this.colCount);
+        for (var col = 0; col < this.colCount; col++) {
+          this.grid[row][col] = new _cell.Cell(row, col);
+        }
+      }
+    }
+
+    /**
+     * Reset grid data.
+     */
+
+  }, {
+    key: 'reset',
+    value: function reset() {
+      for (var row = 0; row < this.rowCount; row++) {
+        for (var col = 0; col < this.colCount; col++) {
+          this.grid[row][col].reachable = false;
+          this.grid[row][col].dist = undefined;
+          this.grid[row][col].nextStep = undefined;
+        }
+      }
+    }
+
+    /**
+     * Get cell at position.
+     * @param  {number} x - X coordinate.
+     * @param  {number} y - Y coordinate.
+     * @return {Cell}
+     */
+
+  }, {
+    key: 'get',
+    value: function get(row, col) {
+      return this.grid[row][col];
+    }
+
+    /**
+     * Get target cell.
+     * @return {Cell}
+     */
+
+  }, {
+    key: 'getTarget',
+    value: function getTarget() {
+      var row = Math.round(this.rowCount / 2);
+      var col = this.colCount - 1;
+      return this.get(row, col);
+    }
+
+    /**
+     * Get the unvisited neighbour cells of the position.
+     * @param  {Cell} cell
+     * @return {Cell[]}
+     */
+
+  }, {
+    key: 'getUnvisitedNeighboursCells',
+    value: function getUnvisitedNeighboursCells(cell) {
+      var coord = cell.coord;
+      var grid = this;
+      return [{ row: coord.row, col: coord.col - 1 }, { row: coord.row - 1, col: coord.col }, { row: coord.row, col: coord.col + 1 }, { row: coord.row + 1, col: coord.col }].filter(function (nCoord) {
+        return nCoord.col >= 0 && nCoord.col < grid.colCount && nCoord.row >= 0 && nCoord.row < grid.rowCount;
+      }).map(function (nCoord) {
+        return grid.get(nCoord.row, nCoord.col);
+      }).filter(function (cell) {
+        return cell.dist === undefined && !cell.blocked;
+      });
+    }
+
+    /**
+     * Get the cell that contains the provided position.
+     * @return {Cell}
+     */
+
+  }, {
+    key: 'getCellAtPosition',
+    value: function getCellAtPosition(point) {
+      if (point.x < 0 || point.x > this.canvasSize.width || point.y < 0 || point.y > this.canvasSize.height) {
+        return undefined;
+      }
+      var col = Math.floor(point.x / _cell.CELL_EDGE_SIZE);
+      var row = Math.floor(point.y / _cell.CELL_EDGE_SIZE);
+      return this.get(row, col);
+    }
+
+    /**
+     * Mark all the cells that include points inside the boundaries as blocked.
+     * @param  {Boundaries} boundaries - boundaries to block.
+     */
+
+  }, {
+    key: 'block',
+    value: function block(boundaries) {
+      var topLeftCell = this.getCellAtPosition(boundaries.topLeft);
+      var bottomRightCell = this.getCellAtPosition(boundaries.bottomRight);
+      for (var row = topLeftCell.coord.row; row < bottomRightCell.coord.row; row++) {
+        for (var col = topLeftCell.coord.col; col < bottomRightCell.coord.col; col++) {
+          var cell = this.get(row, col);
+          cell.blocked = true;
+        }
+      }
+    }
+  }]);
+
+  return Grid;
+}();
+
+exports.default = Grid;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Cell = exports.CELL_EDGE_SIZE = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @typedef {Object} Point
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} x - The X Coordinate.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} y - The Y Coordinate.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
+
+var _coord = __webpack_require__(5);
+
+var _coord2 = _interopRequireDefault(_coord);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * Size of the (square) cell edge.
+ * @type {number}
+ */
+var CELL_EDGE_SIZE = exports.CELL_EDGE_SIZE = 5;
+
+/**
+ * Grid cell.
+ */
+
+var Cell = exports.Cell = function () {
+  /**
+   * @param {number} row - Row number.
+   * @param {number} col - Column number.
+   */
+  function Cell(row, col) {
+    _classCallCheck(this, Cell);
+
+    this.coord = new _coord2.default(row, col);
+    this.reachable = false;
+    this.dist = undefined;
+    this.nextStep = undefined;
+    this.blocked = false;
+  }
+
+  /**
+   * Check cell coordinates.
+   * @param {Coord} coord
+   * @return {Boolean}
+   */
+
+
+  _createClass(Cell, [{
+    key: 'isOnCoord',
+    value: function isOnCoord(coord) {
+      return this.coord.equals(coord);
+    }
+
+    /**
+     * Get the position of the center of the cell in pixels.
+     * @return {Point}
+     */
+
+  }, {
+    key: 'getCenterPosition',
+    value: function getCenterPosition() {
+      var x = Math.round(this.coord.col * CELL_EDGE_SIZE + CELL_EDGE_SIZE / 2);
+      var y = Math.round(this.coord.row * CELL_EDGE_SIZE + CELL_EDGE_SIZE / 2);
+      return { x: x, y: y };
+    }
+  }]);
+
+  return Cell;
+}();
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Coord = function () {
+  /**
+   * @param {number} row
+   * @param {number} col
+   */
+  function Coord(row, col) {
+    _classCallCheck(this, Coord);
+
+    this.row = row;
+    this.col = col;
+  }
+
+  /**
+   * Compare two coordinates.
+   * @param {Coord} coord
+   * @return {Boolean}
+   */
+
+
+  _createClass(Coord, [{
+    key: "equals",
+    value: function equals(coord) {
+      return coord && this.row === coord.row && this.col === coord.col;
+    }
+  }]);
+
+  return Coord;
+}();
+
+exports.default = Coord;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _imageCache = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @typedef {Object} Point
+ * @property {number} x - The X Coordinate.
+ * @property {number} y - The Y Coordinate.
+ */
+
+/**
+ * @typedef {Object} Boundaries
+ * @property {Point} topLeft - top-left point of the object.
+ * @property {Point} bottomRight - bottom-right point of the object.
+ */
+
+var TOWER_SIZE = {
+  width: 50,
+  height: 50
+};
+
+var Tower = function () {
+  function Tower(centerPosition) {
+    _classCallCheck(this, Tower);
+
+    this.topLeftPosition = {
+      x: Math.max(0, centerPosition.x - Math.round(TOWER_SIZE.width / 2)),
+      y: Math.max(0, centerPosition.y - Math.round(TOWER_SIZE.height / 2))
+    };
+    this.bottomRightPosition = {
+      x: this.topLeftPosition.x + TOWER_SIZE.width,
+      y: this.topLeftPosition.y + TOWER_SIZE.height
+    };
+  }
+
+  /**
+   * Draw the tower on position.
+   * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
+   */
+
+
+  _createClass(Tower, [{
+    key: 'draw',
+    value: function draw(context) {
+      var img = _imageCache.imageCache['tower-1'];
+      context.drawImage(img, this.topLeftPosition.x, this.topLeftPosition.y);
+    }
+
+    /**
+     * Get to top-left and bottom-right points of the tower.
+     * @return {Boundaries}
+     */
+
+  }, {
+    key: 'getBoundaries',
+    value: function getBoundaries() {
+      return {
+        'topLeft': this.topLeftPosition,
+        'bottomRight': this.bottomRightPosition
+      };
+    }
+  }]);
+
+  return Tower;
+}();
+
+exports.default = Tower;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _imageCache = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Goon = function () {
+  function Goon(id, cell, game, pathFinder) {
+    _classCallCheck(this, Goon);
+
+    this.id = id;
+    this.cell = cell;
+    this.game = game;
+    this.pathFinder = pathFinder;
+    this.stepsPerUpdate = 1;
+  }
+
+  /**
+   * Draw the goon on position.
+   * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
+   */
+
+
+  _createClass(Goon, [{
+    key: 'draw',
+    value: function draw(context) {
+      var img = _imageCache.imageCache['goon-1'];
+      var position = this.cell.getCenterPosition();
+      context.drawImage(img, position.x, position.y);
+    }
+
+    /**
+     * Update goon state.
+     */
+
+  }, {
+    key: 'update',
+    value: function update() {
+      var newCell = this.pathFinder.nextCell(this.cell, this.stepsPerUpdate);
+      if (newCell) {
+        this.cell = newCell;
+      } else {
+        this.game.removeGoon(this);
+      }
+    }
+  }]);
+
+  return Goon;
+}();
+
+exports.default = Goon;
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -207,523 +769,6 @@ var PathFinder = function () {
 }();
 
 exports.default = PathFinder;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _imageCache = __webpack_require__(0);
-
-var _game = __webpack_require__(3);
-
-var _game2 = _interopRequireDefault(_game);
-
-var _renderer = __webpack_require__(9);
-
-var _renderer2 = _interopRequireDefault(_renderer);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-(0, _imageCache.loadImageCache)(init);
-
-function init() {
-  var canvas = document.getElementById('canvas');
-  var game = new _game2.default();
-  var renderer = new _renderer2.default(canvas, game);
-  renderer.start();
-}
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @typedef {Object} Point
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} x - The X Coordinate.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} y - The Y Coordinate.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
-
-var _grid = __webpack_require__(4);
-
-var _grid2 = _interopRequireDefault(_grid);
-
-var _tower = __webpack_require__(7);
-
-var _tower2 = _interopRequireDefault(_tower);
-
-var _goon = __webpack_require__(8);
-
-var _goon2 = _interopRequireDefault(_goon);
-
-var _pathFinder = __webpack_require__(1);
-
-var _pathFinder2 = _interopRequireDefault(_pathFinder);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Game = function () {
-  function Game() {
-    _classCallCheck(this, Game);
-
-    this.grid = new _grid2.default({ width: 600, height: 600 });
-    this.pathFinder = new _pathFinder2.default(this.grid);
-    this.towers = [];
-    this.goons = [];
-    this.spawnedGoons = 0;
-
-    this.intervalId = window.setInterval(this.spawnGoon.bind(this), 800);
-  }
-
-  /**
-   * When a user click a cell.
-   * @param  {Point} position - Cell upper-left position.
-   */
-
-
-  _createClass(Game, [{
-    key: 'onUserClick',
-    value: function onUserClick(position) {
-      var cell = this.grid.getCellAtPosition(position);
-      this.towers.push(new _tower2.default(cell));
-      this.pathFinder.recalculate();
-    }
-
-    /**
-     * Spawn a new goon.
-     */
-
-  }, {
-    key: 'spawnGoon',
-    value: function spawnGoon() {
-      var spawnCoords = {
-        row: Math.floor(Math.random() * this.grid.rowCount),
-        col: 0
-      };
-      var spawnCell = this.grid.get(spawnCoords.row, spawnCoords.col);
-      var id = Date.now();
-      var goon = new _goon2.default(id, spawnCell, this, this.pathFinder);
-      this.goons.push(goon);
-      if (++this.spawnedGoons >= 10) {
-        window.clearInterval(this.intervalId);
-      }
-    }
-  }, {
-    key: 'removeGoon',
-    value: function removeGoon(goon) {
-      var index = this.goons.findIndex(function (aGoon) {
-        return aGoon.id === goon.id;
-      });
-      if (index >= 0) {
-        this.goons.splice(index, 1);
-      }
-    }
-
-    /**
-     * Update the state of the game entities.
-     */
-
-  }, {
-    key: 'update',
-    value: function update() {
-      this.goons.forEach(function (goon) {
-        return goon.update();
-      });
-    }
-  }]);
-
-  return Game;
-}();
-
-exports.default = Game;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @typedef {Object} CellData
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} x - The X Coordinate.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} y - The Y Coordinate.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} dist - Number of steps until target.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} nextStep - Next cell on the path to target.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
-
-var _cell = __webpack_require__(5);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Grid = function () {
-  function Grid(canvasSize) {
-    _classCallCheck(this, Grid);
-
-    this.canvasSize = canvasSize;
-    this.colCount = Math.floor(canvasSize.width / _cell.CELL_EDGE_SIZE);
-    this.rowCount = Math.floor(canvasSize.height / _cell.CELL_EDGE_SIZE);
-    this.init();
-  }
-
-  _createClass(Grid, [{
-    key: 'init',
-    value: function init() {
-      this.grid = new Array(this.rowCount);
-      for (var row = 0; row < this.rowCount; row++) {
-        this.grid[row] = Array(this.colCount);
-        for (var col = 0; col < this.colCount; col++) {
-          this.grid[row][col] = new _cell.Cell(row, col);
-        }
-      }
-    }
-
-    /**
-     * Reset grid data.
-     */
-
-  }, {
-    key: 'reset',
-    value: function reset() {
-      for (var row = 0; row < this.rowCount; row++) {
-        for (var col = 0; col < this.colCount; col++) {
-          this.grid[row][col].reachable = false;
-          this.grid[row][col].dist = undefined;
-          this.grid[row][col].nextStep = undefined;
-        }
-      }
-    }
-
-    /**
-     * Get cell at position.
-     * @param  {number} x - X coordinate.
-     * @param  {number} y - Y coordinate.
-     * @return {Cell}
-     */
-
-  }, {
-    key: 'get',
-    value: function get(row, col) {
-      return this.grid[row][col];
-    }
-
-    /**
-     * Get target cell.
-     * @return {Cell}
-     */
-
-  }, {
-    key: 'getTarget',
-    value: function getTarget() {
-      var row = Math.round(this.rowCount / 2);
-      var col = this.colCount - 1;
-      return this.get(row, col);
-    }
-
-    /**
-     * Get the unvisited neighbour cells of the position.
-     * @param  {Cell} cell
-     * @return {Cell[]}
-     */
-
-  }, {
-    key: 'getUnvisitedNeighboursCells',
-    value: function getUnvisitedNeighboursCells(cell) {
-      var coord = cell.coord;
-      var grid = this;
-      return [{ row: coord.row, col: coord.col - 1 }, { row: coord.row - 1, col: coord.col }, { row: coord.row, col: coord.col + 1 }, { row: coord.row + 1, col: coord.col }].filter(function (nCoord) {
-        return nCoord.col >= 0 && nCoord.col < grid.colCount && nCoord.row >= 0 && nCoord.row < grid.rowCount;
-      }).map(function (nCoord) {
-        return grid.get(nCoord.row, nCoord.col);
-      }).filter(function (cell) {
-        return cell.dist === undefined;
-      });
-    }
-
-    /**
-     * Get the cell that contains the provided position.
-     * @return {Cell}
-     */
-
-  }, {
-    key: 'getCellAtPosition',
-    value: function getCellAtPosition(point) {
-      if (point.x < 0 || point.x > this.canvasSize.width || point.y < 0 || point.y > this.canvasSize.height) {
-        return undefined;
-      }
-      var col = Math.floor(point.x / _cell.CELL_EDGE_SIZE);
-      var row = Math.floor(point.y / _cell.CELL_EDGE_SIZE);
-      return this.get(row, col);
-    }
-  }]);
-
-  return Grid;
-}();
-
-exports.default = Grid;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Cell = exports.CELL_EDGE_SIZE = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @typedef {Object} Point
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} x - The X Coordinate.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} y - The Y Coordinate.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
-
-var _coord = __webpack_require__(6);
-
-var _coord2 = _interopRequireDefault(_coord);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- * Size of the (square) cell edge.
- * @type {number}
- */
-var CELL_EDGE_SIZE = exports.CELL_EDGE_SIZE = 5;
-
-/**
- * Grid cell.
- */
-
-var Cell = exports.Cell = function () {
-  /**
-   * @param {number} row - Row number.
-   * @param {number} col - Column number.
-   */
-  function Cell(row, col) {
-    _classCallCheck(this, Cell);
-
-    this.coord = new _coord2.default(row, col);
-    this.reachable = false;
-    this.dist = undefined;
-    this.nextStep = undefined;
-  }
-
-  /**
-   * Check cell coordinates.
-   * @param {Coord} coord
-   * @return {Boolean}
-   */
-
-
-  _createClass(Cell, [{
-    key: 'isOnCoord',
-    value: function isOnCoord(coord) {
-      return this.coord.equals(coord);
-    }
-
-    /**
-     * Get the position of the center of the cell in pixels.
-     * @return {Point}
-     */
-
-  }, {
-    key: 'getCenterPosition',
-    value: function getCenterPosition() {
-      var x = Math.round(this.coord.col * CELL_EDGE_SIZE + CELL_EDGE_SIZE / 2);
-      var y = Math.round(this.coord.row * CELL_EDGE_SIZE + CELL_EDGE_SIZE / 2);
-      return { x: x, y: y };
-    }
-  }]);
-
-  return Cell;
-}();
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Coord = function () {
-  /**
-   * @param {number} row
-   * @param {number} col
-   */
-  function Coord(row, col) {
-    _classCallCheck(this, Coord);
-
-    this.row = row;
-    this.col = col;
-  }
-
-  /**
-   * Compare two coordinates.
-   * @param {Coord} coord
-   * @return {Boolean}
-   */
-
-
-  _createClass(Coord, [{
-    key: "equals",
-    value: function equals(coord) {
-      return coord && this.row === coord.row && this.col === coord.col;
-    }
-  }]);
-
-  return Coord;
-}();
-
-exports.default = Coord;
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _imageCache = __webpack_require__(0);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var TOWER_SIZE = {
-  width: 50,
-  height: 50
-};
-
-var Tower = function () {
-  function Tower(cell) {
-    _classCallCheck(this, Tower);
-
-    this.cell = cell;
-    this.offset = {
-      x: Math.round(TOWER_SIZE.width / 2),
-      y: Math.round(TOWER_SIZE.height / 2)
-    };
-  }
-
-  /**
-   * Draw the tower on position.
-   * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
-   */
-
-
-  _createClass(Tower, [{
-    key: 'draw',
-    value: function draw(context) {
-      var img = _imageCache.imageCache['tower-1'];
-      var position = this.cell.getCenterPosition();
-      context.drawImage(img, position.x - this.offset.x, position.y - this.offset.y);
-    }
-  }]);
-
-  return Tower;
-}();
-
-exports.default = Tower;
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _imageCache = __webpack_require__(0);
-
-var _pathFinder = __webpack_require__(1);
-
-var _pathFinder2 = _interopRequireDefault(_pathFinder);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Goon = function () {
-  function Goon(id, cell, game, pathFinder) {
-    _classCallCheck(this, Goon);
-
-    this.id = id;
-    this.cell = cell;
-    this.game = game;
-    this.pathFinder = pathFinder;
-    this.stepsPerUpdate = 1;
-  }
-
-  /**
-   * Draw the goon on position.
-   * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
-   */
-
-
-  _createClass(Goon, [{
-    key: 'draw',
-    value: function draw(context) {
-      var img = _imageCache.imageCache['goon-1'];
-      var position = this.cell.getCenterPosition();
-      context.drawImage(img, position.x, position.y);
-    }
-
-    /**
-     * Update goon state.
-     */
-
-  }, {
-    key: 'update',
-    value: function update() {
-      var newCell = this.pathFinder.nextCell(this.cell, this.stepsPerUpdate);
-      if (newCell) {
-        this.cell = newCell;
-      } else {
-        this.game.removeGoon(this);
-      }
-    }
-  }]);
-
-  return Goon;
-}();
-
-exports.default = Goon;
 
 /***/ }),
 /* 9 */

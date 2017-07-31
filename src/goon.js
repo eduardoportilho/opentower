@@ -1,5 +1,4 @@
 import {imageCache} from './image-cache.js'
-import pathFinder from './path-finder'
 
 export default class Goon {
   constructor (id, cell, game, pathFinder) {

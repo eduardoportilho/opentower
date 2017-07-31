@@ -25,8 +25,12 @@ export default class Game {
    * @param  {Point} position - Cell upper-left position.
    */
   onUserClick (position) {
-    const cell = this.grid.getCellAtPosition(position)
-    this.towers.push(new Tower(cell))
+    const tower = new Tower(position)
+    this.towers.push(tower)
+
+    const towerBoundaries = tower.getBoundaries()
+    this.grid.block(towerBoundaries)
+
     this.pathFinder.recalculate()
   }
 

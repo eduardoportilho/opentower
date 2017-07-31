@@ -1,16 +1,31 @@
 import {imageCache} from './image-cache.js'
 
-const TOWER_SIZE =  {
+/**
+ * @typedef {Object} Point
+ * @property {number} x - The X Coordinate.
+ * @property {number} y - The Y Coordinate.
+ */
+
+/**
+ * @typedef {Object} Boundaries
+ * @property {Point} topLeft - top-left point of the object.
+ * @property {Point} bottomRight - bottom-right point of the object.
+ */
+
+const TOWER_SIZE = {
   width: 50,
   height: 50
 }
 
 export default class Tower {
-  constructor (cell) {
-    this.cell = cell
-    this.offset = {
-      x: Math.round(TOWER_SIZE.width / 2),
-      y: Math.round(TOWER_SIZE.height / 2)
+  constructor (centerPosition) {
+    this.topLeftPosition = {
+      x: Math.max(0, centerPosition.x - Math.round(TOWER_SIZE.width / 2)),
+      y: Math.max(0, centerPosition.y - Math.round(TOWER_SIZE.height / 2))
+    }
+    this.bottomRightPosition = {
+      x: this.topLeftPosition.x + TOWER_SIZE.width,
+      y: this.topLeftPosition.y + TOWER_SIZE.height
     }
   }
 
@@ -20,7 +35,17 @@ export default class Tower {
    */
   draw (context) {
     var img = imageCache['tower-1']
-    let position = this.cell.getCenterPosition()
-    context.drawImage(img, position.x - this.offset.x, position.y - this.offset.y)
+    context.drawImage(img, this.topLeftPosition.x, this.topLeftPosition.y)
+  }
+
+  /**
+   * Get to top-left and bottom-right points of the tower.
+   * @return {Boundaries}
+   */
+  getBoundaries () {
+    return {
+      'topLeft': this.topLeftPosition,
+      'bottomRight': this.bottomRightPosition
+    }
   }
 }

@@ -25,6 +25,7 @@ export class Cell {
     this.reachable = false
     this.dist = undefined
     this.nextStep = undefined
+    this.blocked = false
   }
 
   /**

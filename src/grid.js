@@ -79,7 +79,10 @@ export default class Grid {
       nCoord.row < grid.rowCount
     )).map((nCoord) => (
       grid.get(nCoord.row, nCoord.col)
-    )).filter((cell) => cell.dist === undefined)
+    )).filter((cell) => (
+      cell.dist === undefined &&
+      !cell.blocked
+    ))
   }
 
   /**
@@ -97,5 +100,20 @@ export default class Grid {
     const col = Math.floor(point.x / CELL_EDGE_SIZE)
     const row = Math.floor(point.y / CELL_EDGE_SIZE)
     return this.get(row, col)
+  }
+
+  /**
+   * Mark all the cells that include points inside the boundaries as blocked.
+   * @param  {Boundaries} boundaries - boundaries to block.
+   */
+  block (boundaries) {
+    const topLeftCell = this.getCellAtPosition(boundaries.topLeft)
+    const bottomRightCell = this.getCellAtPosition(boundaries.bottomRight)
+    for (var row = topLeftCell.coord.row; row < bottomRightCell.coord.row; row++) {
+      for (var col = topLeftCell.coord.col; col < bottomRightCell.coord.col; col++) {
+        let cell = this.get(row, col)
+        cell.blocked = true
+      }
+    }
   }
 }
