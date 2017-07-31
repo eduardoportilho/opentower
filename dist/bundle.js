@@ -507,7 +507,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Size of the (square) cell edge.
  * @type {number}
  */
-var CELL_EDGE_SIZE = exports.CELL_EDGE_SIZE = 10;
+var CELL_EDGE_SIZE = exports.CELL_EDGE_SIZE = 5;
 
 /**
  * Grid cell.
@@ -620,11 +620,20 @@ var _imageCache = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var TOWER_SIZE = {
+  width: 50,
+  height: 50
+};
+
 var Tower = function () {
   function Tower(cell) {
     _classCallCheck(this, Tower);
 
     this.cell = cell;
+    this.offset = {
+      x: Math.round(TOWER_SIZE.width / 2),
+      y: Math.round(TOWER_SIZE.height / 2)
+    };
   }
 
   /**
@@ -638,7 +647,7 @@ var Tower = function () {
     value: function draw(context) {
       var img = _imageCache.imageCache['tower-1'];
       var position = this.cell.getCenterPosition();
-      context.drawImage(img, position.x, position.y);
+      context.drawImage(img, position.x - this.offset.x, position.y - this.offset.y);
     }
   }]);
 

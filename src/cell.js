@@ -10,7 +10,7 @@ import Coord from './coord'
  * Size of the (square) cell edge.
  * @type {number}
  */
-export const CELL_EDGE_SIZE = 10
+export const CELL_EDGE_SIZE = 5
 
 /**
  * Grid cell.
