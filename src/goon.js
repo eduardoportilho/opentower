@@ -2,12 +2,12 @@ import {imageCache} from './image-cache.js'
 import pathFinder from './path-finder'
 
 export default class Goon {
-  constructor (id, position, game) {
-    // TODO: replace position by cell
+  constructor (id, cell, game, pathFinder) {
     this.id = id
-    this.position = position
+    this.cell = cell
     this.game = game
-    this.stepsPerUpdate = 3
+    this.pathFinder = pathFinder
+    this.stepsPerUpdate = 1
   }
 
   /**
@@ -16,18 +16,17 @@ export default class Goon {
    */
   draw (context) {
     var img = imageCache['goon-1']
-    // TODO: use cell center
-    context.drawImage(img, this.position.x, this.position.y)
+    let position = this.cell.getCenterPosition()
+    context.drawImage(img, position.x, position.y)
   }
 
   /**
    * Update goon state.
    */
   update () {
-    // TODO: replace position by cell
-    let newPosition = pathFinder.nextPosition(this.position, this.stepsPerUpdate)
-    if (newPosition) {
-      this.position = newPosition
+    let newCell = this.pathFinder.nextCell(this.cell, this.stepsPerUpdate)
+    if (newCell) {
+      this.cell = newCell
     } else {
       this.game.removeGoon(this)
     }

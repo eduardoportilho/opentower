@@ -1,8 +1,7 @@
-import Grid from './grid'
 
-class PathFinder {
-  constructor () {
-    this.grid = new Grid({width: 600, height: 600})
+export default class PathFinder {
+  constructor (grid) {
+    this.grid = grid
     this.recalculate()
   }
 
@@ -13,13 +12,16 @@ class PathFinder {
     this.grid.reset()
     let targetCell = this.grid.getTarget()
     targetCell.dist = 0
+    targetCell.reachable = true
+    targetCell.nextStep = undefined
     this.frontier = [targetCell]
 
     while (this.frontier.length > 0) {
       let current = this.frontier.shift()
-      let getUnvisitedNeighboursCells = this.grid.getUnvisitedNeighboursCoords(current)
-      for (let neighbourCell of getUnvisitedNeighboursCells) {
+      let neighboursCells = this.grid.getUnvisitedNeighboursCells(current)
+      for (let neighbourCell of neighboursCells) {
         neighbourCell.dist = current.dist + 1
+        neighbourCell.reachable = true
         neighbourCell.nextStep = current
         this.frontier.push(neighbourCell)
       }
@@ -32,14 +34,11 @@ class PathFinder {
    * @param  {Number} steps - Number of steps to perform.
    * @return {Point}
    */
-  nextPosition (currentPosition, steps = 1) {
-    // TODO: rename to get next cell, use coords
-    let nextPosition = this.grid.get(currentPosition.x, currentPosition.y)
-    while (steps-- > 0 && nextPosition.nextStep) {
-      nextPosition = nextPosition.nextStep
+  nextCell (currentCell, steps = 1) {
+    let nextCell = currentCell.nextStep
+    while (--steps > 0 && nextCell) {
+      nextCell = nextCell.nextStep
     }
-    return nextPosition
+    return nextCell
   }
 }
-
-export default new PathFinder()

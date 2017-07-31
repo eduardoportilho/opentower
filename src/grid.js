@@ -48,6 +48,7 @@ export default class Grid {
   get (row, col) {
     return this.grid[row][col]
   }
+
   /**
    * Get target cell.
    * @return {Cell}
@@ -60,10 +61,12 @@ export default class Grid {
 
   /**
    * Get the unvisited neighbour cells of the position.
-   * @param  {Point} position
+   * @param  {Cell} cell
    * @return {Cell[]}
    */
-  getUnvisitedNeighboursCells (coord) {
+  getUnvisitedNeighboursCells (cell) {
+    const coord = cell.coord
+    const grid = this
     return [
       {row: coord.row, col: coord.col - 1},
       {row: coord.row - 1, col: coord.col},
@@ -71,11 +74,11 @@ export default class Grid {
       {row: coord.row + 1, col: coord.col}
     ].filter((nCoord) => (
       nCoord.col >= 0 &&
-      nCoord.col < this.colCount &&
+      nCoord.col < grid.colCount &&
       nCoord.row >= 0 &&
-      nCoord.row < this.rowCount
+      nCoord.row < grid.rowCount
     )).map((nCoord) => (
-      this.get(nCoord.row, nCoord.col)
+      grid.get(nCoord.row, nCoord.col)
     )).filter((cell) => cell.dist === undefined)
   }
 }
