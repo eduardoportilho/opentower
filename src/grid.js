@@ -81,4 +81,21 @@ export default class Grid {
       grid.get(nCoord.row, nCoord.col)
     )).filter((cell) => cell.dist === undefined)
   }
+
+  /**
+   * Get the cell that contains the provided position.
+   * @return {Cell}
+   */
+  getCellAtPosition (point) {
+    if (point.x < 0 ||
+      point.x > this.canvasSize.width ||
+      point.y < 0 ||
+      point.y > this.canvasSize.height
+    ) {
+      return undefined
+    }
+    const col = Math.floor(point.x / CELL_EDGE_SIZE)
+    const row = Math.floor(point.y / CELL_EDGE_SIZE)
+    return this.get(row, col)
+  }
 }

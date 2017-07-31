@@ -25,9 +25,9 @@ export default class Game {
    * @param  {Point} position - Cell upper-left position.
    */
   onUserClick (position) {
-    // TODO: get cell at position
-    this.towers.push(new Tower(position))
-    pathFinder.recalculate()
+    const cell = this.grid.getCellAtPosition(position)
+    this.towers.push(new Tower(cell))
+    this.pathFinder.recalculate()
   }
 
   /**

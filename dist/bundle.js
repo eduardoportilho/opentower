@@ -295,9 +295,9 @@ var Game = function () {
   _createClass(Game, [{
     key: 'onUserClick',
     value: function onUserClick(position) {
-      // TODO: get cell at position
-      this.towers.push(new _tower2.default(position));
-      pathFinder.recalculate();
+      var cell = this.grid.getCellAtPosition(position);
+      this.towers.push(new _tower2.default(cell));
+      this.pathFinder.recalculate();
     }
 
     /**
@@ -454,6 +454,22 @@ var Grid = function () {
         return cell.dist === undefined;
       });
     }
+
+    /**
+     * Get the cell that contains the provided position.
+     * @return {Cell}
+     */
+
+  }, {
+    key: 'getCellAtPosition',
+    value: function getCellAtPosition(point) {
+      if (point.x < 0 || point.x > this.canvasSize.width || point.y < 0 || point.y > this.canvasSize.height) {
+        return undefined;
+      }
+      var col = Math.floor(point.x / _cell.CELL_EDGE_SIZE);
+      var row = Math.floor(point.y / _cell.CELL_EDGE_SIZE);
+      return this.get(row, col);
+    }
   }]);
 
   return Grid;
@@ -605,15 +621,14 @@ var _imageCache = __webpack_require__(0);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Tower = function () {
-  function Tower(position) {
+  function Tower(cell) {
     _classCallCheck(this, Tower);
 
-    // TODO: replace position by cell
-    this.position = position;
+    this.cell = cell;
   }
 
   /**
-   * Draw the goon on position.
+   * Draw the tower on position.
    * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
    */
 
@@ -621,9 +636,9 @@ var Tower = function () {
   _createClass(Tower, [{
     key: 'draw',
     value: function draw(context) {
-      // TODO: use cell center
       var img = _imageCache.imageCache['tower-1'];
-      context.drawImage(img, this.position.x, this.position.y);
+      var position = this.cell.getCenterPosition();
+      context.drawImage(img, position.x, position.y);
     }
   }]);
 
