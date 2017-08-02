@@ -46,4 +46,14 @@ export class Cell {
     let y = Math.round((this.coord.row * CELL_EDGE_SIZE) + (CELL_EDGE_SIZE / 2))
     return {x, y}
   }
+
+  /**
+   * Get the top-left position of the cell in pixels.
+   * @return {Point}
+   */
+  getTopLeftPosition () {
+    let x = this.coord.col * CELL_EDGE_SIZE
+    let y = this.coord.row * CELL_EDGE_SIZE
+    return {x, y}
+  }
 }

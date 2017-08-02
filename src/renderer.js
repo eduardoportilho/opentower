@@ -6,6 +6,8 @@
  * @property {number} y - The Y Coordinate.
  */
 
+import {CELL_EDGE_SIZE} from './cell'
+
 class Renderer {
   /**
    * Grid constructor
@@ -49,6 +51,7 @@ class Renderer {
    */
   render () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
     // 1st layer: towers
     this.game.towers.forEach((tower) => {
       tower.draw(this.context)
@@ -57,6 +60,21 @@ class Renderer {
     // 2nd layer: goons
     this.game.goons.forEach((goon) => {
       goon.draw(this.context)
+    })
+
+    // DEBUG: blocked cells
+    this.paintBlockedCells()
+  }
+
+  /**
+   * DEBUG: paint a blue square on blocked cells
+   */
+  paintBlockedCells () {
+    this.context.fillStyle = 'lightskyblue'
+    const blockedCells = this.game.grid.getCells().filter((cell) => cell.blocked)
+    blockedCells.forEach((cell) => {
+      let position = cell.getTopLeftPosition()
+      this.context.fillRect(position.x, position.y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
     })
   }
 

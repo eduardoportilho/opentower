@@ -24,6 +24,8 @@ export default class Grid {
         this.grid[row][col] = new Cell(row, col)
       }
     }
+    // flatten all cells on a single array
+    this.allCells = [].concat.apply([], this.grid)
   }
 
   /**
@@ -111,8 +113,8 @@ export default class Grid {
     const topLeftCell = this.getCellAtPosition(boundaries.topLeft)
     const bottomRightCell = this.getCellAtPosition(boundaries.bottomRight)
     // check if there is any blocked cell
-    for (var row = topLeftCell.coord.row; row < bottomRightCell.coord.row; row++) {
-      for (var col = topLeftCell.coord.col; col < bottomRightCell.coord.col; col++) {
+    for (let row = topLeftCell.coord.row; row < bottomRightCell.coord.row; row++) {
+      for (let col = topLeftCell.coord.col; col < bottomRightCell.coord.col; col++) {
         let cell = this.get(row, col)
         if (cell.blocked) {
           return false
@@ -120,12 +122,20 @@ export default class Grid {
       }
     }
     // block cells
-    for (var row = topLeftCell.coord.row; row < bottomRightCell.coord.row; row++) {
-      for (var col = topLeftCell.coord.col; col < bottomRightCell.coord.col; col++) {
+    for (let row = topLeftCell.coord.row; row < bottomRightCell.coord.row; row++) {
+      for (let col = topLeftCell.coord.col; col < bottomRightCell.coord.col; col++) {
         let cell = this.get(row, col)
         cell.blocked = true
       }
     }
     return true
+  }
+
+  /**
+   * Return an array containing all cells.
+   * @return {Cell[]}
+   */
+  getCells () {
+    return this.allCells
   }
 }
