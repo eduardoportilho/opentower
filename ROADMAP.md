@@ -1,7 +1,18 @@
 # Roadmap:
 
 ## Bugs:
-- Chrome complaining about frozen tab
+✔ - Chrome complaining about frozen tab (not happening any more...)
+- Goons going out of grid
+- Deploy tower on top of another tower
+    + Blocked tower cells not matching tower posistion
+- If you deploy a tower on top of a goon he disaper
+- Goon movement is not smooth
+    + To be smooth, goon should move on pixel intervals (instead of cells)
+        * The problem is that to recalculate the path for every pixel is taking to much time, making the movement "choke".
+            - Is it possible to optimize path finder to work smoothly for all pixels?
+            - Is it possible to move in pixels but to use a cell path? 
+        * Another problem is that if we calculate the path in pixels, the goon might pass between two towers if there is 1 px space (and the goon image needs to be bigger than 1 px)
+            - Is it possible to implement pathfinder with a goon that occupy more than 1 cell? Am I overcomplicating?
 
 ## Features:
 ✔︎ - expose grid draw method
@@ -19,8 +30,9 @@
     ✔ + make goon walk across arena
     ✔ + spawn goons on different positions
     ✔ + make goons walk to same target
-- make goon avoid towers
-    + recalculate path (on clock? on deployed tower)
+✔ - make goon avoid towers
+    ✔ + recalculate path (on clock? on deployed tower)
+
     + detect blocked goon
 - make tower shot
     + detect goons in range (on clock)
