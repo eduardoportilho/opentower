@@ -26,12 +26,11 @@ export default class Game {
    */
   onUserClick (position) {
     const tower = new Tower(position)
-    this.towers.push(tower)
-
     const towerBoundaries = tower.getBoundaries()
-    this.grid.block(towerBoundaries)
-
-    this.pathFinder.recalculate()
+    if (this.grid.blockIfUnblocked(towerBoundaries)) {
+      this.towers.push(tower)
+      this.pathFinder.recalculate()
+    }
   }
 
   /**

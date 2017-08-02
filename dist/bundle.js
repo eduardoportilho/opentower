@@ -200,12 +200,11 @@ var Game = function () {
     key: 'onUserClick',
     value: function onUserClick(position) {
       var tower = new _tower2.default(position);
-      this.towers.push(tower);
-
       var towerBoundaries = tower.getBoundaries();
-      this.grid.block(towerBoundaries);
-
-      this.pathFinder.recalculate();
+      if (this.grid.blockIfUnblocked(towerBoundaries)) {
+        this.towers.push(tower);
+        this.pathFinder.recalculate();
+      }
     }
 
     /**
@@ -276,7 +275,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} nextStep - Next cell on the path to target.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _cell = __webpack_require__(4);
+var _cell2 = __webpack_require__(4);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -285,8 +284,8 @@ var Grid = function () {
     _classCallCheck(this, Grid);
 
     this.canvasSize = canvasSize;
-    this.colCount = Math.floor(canvasSize.width / _cell.CELL_EDGE_SIZE);
-    this.rowCount = Math.floor(canvasSize.height / _cell.CELL_EDGE_SIZE);
+    this.colCount = Math.floor(canvasSize.width / _cell2.CELL_EDGE_SIZE);
+    this.rowCount = Math.floor(canvasSize.height / _cell2.CELL_EDGE_SIZE);
     this.init();
   }
 
@@ -297,7 +296,7 @@ var Grid = function () {
       for (var row = 0; row < this.rowCount; row++) {
         this.grid[row] = Array(this.colCount);
         for (var col = 0; col < this.colCount; col++) {
-          this.grid[row][col] = new _cell.Cell(row, col);
+          this.grid[row][col] = new _cell2.Cell(row, col);
         }
       }
     }
@@ -375,27 +374,39 @@ var Grid = function () {
       if (point.x < 0 || point.x > this.canvasSize.width || point.y < 0 || point.y > this.canvasSize.height) {
         return undefined;
       }
-      var col = Math.floor(point.x / _cell.CELL_EDGE_SIZE);
-      var row = Math.floor(point.y / _cell.CELL_EDGE_SIZE);
+      var col = Math.floor(point.x / _cell2.CELL_EDGE_SIZE);
+      var row = Math.floor(point.y / _cell2.CELL_EDGE_SIZE);
       return this.get(row, col);
     }
 
     /**
-     * Mark all the cells that include points inside the boundaries as blocked.
-     * @param  {Boundaries} boundaries - boundaries to block.
+     * Check if there is any blocked cells inside the boundaries and block them if not.
+     * @param  {Boundaries} boundaries
+     * @return {Boolean} true, if there were no blocked cells and could block, false otherwise.
      */
 
   }, {
-    key: 'block',
-    value: function block(boundaries) {
+    key: 'blockIfUnblocked',
+    value: function blockIfUnblocked(boundaries) {
       var topLeftCell = this.getCellAtPosition(boundaries.topLeft);
       var bottomRightCell = this.getCellAtPosition(boundaries.bottomRight);
+      // check if there is any blocked cell
       for (var row = topLeftCell.coord.row; row < bottomRightCell.coord.row; row++) {
         for (var col = topLeftCell.coord.col; col < bottomRightCell.coord.col; col++) {
           var cell = this.get(row, col);
-          cell.blocked = true;
+          if (cell.blocked) {
+            return false;
+          }
         }
       }
+      // block cells
+      for (var row = topLeftCell.coord.row; row < bottomRightCell.coord.row; row++) {
+        for (var col = topLeftCell.coord.col; col < bottomRightCell.coord.col; col++) {
+          var _cell = this.get(row, col);
+          _cell.blocked = true;
+        }
+      }
+      return true;
     }
   }]);
 
@@ -561,8 +572,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 
 var TOWER_SIZE = {
-  width: 50,
-  height: 50
+  width: 34,
+  height: 46
 };
 
 var Tower = function () {

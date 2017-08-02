@@ -13,8 +13,8 @@ import {imageCache} from './image-cache.js'
  */
 
 const TOWER_SIZE = {
-  width: 50,
-  height: 50
+  width: 34,
+  height: 46
 }
 
 export default class Tower {
