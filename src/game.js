@@ -11,7 +11,7 @@ import PathFinder from './path-finder'
 
 export default class Game {
   constructor () {
-    this.grid = new Grid({width: 600, height: 600})
+    this.grid = new Grid({width: 1000, height: 800})
     this.pathFinder = new PathFinder(this.grid)
     this.towers = []
     this.goons = []

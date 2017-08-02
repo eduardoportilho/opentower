@@ -181,7 +181,7 @@ var Game = function () {
   function Game() {
     _classCallCheck(this, Game);
 
-    this.grid = new _grid2.default({ width: 600, height: 600 });
+    this.grid = new _grid2.default({ width: 1000, height: 800 });
     this.pathFinder = new _pathFinder2.default(this.grid);
     this.towers = [];
     this.goons = [];
@@ -433,7 +433,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Size of the (square) cell edge.
  * @type {number}
  */
-var CELL_EDGE_SIZE = exports.CELL_EDGE_SIZE = 5;
+var CELL_EDGE_SIZE = exports.CELL_EDGE_SIZE = 20;
 
 /**
  * Grid cell.
@@ -803,6 +803,8 @@ var Renderer = function () {
 
     this.canvas = canvas;
     this.game = game;
+    this.canvas.width = this.game.grid.canvasSize.width;
+    this.canvas.height = this.game.grid.canvasSize.height;
     this.context = this.canvas.getContext('2d');
 
     // bind events

@@ -14,6 +14,8 @@ class Renderer {
   constructor (canvas, game) {
     this.canvas = canvas
     this.game = game
+    this.canvas.width = this.game.grid.canvasSize.width
+    this.canvas.height = this.game.grid.canvasSize.height
     this.context = this.canvas.getContext('2d')
 
     // bind events
