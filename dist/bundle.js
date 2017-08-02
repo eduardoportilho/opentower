@@ -240,13 +240,14 @@ var Game = function () {
 
     /**
      * Update the state of the game entities.
+     * @param  {number} delta - ms since last update.
      */
 
   }, {
     key: 'update',
-    value: function update() {
+    value: function update(delta) {
       this.goons.forEach(function (goon) {
-        return goon.update();
+        return goon.update(delta);
       });
     }
   }]);
@@ -628,6 +629,9 @@ var _imageCache = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var STEPS_PER_UPDATE = 1;
+var MIN_TIME_BETWEEN_STEPS = 0.2;
+
 var Goon = function () {
   function Goon(id, cell, game, pathFinder) {
     _classCallCheck(this, Goon);
@@ -636,7 +640,7 @@ var Goon = function () {
     this.cell = cell;
     this.game = game;
     this.pathFinder = pathFinder;
-    this.stepsPerUpdate = 1;
+    this.timeSinceLastStep = 0;
   }
 
   /**
@@ -655,12 +659,19 @@ var Goon = function () {
 
     /**
      * Update goon state.
+     * @param  {number} delta - ms since last update.
      */
 
   }, {
     key: 'update',
-    value: function update() {
-      var newCell = this.pathFinder.nextCell(this.cell, this.stepsPerUpdate);
+    value: function update(delta) {
+      this.timeSinceLastStep += delta;
+      if (this.timeSinceLastStep < MIN_TIME_BETWEEN_STEPS) {
+        return;
+      }
+
+      this.timeSinceLastStep = 0;
+      var newCell = this.pathFinder.nextCell(this.cell, STEPS_PER_UPDATE);
       if (newCell) {
         this.cell = newCell;
       } else {
@@ -819,6 +830,7 @@ var Renderer = function () {
   _createClass(Renderer, [{
     key: 'start',
     value: function start() {
+      this.lastTick = Date.now();
       this.animationId = requestAnimationFrame(this.tick.bind(this));
     }
 
@@ -829,7 +841,12 @@ var Renderer = function () {
   }, {
     key: 'tick',
     value: function tick() {
-      this.game.update();
+      var now = Date.now();
+      var delta = (now - this.lastTick) / 1000.0;
+
+      this.game.update(delta);
+      this.lastTick = now;
+
       this.render();
       this.animationId = requestAnimationFrame(this.tick.bind(this));
     }

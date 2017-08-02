@@ -26,6 +26,7 @@ class Renderer {
    * Start the game loop.
    */
   start () {
+    this.lastTick = Date.now()
     this.animationId = requestAnimationFrame(this.tick.bind(this))
   }
 
@@ -33,7 +34,12 @@ class Renderer {
    * Update state, render and restart the game loop every X ms.
    */
   tick () {
-    this.game.update()
+    const now = Date.now()
+    const delta = (now - this.lastTick) / 1000.0
+
+    this.game.update(delta)
+    this.lastTick = now
+
     this.render()
     this.animationId = requestAnimationFrame(this.tick.bind(this))
   }

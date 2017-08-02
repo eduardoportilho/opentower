@@ -60,8 +60,9 @@ export default class Game {
 
   /**
    * Update the state of the game entities.
+   * @param  {number} delta - ms since last update.
    */
-  update () {
-    this.goons.forEach((goon) => goon.update())
+  update (delta) {
+    this.goons.forEach((goon) => goon.update(delta))
   }
 }
