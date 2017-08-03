@@ -89,6 +89,7 @@ export default class Grid {
 
   /**
    * Get the cell that contains the provided position.
+   * @param  {Point} point
    * @return {Cell}
    */
   getCellAtPosition (point) {
@@ -127,5 +128,29 @@ export default class Grid {
    */
   getCells () {
     return this.allCells
+  }
+
+  /**
+   * Return a block of cells containg the point approximately in the center
+   * @param  {Point} point - Point contained in the block,
+   * @param  {number} rowCount - Number of rows in the block.
+   * @param  {number} colCount - Number of cols in the block.
+   * @return {Cell[]}
+   */
+  getCellsAround (point, rowCount, colCount) {
+    const center = this.getCellAtPosition(point)
+
+    const topRow = center.coord.row - Math.floor(rowCount / 2)
+    const bottomRow = topRow + rowCount - 1
+    const leftCol = center.coord.col - Math.floor(colCount / 2)
+    const rightCol = leftCol + colCount - 1
+
+    const cells = []
+    for (let row = topRow; row <= bottomRow; row++) {
+      for (let col = leftCol; col <= rightCol; col++) {
+        cells.push(this.get(row, col))
+      }
+    }
+    return cells
   }
 }

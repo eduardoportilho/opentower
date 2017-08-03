@@ -201,6 +201,19 @@ var Cell = exports.Cell = function () {
       var y = this.coord.row * CELL_EDGE_SIZE;
       return { x: x, y: y };
     }
+
+    /**
+     * Get the bottom-right position of the cell in pixels.
+     * @return {Point}
+     */
+
+  }, {
+    key: 'getBottomRightPosition',
+    value: function getBottomRightPosition() {
+      var x = (this.coord.col + 1) * CELL_EDGE_SIZE;
+      var y = (this.coord.row + 1) * CELL_EDGE_SIZE;
+      return { x: x, y: y };
+    }
   }]);
 
   return Cell;
@@ -257,8 +270,6 @@ var _grid2 = _interopRequireDefault(_grid);
 
 var _tower = __webpack_require__(6);
 
-var _tower2 = _interopRequireDefault(_tower);
-
 var _goon = __webpack_require__(7);
 
 var _goon2 = _interopRequireDefault(_goon);
@@ -293,26 +304,21 @@ var Game = function () {
   _createClass(Game, [{
     key: 'onUserClick',
     value: function onUserClick(position) {
-      // TODO:
-      // (tower should be measured in cells)
-      // towerCenter = position
-      // cellBounds = grid.getCellBoundaries(towerCenter, TOWER_SIZE_IN_CELLS)
-      // if (isOcuppied(cellBounds)) return;
-      // towerBounds = {cellBounds.topLeftPos, cellBounds.bottomRightPos}
-      // tower = new Tower(towerBounds)
-      var tower = new _tower2.default(position);
-      var towerBoundaries = tower.getBoundaries();
-      var cells = this.grid.getCellsInBoundaries(towerBoundaries);
+      var towerCells = this.grid.getCellsAround(position, _tower.TOWER_SIZE.rows, _tower.TOWER_SIZE.cols);
       // occupied ?
-      if (cells.some(function (cell) {
+      if (towerCells.some(function (cell) {
         return cell.blocked;
       })) {
         return;
       }
-      cells.forEach(function (cell) {
+      towerCells.forEach(function (cell) {
         cell.blocked = true;
       });
-      tower.cells = cells;
+      var towerBoundaries = {
+        topLeft: towerCells[0].getTopLeftPosition(),
+        bottomRight: towerCells[towerCells.length - 1].getBottomRightPosition()
+      };
+      var tower = new _tower.Tower(towerBoundaries);
       this.towers.push(tower);
       this.pathFinder.recalculate();
     }
@@ -477,6 +483,7 @@ var Grid = function () {
 
     /**
      * Get the cell that contains the provided position.
+     * @param  {Point} point
      * @return {Cell}
      */
 
@@ -520,6 +527,33 @@ var Grid = function () {
     key: 'getCells',
     value: function getCells() {
       return this.allCells;
+    }
+
+    /**
+     * Return a block of cells containg the point approximately in the center
+     * @param  {Point} point - Point contained in the block,
+     * @param  {number} rowCount - Number of rows in the block.
+     * @param  {number} colCount - Number of cols in the block.
+     * @return {Cell[]}
+     */
+
+  }, {
+    key: 'getCellsAround',
+    value: function getCellsAround(point, rowCount, colCount) {
+      var center = this.getCellAtPosition(point);
+
+      var topRow = center.coord.row - Math.floor(rowCount / 2);
+      var bottomRow = topRow + rowCount - 1;
+      var leftCol = center.coord.col - Math.floor(colCount / 2);
+      var rightCol = leftCol + colCount - 1;
+
+      var cells = [];
+      for (var row = topRow; row <= bottomRow; row++) {
+        for (var col = leftCol; col <= rightCol; col++) {
+          cells.push(this.get(row, col));
+        }
+      }
+      return cells;
     }
   }]);
 
@@ -587,8 +621,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _imageCache = __webpack_require__(0);
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
@@ -602,30 +634,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @property {Point} topLeft - top-left point of the object.
  * @property {Point} bottomRight - bottom-right point of the object.
  */
-
-var TOWER_SIZE = {
-  width: 34,
-  height: 46
-
-  // const TOWER_SIZE_IN_CELLS = {
-  //   width: 2,
-  //   height: 2
-  // }
-
+var TOWER_SIZE = exports.TOWER_SIZE = {
+  rows: 2,
+  cols: 2
 };
-var Tower = function () {
-  function Tower(centerPosition) {
+
+var Tower = exports.Tower = function () {
+  function Tower(boundaries) {
     _classCallCheck(this, Tower);
 
-    this.topLeftPosition = {
-      x: Math.max(0, centerPosition.x - Math.round(TOWER_SIZE.width / 2)),
-      y: Math.max(0, centerPosition.y - Math.round(TOWER_SIZE.height / 2))
-    };
-    this.bottomRightPosition = {
-      x: this.topLeftPosition.x + TOWER_SIZE.width,
-      y: this.topLeftPosition.y + TOWER_SIZE.height
-    };
-    this.cells = undefined;
+    this.topLeftPosition = boundaries.topLeft;
+    this.width = boundaries.bottomRight.x - boundaries.topLeft.x;
+    this.height = boundaries.bottomRight.y - boundaries.topLeft.y;
   }
 
   /**
@@ -637,8 +657,10 @@ var Tower = function () {
   _createClass(Tower, [{
     key: 'draw',
     value: function draw(context) {
-      var img = _imageCache.imageCache['tower-1'];
-      context.drawImage(img, this.topLeftPosition.x, this.topLeftPosition.y);
+      context.fillStyle = 'azure';
+      context.strokeStyle = 'lightskyblue';
+      context.fillRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height);
+      context.strokeRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height);
     }
 
     /**
@@ -658,8 +680,6 @@ var Tower = function () {
 
   return Tower;
 }();
-
-exports.default = Tower;
 
 /***/ }),
 /* 7 */
@@ -941,13 +961,7 @@ var Renderer = function () {
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
       // 1st layer: towers
-      this.context.fillStyle = 'lightskyblue';
       this.game.towers.forEach(function (tower) {
-        // TODO: Replace with tower cells
-        // tower.cells.forEach(cell => {
-        //   const position = cell.getTopLeftPosition()
-        //   this.context.fillRect(position.x, position.y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
-        // })
         tower.draw(_this.context);
       });
 
@@ -955,9 +969,6 @@ var Renderer = function () {
       this.game.goons.forEach(function (goon) {
         goon.draw(_this.context);
       });
-
-      // DEBUG: blocked cells
-      // this.paintBlockedCells()
     }
 
     /**

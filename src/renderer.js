@@ -53,13 +53,7 @@ class Renderer {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     // 1st layer: towers
-    this.context.fillStyle = 'lightskyblue'
     this.game.towers.forEach((tower) => {
-      // TODO: Replace with tower cells
-      // tower.cells.forEach(cell => {
-      //   const position = cell.getTopLeftPosition()
-      //   this.context.fillRect(position.x, position.y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
-      // })
       tower.draw(this.context)
     })
 
@@ -67,9 +61,6 @@ class Renderer {
     this.game.goons.forEach((goon) => {
       goon.draw(this.context)
     })
-
-    // DEBUG: blocked cells
-    // this.paintBlockedCells()
   }
 
   /**

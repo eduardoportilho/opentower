@@ -5,7 +5,7 @@
  */
 
 import Grid from './grid'
-import Tower from './tower'
+import {Tower, TOWER_SIZE} from './tower'
 import Goon from './goon'
 import PathFinder from './path-finder'
 
@@ -25,22 +25,17 @@ export default class Game {
    * @param  {Point} position - Cell upper-left position.
    */
   onUserClick (position) {
-    // TODO:
-    // (tower should be measured in cells)
-    // towerCenter = position
-    // cellBounds = grid.getCellBoundaries(towerCenter, TOWER_SIZE_IN_CELLS)
-    // if (isOcuppied(cellBounds)) return;
-    // towerBounds = {cellBounds.topLeftPos, cellBounds.bottomRightPos}
-    // tower = new Tower(towerBounds)
-    const tower = new Tower(position)
-    const towerBoundaries = tower.getBoundaries()
-    const cells = this.grid.getCellsInBoundaries(towerBoundaries)
+    const towerCells = this.grid.getCellsAround(position, TOWER_SIZE.rows, TOWER_SIZE.cols)
     // occupied ?
-    if (cells.some(cell => cell.blocked)) {
+    if (towerCells.some(cell => cell.blocked)) {
       return
     }
-    cells.forEach((cell) => { cell.blocked = true })
-    tower.cells = cells
+    towerCells.forEach(cell => { cell.blocked = true })
+    const towerBoundaries = {
+      topLeft: towerCells[0].getTopLeftPosition(),
+      bottomRight: towerCells[towerCells.length - 1].getBottomRightPosition()
+    }
+    const tower = new Tower(towerBoundaries)
     this.towers.push(tower)
     this.pathFinder.recalculate()
   }

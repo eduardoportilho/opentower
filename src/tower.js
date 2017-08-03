@@ -1,5 +1,3 @@
-import {imageCache} from './image-cache.js'
-
 /**
  * @typedef {Object} Point
  * @property {number} x - The X Coordinate.
@@ -11,28 +9,16 @@ import {imageCache} from './image-cache.js'
  * @property {Point} topLeft - top-left point of the object.
  * @property {Point} bottomRight - bottom-right point of the object.
  */
-
-const TOWER_SIZE = {
-  width: 34,
-  height: 46
+export const TOWER_SIZE = {
+  rows: 2,
+  cols: 2
 }
 
-// const TOWER_SIZE_IN_CELLS = {
-//   width: 2,
-//   height: 2
-// }
-
-export default class Tower {
-  constructor (centerPosition) {
-    this.topLeftPosition = {
-      x: Math.max(0, centerPosition.x - Math.round(TOWER_SIZE.width / 2)),
-      y: Math.max(0, centerPosition.y - Math.round(TOWER_SIZE.height / 2))
-    }
-    this.bottomRightPosition = {
-      x: this.topLeftPosition.x + TOWER_SIZE.width,
-      y: this.topLeftPosition.y + TOWER_SIZE.height
-    }
-    this.cells = undefined
+export class Tower {
+  constructor (boundaries) {
+    this.topLeftPosition = boundaries.topLeft
+    this.width = boundaries.bottomRight.x - boundaries.topLeft.x
+    this.height = boundaries.bottomRight.y - boundaries.topLeft.y
   }
 
   /**
@@ -40,8 +26,10 @@ export default class Tower {
    * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
    */
   draw (context) {
-    var img = imageCache['tower-1']
-    context.drawImage(img, this.topLeftPosition.x, this.topLeftPosition.y)
+    context.fillStyle = 'azure'
+    context.strokeStyle = 'lightskyblue'
+    context.fillRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height)
+    context.strokeRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height)
   }
 
   /**

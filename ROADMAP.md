@@ -33,8 +33,8 @@
     ✔ + make goons walk to same target
 ✔ - make goon avoid towers
     ✔ + recalculate path (on clock? on deployed tower)
+✔ - Represent tower with cells instead of image.
 
-- Represent tower with cells instead of image.
 - Highlight tower boundaries on hover.
 - Detect if the path to target would be blocked before deploying a tower and avoid the deploy if so.
 - make tower shot

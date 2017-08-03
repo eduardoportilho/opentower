@@ -56,4 +56,14 @@ export class Cell {
     let y = this.coord.row * CELL_EDGE_SIZE
     return {x, y}
   }
+
+  /**
+   * Get the bottom-right position of the cell in pixels.
+   * @return {Point}
+   */
+  getBottomRightPosition () {
+    let x = (this.coord.col + 1) * CELL_EDGE_SIZE
+    let y = (this.coord.row + 1) * CELL_EDGE_SIZE
+    return {x, y}
+  }
 }
