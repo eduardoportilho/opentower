@@ -17,6 +17,11 @@ const TOWER_SIZE = {
   height: 46
 }
 
+// const TOWER_SIZE_IN_CELLS = {
+//   width: 2,
+//   height: 2
+// }
+
 export default class Tower {
   constructor (centerPosition) {
     this.topLeftPosition = {
@@ -27,6 +32,7 @@ export default class Tower {
       x: this.topLeftPosition.x + TOWER_SIZE.width,
       y: this.topLeftPosition.y + TOWER_SIZE.height
     }
+    this.cells = undefined
   }
 
   /**

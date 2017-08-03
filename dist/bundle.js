@@ -293,12 +293,28 @@ var Game = function () {
   _createClass(Game, [{
     key: 'onUserClick',
     value: function onUserClick(position) {
+      // TODO:
+      // (tower should be measured in cells)
+      // towerCenter = position
+      // cellBounds = grid.getCellBoundaries(towerCenter, TOWER_SIZE_IN_CELLS)
+      // if (isOcuppied(cellBounds)) return;
+      // towerBounds = {cellBounds.topLeftPos, cellBounds.bottomRightPos}
+      // tower = new Tower(towerBounds)
       var tower = new _tower2.default(position);
       var towerBoundaries = tower.getBoundaries();
-      if (this.grid.blockIfUnblocked(towerBoundaries)) {
-        this.towers.push(tower);
-        this.pathFinder.recalculate();
+      var cells = this.grid.getCellsInBoundaries(towerBoundaries);
+      // occupied ?
+      if (cells.some(function (cell) {
+        return cell.blocked;
+      })) {
+        return;
       }
+      cells.forEach(function (cell) {
+        cell.blocked = true;
+      });
+      tower.cells = cells;
+      this.towers.push(tower);
+      this.pathFinder.recalculate();
     }
 
     /**
@@ -369,7 +385,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} nextStep - Next cell on the path to target.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _cell2 = __webpack_require__(1);
+var _cell = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -378,8 +394,8 @@ var Grid = function () {
     _classCallCheck(this, Grid);
 
     this.canvasSize = canvasSize;
-    this.colCount = Math.floor(canvasSize.width / _cell2.CELL_EDGE_SIZE);
-    this.rowCount = Math.floor(canvasSize.height / _cell2.CELL_EDGE_SIZE);
+    this.colCount = Math.floor(canvasSize.width / _cell.CELL_EDGE_SIZE);
+    this.rowCount = Math.floor(canvasSize.height / _cell.CELL_EDGE_SIZE);
     this.init();
   }
 
@@ -390,7 +406,7 @@ var Grid = function () {
       for (var row = 0; row < this.rowCount; row++) {
         this.grid[row] = Array(this.colCount);
         for (var col = 0; col < this.colCount; col++) {
-          this.grid[row][col] = new _cell2.Cell(row, col);
+          this.grid[row][col] = new _cell.Cell(row, col);
         }
       }
       // flatten all cells on a single array
@@ -470,39 +486,29 @@ var Grid = function () {
       if (point.x < 0 || point.x > this.canvasSize.width || point.y < 0 || point.y > this.canvasSize.height) {
         return undefined;
       }
-      var col = Math.floor(point.x / _cell2.CELL_EDGE_SIZE);
-      var row = Math.floor(point.y / _cell2.CELL_EDGE_SIZE);
+      var col = Math.floor(point.x / _cell.CELL_EDGE_SIZE);
+      var row = Math.floor(point.y / _cell.CELL_EDGE_SIZE);
       return this.get(row, col);
     }
 
     /**
-     * Check if there is any blocked cells inside the boundaries and block them if not.
+     * Get the cells that contains the boundaries area.
      * @param  {Boundaries} boundaries
-     * @return {Boolean} true, if there were no blocked cells and could block, false otherwise.
+     * @return {Cell[]}
      */
 
   }, {
-    key: 'blockIfUnblocked',
-    value: function blockIfUnblocked(boundaries) {
+    key: 'getCellsInBoundaries',
+    value: function getCellsInBoundaries(boundaries) {
       var topLeftCell = this.getCellAtPosition(boundaries.topLeft);
       var bottomRightCell = this.getCellAtPosition(boundaries.bottomRight);
-      // check if there is any blocked cell
+      var cells = [];
       for (var row = topLeftCell.coord.row; row <= bottomRightCell.coord.row; row++) {
         for (var col = topLeftCell.coord.col; col <= bottomRightCell.coord.col; col++) {
-          var cell = this.get(row, col);
-          if (cell.blocked) {
-            return false;
-          }
+          cells.push(this.get(row, col));
         }
       }
-      // block cells
-      for (var _row = topLeftCell.coord.row; _row <= bottomRightCell.coord.row; _row++) {
-        for (var _col = topLeftCell.coord.col; _col <= bottomRightCell.coord.col; _col++) {
-          var _cell = this.get(_row, _col);
-          _cell.blocked = true;
-        }
-      }
-      return true;
+      return cells;
     }
 
     /**
@@ -600,8 +606,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var TOWER_SIZE = {
   width: 34,
   height: 46
-};
 
+  // const TOWER_SIZE_IN_CELLS = {
+  //   width: 2,
+  //   height: 2
+  // }
+
+};
 var Tower = function () {
   function Tower(centerPosition) {
     _classCallCheck(this, Tower);
@@ -614,6 +625,7 @@ var Tower = function () {
       x: this.topLeftPosition.x + TOWER_SIZE.width,
       y: this.topLeftPosition.y + TOWER_SIZE.height
     };
+    this.cells = undefined;
   }
 
   /**
@@ -823,7 +835,7 @@ var PathFinder = function () {
     }
 
     /**
-     * Get the next position in the path to the target
+     * Get the next position in the path to the target.
      * @param  {Point} currentPosition - Current position.
      * @param  {Number} steps - Number of steps to perform.
      * @return {Point}
@@ -929,7 +941,13 @@ var Renderer = function () {
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
       // 1st layer: towers
+      this.context.fillStyle = 'lightskyblue';
       this.game.towers.forEach(function (tower) {
+        // TODO: Replace with tower cells
+        // tower.cells.forEach(cell => {
+        //   const position = cell.getTopLeftPosition()
+        //   this.context.fillRect(position.x, position.y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
+        // })
         tower.draw(_this.context);
       });
 

@@ -105,30 +105,20 @@ export default class Grid {
   }
 
   /**
-   * Check if there is any blocked cells inside the boundaries and block them if not.
+   * Get the cells that contains the boundaries area.
    * @param  {Boundaries} boundaries
-   * @return {Boolean} true, if there were no blocked cells and could block, false otherwise.
+   * @return {Cell[]}
    */
-  blockIfUnblocked (boundaries) {
+  getCellsInBoundaries (boundaries) {
     const topLeftCell = this.getCellAtPosition(boundaries.topLeft)
     const bottomRightCell = this.getCellAtPosition(boundaries.bottomRight)
-    // check if there is any blocked cell
+    const cells = []
     for (let row = topLeftCell.coord.row; row <= bottomRightCell.coord.row; row++) {
       for (let col = topLeftCell.coord.col; col <= bottomRightCell.coord.col; col++) {
-        let cell = this.get(row, col)
-        if (cell.blocked) {
-          return false
-        }
+        cells.push(this.get(row, col))
       }
     }
-    // block cells
-    for (let row = topLeftCell.coord.row; row <= bottomRightCell.coord.row; row++) {
-      for (let col = topLeftCell.coord.col; col <= bottomRightCell.coord.col; col++) {
-        let cell = this.get(row, col)
-        cell.blocked = true
-      }
-    }
-    return true
+    return cells
   }
 
   /**

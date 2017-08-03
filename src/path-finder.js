@@ -29,7 +29,7 @@ export default class PathFinder {
   }
 
   /**
-   * Get the next position in the path to the target
+   * Get the next position in the path to the target.
    * @param  {Point} currentPosition - Current position.
    * @param  {Number} steps - Number of steps to perform.
    * @return {Point}

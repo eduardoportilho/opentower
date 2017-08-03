@@ -25,12 +25,24 @@ export default class Game {
    * @param  {Point} position - Cell upper-left position.
    */
   onUserClick (position) {
+    // TODO:
+    // (tower should be measured in cells)
+    // towerCenter = position
+    // cellBounds = grid.getCellBoundaries(towerCenter, TOWER_SIZE_IN_CELLS)
+    // if (isOcuppied(cellBounds)) return;
+    // towerBounds = {cellBounds.topLeftPos, cellBounds.bottomRightPos}
+    // tower = new Tower(towerBounds)
     const tower = new Tower(position)
     const towerBoundaries = tower.getBoundaries()
-    if (this.grid.blockIfUnblocked(towerBoundaries)) {
-      this.towers.push(tower)
-      this.pathFinder.recalculate()
+    const cells = this.grid.getCellsInBoundaries(towerBoundaries)
+    // occupied ?
+    if (cells.some(cell => cell.blocked)) {
+      return
     }
+    cells.forEach((cell) => { cell.blocked = true })
+    tower.cells = cells
+    this.towers.push(tower)
+    this.pathFinder.recalculate()
   }
 
   /**
