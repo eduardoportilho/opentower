@@ -2,9 +2,10 @@
 
 ## Bugs:
 ✔ - Chrome complaining about frozen tab (not happening any more...)
+✔ - Deploy tower on top of another tower
+    ✔ + Blocked tower cells not matching tower posistion
+    
 - Goons going out of grid
-- Deploy tower on top of another tower
-    + Blocked tower cells not matching tower posistion
 - If you deploy a tower on top of a goon he disaper
 - Goon movement is not smooth
     + To be smooth, goon should move on pixel intervals (instead of cells)

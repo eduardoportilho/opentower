@@ -113,8 +113,8 @@ export default class Grid {
     const topLeftCell = this.getCellAtPosition(boundaries.topLeft)
     const bottomRightCell = this.getCellAtPosition(boundaries.bottomRight)
     // check if there is any blocked cell
-    for (let row = topLeftCell.coord.row; row < bottomRightCell.coord.row; row++) {
-      for (let col = topLeftCell.coord.col; col < bottomRightCell.coord.col; col++) {
+    for (let row = topLeftCell.coord.row; row <= bottomRightCell.coord.row; row++) {
+      for (let col = topLeftCell.coord.col; col <= bottomRightCell.coord.col; col++) {
         let cell = this.get(row, col)
         if (cell.blocked) {
           return false
@@ -122,8 +122,8 @@ export default class Grid {
       }
     }
     // block cells
-    for (let row = topLeftCell.coord.row; row < bottomRightCell.coord.row; row++) {
-      for (let col = topLeftCell.coord.col; col < bottomRightCell.coord.col; col++) {
+    for (let row = topLeftCell.coord.row; row <= bottomRightCell.coord.row; row++) {
+      for (let col = topLeftCell.coord.col; col <= bottomRightCell.coord.col; col++) {
         let cell = this.get(row, col)
         cell.blocked = true
       }

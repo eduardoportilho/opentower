@@ -63,7 +63,7 @@ class Renderer {
     })
 
     // DEBUG: blocked cells
-    this.paintBlockedCells()
+    // this.paintBlockedCells()
   }
 
   /**
@@ -71,10 +71,20 @@ class Renderer {
    */
   paintBlockedCells () {
     this.context.fillStyle = 'lightskyblue'
+    this.context.strokeStyle = 'azure'
     const blockedCells = this.game.grid.getCells().filter((cell) => cell.blocked)
     blockedCells.forEach((cell) => {
       let position = cell.getTopLeftPosition()
+      this.context.strokeRect(position.x, position.y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
       this.context.fillRect(position.x, position.y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
+    })
+
+    this.game.towers.forEach((tower) => {
+      let position = tower.getBoundaries().topLeft
+      let w = tower.getBoundaries().bottomRight.x - position.x
+      let h = tower.getBoundaries().bottomRight.y - position.y
+      this.context.strokeStyle = 'red'
+      this.context.strokeRect(position.x, position.y, w, h)
     })
   }
 

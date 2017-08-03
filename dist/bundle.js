@@ -487,8 +487,8 @@ var Grid = function () {
       var topLeftCell = this.getCellAtPosition(boundaries.topLeft);
       var bottomRightCell = this.getCellAtPosition(boundaries.bottomRight);
       // check if there is any blocked cell
-      for (var row = topLeftCell.coord.row; row < bottomRightCell.coord.row; row++) {
-        for (var col = topLeftCell.coord.col; col < bottomRightCell.coord.col; col++) {
+      for (var row = topLeftCell.coord.row; row <= bottomRightCell.coord.row; row++) {
+        for (var col = topLeftCell.coord.col; col <= bottomRightCell.coord.col; col++) {
           var cell = this.get(row, col);
           if (cell.blocked) {
             return false;
@@ -496,8 +496,8 @@ var Grid = function () {
         }
       }
       // block cells
-      for (var _row = topLeftCell.coord.row; _row < bottomRightCell.coord.row; _row++) {
-        for (var _col = topLeftCell.coord.col; _col < bottomRightCell.coord.col; _col++) {
+      for (var _row = topLeftCell.coord.row; _row <= bottomRightCell.coord.row; _row++) {
+        for (var _col = topLeftCell.coord.col; _col <= bottomRightCell.coord.col; _col++) {
           var _cell = this.get(_row, _col);
           _cell.blocked = true;
         }
@@ -910,7 +910,7 @@ var Renderer = function () {
       });
 
       // DEBUG: blocked cells
-      this.paintBlockedCells();
+      // this.paintBlockedCells()
     }
 
     /**
@@ -923,12 +923,22 @@ var Renderer = function () {
       var _this2 = this;
 
       this.context.fillStyle = 'lightskyblue';
+      this.context.strokeStyle = 'azure';
       var blockedCells = this.game.grid.getCells().filter(function (cell) {
         return cell.blocked;
       });
       blockedCells.forEach(function (cell) {
         var position = cell.getTopLeftPosition();
+        _this2.context.strokeRect(position.x, position.y, _cell.CELL_EDGE_SIZE, _cell.CELL_EDGE_SIZE);
         _this2.context.fillRect(position.x, position.y, _cell.CELL_EDGE_SIZE, _cell.CELL_EDGE_SIZE);
+      });
+
+      this.game.towers.forEach(function (tower) {
+        var position = tower.getBoundaries().topLeft;
+        var w = tower.getBoundaries().bottomRight.x - position.x;
+        var h = tower.getBoundaries().bottomRight.y - position.y;
+        _this2.context.strokeStyle = 'red';
+        _this2.context.strokeRect(position.x, position.y, w, h);
       });
     }
 
