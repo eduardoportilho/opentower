@@ -666,18 +666,18 @@ var _imageCache = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var STEPS_PER_UPDATE = 1;
-var MIN_TIME_BETWEEN_STEPS = 0.2;
+var PIXELS_PER_STEP = 2;
 
 var Goon = function () {
   function Goon(id, cell, game, pathFinder) {
     _classCallCheck(this, Goon);
 
     this.id = id;
-    this.cell = cell;
     this.game = game;
     this.pathFinder = pathFinder;
     this.timeSinceLastStep = 0;
+    this.cell = cell;
+    this.position = this.cell.getTopLeftPosition();
   }
 
   /**
@@ -690,8 +690,7 @@ var Goon = function () {
     key: 'draw',
     value: function draw(context) {
       var img = _imageCache.imageCache['goon-1'];
-      var position = this.cell.getCenterPosition();
-      context.drawImage(img, position.x, position.y);
+      context.drawImage(img, this.position.x, this.position.y);
     }
 
     /**
@@ -702,18 +701,48 @@ var Goon = function () {
   }, {
     key: 'update',
     value: function update(delta) {
-      this.timeSinceLastStep += delta;
-      if (this.timeSinceLastStep < MIN_TIME_BETWEEN_STEPS) {
+      var nextCell = this.pathFinder.nextCell(this.cell, 1);
+      if (!nextCell) {
+        this.game.removeGoon(this);
         return;
       }
 
-      this.timeSinceLastStep = 0;
-      var newCell = this.pathFinder.nextCell(this.cell, STEPS_PER_UPDATE);
-      if (newCell) {
-        this.cell = newCell;
+      var targetPosition = nextCell.getTopLeftPosition();
+      var nextPosition = this.calculateNextPosition(this.position, targetPosition, PIXELS_PER_STEP);
+      var nextPositionCell = this.game.grid.getCellAtPosition(nextPosition);
+
+      if (nextPositionCell) {
+        this.cell = nextPositionCell;
+        this.position = nextPosition;
       } else {
         this.game.removeGoon(this);
       }
+    }
+
+    /**
+     * Given the current and target position and the size of a step, calculate the new position after one step.
+     * @param  {Point} current - Current position.
+     * @param  {Point} target - Target position.
+     * @param  {number} step - Size of the step (in pixels).
+     * @return {Point} Position after one step.
+     */
+
+  }, {
+    key: 'calculateNextPosition',
+    value: function calculateNextPosition(current, target, step) {
+      // TODO: check this logic for negative dy
+      var dx = target.x - current.x;
+      var dy = target.y - current.y;
+      var hyp = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+      var sin = dy / hyp;
+      var cos = dx / hyp;
+
+      var dyStep = sin * step;
+      var dxStep = cos * step;
+
+      var nextX = Math.round(current.x + dxStep);
+      var nextY = Math.round(current.y + dyStep);
+      return { x: nextX, y: nextY };
     }
   }]);
 
