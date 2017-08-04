@@ -11,10 +11,11 @@ import PathFinder from './path-finder'
 
 export default class Game {
   constructor () {
-    this.grid = new Grid({width: 1000, height: 800})
+    this.grid = new Grid({width: 1000, height: 600})
     this.pathFinder = new PathFinder(this.grid)
     this.towers = []
     this.goons = []
+    this.highlight = undefined
     this.spawnedGoons = 0
 
     this.intervalId = window.setInterval(this.spawnGoon.bind(this), 800)
@@ -27,23 +28,35 @@ export default class Game {
   onUserClick (position) {
     const towerCells = this.grid.getCellsAround(position, TOWER_SIZE.rows, TOWER_SIZE.cols)
     // occupied ?
-    if (towerCells.some(cell => cell.blocked)) {
+    if (!towerCells || towerCells.some(cell => cell.blocked)) {
       return
     }
     towerCells.forEach(cell => { cell.blocked = true })
-    const towerBoundaries = {
-      topLeft: towerCells[0].getTopLeftPosition(),
-      bottomRight: towerCells[towerCells.length - 1].getBottomRightPosition()
-    }
+    const towerBoundaries = this._getCellsBoudaries(towerCells)
     const tower = new Tower(towerBoundaries)
     this.towers.push(tower)
     this.pathFinder.recalculate()
+  }
+
+  onHover (position) {
+    const towerCells = this.grid.getCellsAround(position, TOWER_SIZE.rows, TOWER_SIZE.cols)
+    if (!towerCells) {
+      this.highlight = undefined
+      return
+    }
+    const towerBoundaries = this._getCellsBoudaries(towerCells)
+    const isOcuppied = towerCells.some(cell => cell.blocked)
+    this.highlight = {
+      boundaries: towerBoundaries,
+      valid: !isOcuppied
+    }
   }
 
   /**
    * Spawn a new goon.
    */
   spawnGoon () {
+    const NUMBER_OF_GOONS_TO_SPAWN = 10
     const spawnCoords = {
       row: Math.floor(Math.random() * this.grid.rowCount),
       col: 0
@@ -52,7 +65,7 @@ export default class Game {
     const id = Date.now()
     const goon = new Goon(id, spawnCell, this, this.pathFinder)
     this.goons.push(goon)
-    if (++this.spawnedGoons >= 10) {
+    if (++this.spawnedGoons >= NUMBER_OF_GOONS_TO_SPAWN) {
       window.clearInterval(this.intervalId)
     }
   }
@@ -70,5 +83,12 @@ export default class Game {
    */
   update (delta) {
     this.goons.forEach((goon) => goon.update(delta))
+  }
+
+  _getCellsBoudaries (cells) {
+    return {
+      topLeft: cells[0].getTopLeftPosition(),
+      bottomRight: cells[cells.length - 1].getBottomRightPosition()
+    }
   }
 }

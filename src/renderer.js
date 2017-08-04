@@ -22,6 +22,8 @@ class Renderer {
 
     // bind events
     this.canvas.onclick = this.onCanvasClick.bind(this)
+    this.canvas.onmousemove = this.onMouseMove.bind(this)
+    this.canvas.onmouseout = this.onMouseMove.bind(this)
   }
 
   /**
@@ -51,6 +53,16 @@ class Renderer {
    */
   render () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    // 0: highlight
+    if (this.game.highlight) {
+      let stroke = 'green'
+      let fill = 'lightgreen'
+      if (!this.game.highlight.valid) {
+        stroke = 'red'
+        fill = 'lightcoral'
+      }
+      this._paintBoundaries(this.game.highlight.boundaries, stroke, fill)
+    }
 
     // 1st layer: towers
     this.game.towers.forEach((tower) => {
@@ -77,11 +89,7 @@ class Renderer {
     })
 
     this.game.towers.forEach((tower) => {
-      let position = tower.getBoundaries().topLeft
-      let w = tower.getBoundaries().bottomRight.x - position.x
-      let h = tower.getBoundaries().bottomRight.y - position.y
-      this.context.strokeStyle = 'red'
-      this.context.strokeRect(position.x, position.y, w, h)
+      this._paintBoundaries(tower.getBoundaries(), 'red')
     })
   }
 
@@ -95,6 +103,28 @@ class Renderer {
       y: event.clientY - event.target.offsetTop
     }
     this.game.onUserClick(mousePosition)
+  }
+
+  onMouseMove (event) {
+    var mousePosition = {
+      x: event.clientX - event.target.offsetLeft,
+      y: event.clientY - event.target.offsetTop
+    }
+    this.game.onHover(mousePosition)
+  }
+
+  _paintBoundaries (boundaries, stroke, fill) {
+    let position = boundaries.topLeft
+    let w = boundaries.bottomRight.x - position.x
+    let h = boundaries.bottomRight.y - position.y
+    if (stroke) {
+      this.context.strokeStyle = stroke
+      this.context.strokeRect(position.x, position.y, w, h)
+    }
+    if (fill) {
+      this.context.fillStyle = fill
+      this.context.fillRect(position.x, position.y, w, h)
+    }
   }
 }
 

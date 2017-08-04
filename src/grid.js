@@ -74,14 +74,11 @@ export default class Grid {
       {row: coord.row - 1, col: coord.col},
       {row: coord.row, col: coord.col + 1},
       {row: coord.row + 1, col: coord.col}
-    ].filter((nCoord) => (
-      nCoord.col >= 0 &&
-      nCoord.col < grid.colCount &&
-      nCoord.row >= 0 &&
-      nCoord.row < grid.rowCount
-    )).map((nCoord) => (
-      grid.get(nCoord.row, nCoord.col)
-    )).filter((cell) => (
+    ].filter(coord => (
+      !this._isOutOfGrid(coord)
+    )).map(coord => (
+      grid.get(coord.row, coord.col)
+    )).filter(cell => (
       cell.dist === undefined &&
       !cell.blocked
     ))
@@ -139,11 +136,17 @@ export default class Grid {
    */
   getCellsAround (point, rowCount, colCount) {
     const center = this.getCellAtPosition(point)
-
+    if (!center) {
+      return undefined
+    }
     const topRow = center.coord.row - Math.floor(rowCount / 2)
     const bottomRow = topRow + rowCount - 1
     const leftCol = center.coord.col - Math.floor(colCount / 2)
     const rightCol = leftCol + colCount - 1
+    if (this._isOutOfGrid({row: topRow, col: leftCol}) ||
+      this._isOutOfGrid({row: bottomRow, col: rightCol})) {
+      return undefined
+    }
 
     const cells = []
     for (let row = topRow; row <= bottomRow; row++) {
@@ -152,5 +155,17 @@ export default class Grid {
       }
     }
     return cells
+  }
+
+  /**
+   * Check if a coordinate is out of the grid.
+   * @param  {Coord} coord
+   * @return {Boolean}       [description]
+   */
+  _isOutOfGrid (coord) {
+    return coord.col < 0 ||
+      coord.col >= this.colCount ||
+      coord.row < 0 ||
+      coord.row >= this.rowCount
   }
 }
