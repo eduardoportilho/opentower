@@ -39,7 +39,7 @@ class Renderer {
    */
   tick () {
     const now = Date.now()
-    const delta = (now - this.lastTick) / 1000.0
+    const delta = (now - this.lastTick)
 
     this.game.update(delta)
     this.lastTick = now

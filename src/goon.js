@@ -1,15 +1,13 @@
 import {imageCache} from './image-cache.js'
 
-const PIXELS_PER_STEP = 2
-
 export default class Goon {
-  constructor (id, cell, game, pathFinder) {
+  constructor (id, initialCell, game, pathFinder) {
     this.id = id
     this.game = game
     this.pathFinder = pathFinder
-    this.timeSinceLastStep = 0
-    this.cell = cell
+    this.cell = initialCell
     this.position = this.cell.getTopLeftPosition()
+    this.speed = 100 // px/sec
   }
 
   /**
@@ -31,9 +29,11 @@ export default class Goon {
       this.game.removeGoon(this)
       return
     }
-
-    const targetPosition = nextCell.getTopLeftPosition()
-    const nextPosition = this.calculateNextPosition(this.position, targetPosition, PIXELS_PER_STEP)
+    const stepSize = this.speed * delta / 1000.0
+    // TODO: change path from [pos -> center2] to [center1 -> center2 - offset(pos, center1)]
+    // this will make the size of path constant.
+    const targetPosition = nextCell.getCenterPosition()
+    const nextPosition = this.calculateNextPosition(this.position, targetPosition, stepSize)
     const nextPositionCell = this.game.grid.getCellAtPosition(nextPosition)
 
     if (nextPositionCell) {
@@ -48,10 +48,10 @@ export default class Goon {
    * Given the current and target position and the size of a step, calculate the new position after one step.
    * @param  {Point} current - Current position.
    * @param  {Point} target - Target position.
-   * @param  {number} step - Size of the step (in pixels).
+   * @param  {number} stepSize - Size of the step (in pixels).
    * @return {Point} Position after one step.
    */
-  calculateNextPosition (current, target, step) {
+  calculateNextPosition (current, target, stepSize) {
     // TODO: check this logic for negative dy
     const dx = target.x - current.x
     const dy = target.y - current.y
@@ -59,11 +59,11 @@ export default class Goon {
     const sin = dy / hyp
     const cos = dx / hyp
 
-    const dyStep = sin * step
-    const dxStep = cos * step
+    const dyStep = sin * stepSize
+    const dxStep = cos * stepSize
 
-    const nextX = Math.round(current.x + dxStep)
-    const nextY = Math.round(current.y + dyStep)
+    const nextX = Math.ceil(current.x + dxStep)
+    const nextY = Math.ceil(current.y + dyStep)
     return {x: nextX, y: nextY}
   }
 }

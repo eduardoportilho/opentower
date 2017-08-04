@@ -286,10 +286,11 @@ var Game = function () {
   function Game() {
     _classCallCheck(this, Game);
 
-    this.grid = new _grid2.default({ width: 1000, height: 800 });
+    this.grid = new _grid2.default({ width: 1000, height: 600 });
     this.pathFinder = new _pathFinder2.default(this.grid);
     this.towers = [];
     this.goons = [];
+    this.highlight = undefined;
     this.spawnedGoons = 0;
 
     this.intervalId = window.setInterval(this.spawnGoon.bind(this), 800);
@@ -306,7 +307,7 @@ var Game = function () {
     value: function onUserClick(position) {
       var towerCells = this.grid.getCellsAround(position, _tower.TOWER_SIZE.rows, _tower.TOWER_SIZE.cols);
       // occupied ?
-      if (towerCells.some(function (cell) {
+      if (!towerCells || towerCells.some(function (cell) {
         return cell.blocked;
       })) {
         return;
@@ -314,13 +315,27 @@ var Game = function () {
       towerCells.forEach(function (cell) {
         cell.blocked = true;
       });
-      var towerBoundaries = {
-        topLeft: towerCells[0].getTopLeftPosition(),
-        bottomRight: towerCells[towerCells.length - 1].getBottomRightPosition()
-      };
+      var towerBoundaries = this._getCellsBoudaries(towerCells);
       var tower = new _tower.Tower(towerBoundaries);
       this.towers.push(tower);
       this.pathFinder.recalculate();
+    }
+  }, {
+    key: 'onHover',
+    value: function onHover(position) {
+      var towerCells = this.grid.getCellsAround(position, _tower.TOWER_SIZE.rows, _tower.TOWER_SIZE.cols);
+      if (!towerCells) {
+        this.highlight = undefined;
+        return;
+      }
+      var towerBoundaries = this._getCellsBoudaries(towerCells);
+      var isOcuppied = towerCells.some(function (cell) {
+        return cell.blocked;
+      });
+      this.highlight = {
+        boundaries: towerBoundaries,
+        valid: !isOcuppied
+      };
     }
 
     /**
@@ -330,6 +345,7 @@ var Game = function () {
   }, {
     key: 'spawnGoon',
     value: function spawnGoon() {
+      var NUMBER_OF_GOONS_TO_SPAWN = 10;
       var spawnCoords = {
         row: Math.floor(Math.random() * this.grid.rowCount),
         col: 0
@@ -338,7 +354,7 @@ var Game = function () {
       var id = Date.now();
       var goon = new _goon2.default(id, spawnCell, this, this.pathFinder);
       this.goons.push(goon);
-      if (++this.spawnedGoons >= 10) {
+      if (++this.spawnedGoons >= NUMBER_OF_GOONS_TO_SPAWN) {
         window.clearInterval(this.intervalId);
       }
     }
@@ -364,6 +380,14 @@ var Game = function () {
       this.goons.forEach(function (goon) {
         return goon.update(delta);
       });
+    }
+  }, {
+    key: '_getCellsBoudaries',
+    value: function _getCellsBoudaries(cells) {
+      return {
+        topLeft: cells[0].getTopLeftPosition(),
+        bottomRight: cells[cells.length - 1].getBottomRightPosition()
+      };
     }
   }]);
 
@@ -470,12 +494,14 @@ var Grid = function () {
   }, {
     key: 'getUnvisitedNeighboursCells',
     value: function getUnvisitedNeighboursCells(cell) {
+      var _this = this;
+
       var coord = cell.coord;
       var grid = this;
-      return [{ row: coord.row, col: coord.col - 1 }, { row: coord.row - 1, col: coord.col }, { row: coord.row, col: coord.col + 1 }, { row: coord.row + 1, col: coord.col }].filter(function (nCoord) {
-        return nCoord.col >= 0 && nCoord.col < grid.colCount && nCoord.row >= 0 && nCoord.row < grid.rowCount;
-      }).map(function (nCoord) {
-        return grid.get(nCoord.row, nCoord.col);
+      return [{ row: coord.row, col: coord.col - 1 }, { row: coord.row - 1, col: coord.col }, { row: coord.row, col: coord.col + 1 }, { row: coord.row + 1, col: coord.col }].filter(function (coord) {
+        return !_this._isOutOfGrid(coord);
+      }).map(function (coord) {
+        return grid.get(coord.row, coord.col);
       }).filter(function (cell) {
         return cell.dist === undefined && !cell.blocked;
       });
@@ -541,11 +567,16 @@ var Grid = function () {
     key: 'getCellsAround',
     value: function getCellsAround(point, rowCount, colCount) {
       var center = this.getCellAtPosition(point);
-
+      if (!center) {
+        return undefined;
+      }
       var topRow = center.coord.row - Math.floor(rowCount / 2);
       var bottomRow = topRow + rowCount - 1;
       var leftCol = center.coord.col - Math.floor(colCount / 2);
       var rightCol = leftCol + colCount - 1;
+      if (this._isOutOfGrid({ row: topRow, col: leftCol }) || this._isOutOfGrid({ row: bottomRow, col: rightCol })) {
+        return undefined;
+      }
 
       var cells = [];
       for (var row = topRow; row <= bottomRow; row++) {
@@ -554,6 +585,18 @@ var Grid = function () {
         }
       }
       return cells;
+    }
+
+    /**
+     * Check if a coordinate is out of the grid.
+     * @param  {Coord} coord
+     * @return {Boolean}       [description]
+     */
+
+  }, {
+    key: '_isOutOfGrid',
+    value: function _isOutOfGrid(coord) {
+      return coord.col < 0 || coord.col >= this.colCount || coord.row < 0 || coord.row >= this.rowCount;
     }
   }]);
 
@@ -698,18 +741,16 @@ var _imageCache = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var PIXELS_PER_STEP = 2;
-
 var Goon = function () {
-  function Goon(id, cell, game, pathFinder) {
+  function Goon(id, initialCell, game, pathFinder) {
     _classCallCheck(this, Goon);
 
     this.id = id;
     this.game = game;
     this.pathFinder = pathFinder;
-    this.timeSinceLastStep = 0;
-    this.cell = cell;
+    this.cell = initialCell;
     this.position = this.cell.getTopLeftPosition();
+    this.speed = 100; // px/sec
   }
 
   /**
@@ -738,9 +779,11 @@ var Goon = function () {
         this.game.removeGoon(this);
         return;
       }
-
-      var targetPosition = nextCell.getTopLeftPosition();
-      var nextPosition = this.calculateNextPosition(this.position, targetPosition, PIXELS_PER_STEP);
+      var stepSize = this.speed * delta / 1000.0;
+      // TODO: change path from [pos -> center2] to [center1 -> center2 - offset(pos, center1)]
+      // this will make the size of path constant.
+      var targetPosition = nextCell.getCenterPosition();
+      var nextPosition = this.calculateNextPosition(this.position, targetPosition, stepSize);
       var nextPositionCell = this.game.grid.getCellAtPosition(nextPosition);
 
       if (nextPositionCell) {
@@ -755,13 +798,13 @@ var Goon = function () {
      * Given the current and target position and the size of a step, calculate the new position after one step.
      * @param  {Point} current - Current position.
      * @param  {Point} target - Target position.
-     * @param  {number} step - Size of the step (in pixels).
+     * @param  {number} stepSize - Size of the step (in pixels).
      * @return {Point} Position after one step.
      */
 
   }, {
     key: 'calculateNextPosition',
-    value: function calculateNextPosition(current, target, step) {
+    value: function calculateNextPosition(current, target, stepSize) {
       // TODO: check this logic for negative dy
       var dx = target.x - current.x;
       var dy = target.y - current.y;
@@ -769,11 +812,11 @@ var Goon = function () {
       var sin = dy / hyp;
       var cos = dx / hyp;
 
-      var dyStep = sin * step;
-      var dxStep = cos * step;
+      var dyStep = sin * stepSize;
+      var dxStep = cos * stepSize;
 
-      var nextX = Math.round(current.x + dxStep);
-      var nextY = Math.round(current.y + dyStep);
+      var nextX = Math.ceil(current.x + dxStep);
+      var nextY = Math.ceil(current.y + dyStep);
       return { x: nextX, y: nextY };
     }
   }]);
@@ -918,6 +961,8 @@ var Renderer = function () {
 
     // bind events
     this.canvas.onclick = this.onCanvasClick.bind(this);
+    this.canvas.onmousemove = this.onMouseMove.bind(this);
+    this.canvas.onmouseout = this.onMouseMove.bind(this);
   }
 
   /**
@@ -940,7 +985,7 @@ var Renderer = function () {
     key: 'tick',
     value: function tick() {
       var now = Date.now();
-      var delta = (now - this.lastTick) / 1000.0;
+      var delta = now - this.lastTick;
 
       this.game.update(delta);
       this.lastTick = now;
@@ -959,6 +1004,16 @@ var Renderer = function () {
       var _this = this;
 
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      // 0: highlight
+      if (this.game.highlight) {
+        var stroke = 'green';
+        var fill = 'lightgreen';
+        if (!this.game.highlight.valid) {
+          stroke = 'red';
+          fill = 'lightcoral';
+        }
+        this._paintBoundaries(this.game.highlight.boundaries, stroke, fill);
+      }
 
       // 1st layer: towers
       this.game.towers.forEach(function (tower) {
@@ -992,11 +1047,7 @@ var Renderer = function () {
       });
 
       this.game.towers.forEach(function (tower) {
-        var position = tower.getBoundaries().topLeft;
-        var w = tower.getBoundaries().bottomRight.x - position.x;
-        var h = tower.getBoundaries().bottomRight.y - position.y;
-        _this2.context.strokeStyle = 'red';
-        _this2.context.strokeRect(position.x, position.y, w, h);
+        _this2._paintBoundaries(tower.getBoundaries(), 'red');
       });
     }
 
@@ -1014,6 +1065,30 @@ var Renderer = function () {
       };
       this.game.onUserClick(mousePosition);
     }
+  }, {
+    key: 'onMouseMove',
+    value: function onMouseMove(event) {
+      var mousePosition = {
+        x: event.clientX - event.target.offsetLeft,
+        y: event.clientY - event.target.offsetTop
+      };
+      this.game.onHover(mousePosition);
+    }
+  }, {
+    key: '_paintBoundaries',
+    value: function _paintBoundaries(boundaries, stroke, fill) {
+      var position = boundaries.topLeft;
+      var w = boundaries.bottomRight.x - position.x;
+      var h = boundaries.bottomRight.y - position.y;
+      if (stroke) {
+        this.context.strokeStyle = stroke;
+        this.context.strokeRect(position.x, position.y, w, h);
+      }
+      if (fill) {
+        this.context.fillStyle = fill;
+        this.context.fillRect(position.x, position.y, w, h);
+      }
+    }
   }]);
 
   return Renderer;
@@ -1023,3 +1098,4 @@ exports.default = Renderer;
 
 /***/ })
 /******/ ]);
+//# sourceMappingURL=bundle.js.map
