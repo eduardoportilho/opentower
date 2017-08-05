@@ -48,7 +48,11 @@ export default class Grid {
    * @return {Cell}
    */
   get (row, col) {
-    return this.grid[row][col]
+    try {
+      return this.grid[row][col]
+    } catch (any) {
+      return undefined
+    }
   }
 
   /**
