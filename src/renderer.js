@@ -110,7 +110,7 @@ class Renderer {
       x: event.clientX - event.target.offsetLeft,
       y: event.clientY - event.target.offsetTop
     }
-    this.game.onHover(mousePosition)
+    this.game.onMouseMove(mousePosition)
   }
 
   _paintBoundaries (boundaries, stroke, fill) {

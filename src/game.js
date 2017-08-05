@@ -28,7 +28,7 @@ export default class Game {
   onUserClick (position) {
     const towerCells = this.grid.getCellsAround(position, TOWER_SIZE.rows, TOWER_SIZE.cols)
     // occupied ?
-    if (!towerCells || towerCells.some(cell => cell.blocked)) {
+    if (!towerCells || towerCells.some(cell => cell.blocked || cell.hasGoon)) {
       return
     }
     towerCells.forEach(cell => { cell.blocked = true })
@@ -38,14 +38,21 @@ export default class Game {
     this.pathFinder.recalculate()
   }
 
-  onHover (position) {
-    const towerCells = this.grid.getCellsAround(position, TOWER_SIZE.rows, TOWER_SIZE.cols)
+  onMouseMove (position) {
+    this.mousePosition = position
+  }
+
+  updateHighlight () {
+    if (!this.mousePosition) {
+      return
+    }
+    const towerCells = this.grid.getCellsAround(this.mousePosition, TOWER_SIZE.rows, TOWER_SIZE.cols)
     if (!towerCells) {
       this.highlight = undefined
       return
     }
     const towerBoundaries = this._getCellsBoudaries(towerCells)
-    const isOcuppied = towerCells.some(cell => cell.blocked)
+    const isOcuppied = towerCells.some(cell => cell.blocked || cell.hasGoon)
     this.highlight = {
       boundaries: towerBoundaries,
       valid: !isOcuppied
@@ -83,6 +90,7 @@ export default class Game {
    */
   update (delta) {
     this.goons.forEach((goon) => goon.update(delta))
+    this.updateHighlight()
   }
 
   _getCellsBoudaries (cells) {

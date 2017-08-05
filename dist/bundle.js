@@ -308,7 +308,7 @@ var Game = function () {
       var towerCells = this.grid.getCellsAround(position, _tower.TOWER_SIZE.rows, _tower.TOWER_SIZE.cols);
       // occupied ?
       if (!towerCells || towerCells.some(function (cell) {
-        return cell.blocked;
+        return cell.blocked || cell.hasGoon;
       })) {
         return;
       }
@@ -321,16 +321,24 @@ var Game = function () {
       this.pathFinder.recalculate();
     }
   }, {
-    key: 'onHover',
-    value: function onHover(position) {
-      var towerCells = this.grid.getCellsAround(position, _tower.TOWER_SIZE.rows, _tower.TOWER_SIZE.cols);
+    key: 'onMouseMove',
+    value: function onMouseMove(position) {
+      this.mousePosition = position;
+    }
+  }, {
+    key: 'updateHighlight',
+    value: function updateHighlight() {
+      if (!this.mousePosition) {
+        return;
+      }
+      var towerCells = this.grid.getCellsAround(this.mousePosition, _tower.TOWER_SIZE.rows, _tower.TOWER_SIZE.cols);
       if (!towerCells) {
         this.highlight = undefined;
         return;
       }
       var towerBoundaries = this._getCellsBoudaries(towerCells);
       var isOcuppied = towerCells.some(function (cell) {
-        return cell.blocked;
+        return cell.blocked || cell.hasGoon;
       });
       this.highlight = {
         boundaries: towerBoundaries,
@@ -380,6 +388,7 @@ var Game = function () {
       this.goons.forEach(function (goon) {
         return goon.update(delta);
       });
+      this.updateHighlight();
     }
   }, {
     key: '_getCellsBoudaries',
@@ -749,6 +758,7 @@ var Goon = function () {
     this.game = game;
     this.pathFinder = pathFinder;
     this.cell = initialCell;
+    this.cell.hasGoon = true;
     this.position = this.cell.getTopLeftPosition();
     this.speed = 100; // px/sec
   }
@@ -774,6 +784,7 @@ var Goon = function () {
   }, {
     key: 'update',
     value: function update(delta) {
+      this.cell.hasGoon = false;
       var nextCell = this.pathFinder.nextCell(this.cell, 1);
       if (!nextCell) {
         this.game.removeGoon(this);
@@ -788,6 +799,7 @@ var Goon = function () {
 
       if (nextPositionCell) {
         this.cell = nextPositionCell;
+        this.cell.hasGoon = true;
         this.position = nextPosition;
       } else {
         this.game.removeGoon(this);
@@ -1072,7 +1084,7 @@ var Renderer = function () {
         x: event.clientX - event.target.offsetLeft,
         y: event.clientY - event.target.offsetTop
       };
-      this.game.onHover(mousePosition);
+      this.game.onMouseMove(mousePosition);
     }
   }, {
     key: '_paintBoundaries',

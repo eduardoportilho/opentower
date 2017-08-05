@@ -6,6 +6,7 @@ export default class Goon {
     this.game = game
     this.pathFinder = pathFinder
     this.cell = initialCell
+    this.cell.hasGoon = true
     this.position = this.cell.getTopLeftPosition()
     this.speed = 100 // px/sec
   }
@@ -24,6 +25,7 @@ export default class Goon {
    * @param  {number} delta - ms since last update.
    */
   update (delta) {
+    this.cell.hasGoon = false
     const nextCell = this.pathFinder.nextCell(this.cell, 1)
     if (!nextCell) {
       this.game.removeGoon(this)
@@ -38,6 +40,7 @@ export default class Goon {
 
     if (nextPositionCell) {
       this.cell = nextPositionCell
+      this.cell.hasGoon = true
       this.position = nextPosition
     } else {
       this.game.removeGoon(this)
