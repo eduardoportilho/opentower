@@ -8,6 +8,7 @@ import Grid from './grid'
 import {Tower, TOWER_SIZE} from './tower'
 import Goon from './goon'
 import PathFinder from './path-finder'
+import random from './random'
 
 export default class Game {
   constructor () {
@@ -17,6 +18,7 @@ export default class Game {
     this.goons = []
     this.highlight = undefined
     this.spawnedGoons = 0
+    this.spawnLocations = this.getSpawnLocations()
 
     this.intervalId = window.setInterval(this.spawnGoons.bind(this), 800)
   }
@@ -77,10 +79,8 @@ export default class Game {
    */
   spawnGoons () {
     const NUMBER_OF_GOONS_TO_SPAWN = 10
-    // TODO: Use fixed spawn locations
-    const row = Math.floor(Math.random() * this.grid.rowCount)
-    const col = 0
-    this.spawnGoon(row, col)
+    const location = random.getRandomElementFromArray(this.spawnLocations)
+    this.spawnGoon(location.row, location.col)
     if (++this.spawnedGoons >= NUMBER_OF_GOONS_TO_SPAWN) {
       window.clearInterval(this.intervalId)
     }
@@ -107,6 +107,20 @@ export default class Game {
   update (delta) {
     this.goons.forEach((goon) => goon.update(delta))
     this.updateHighlight()
+  }
+
+  getSpawnLocations () {
+    const middle = Math.round(this.grid.rowCount / 2)
+    let count = Math.min(10, Math.round(this.grid.rowCount / 3))
+    let row = middle - Math.round(count / 2)
+    const locations = []
+    while (count-- > 0) {
+      locations.push({
+        row: row++,
+        col: 0
+      })
+    }
+    return locations
   }
 
   _getCellsBoudaries (cells) {

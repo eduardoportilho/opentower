@@ -306,6 +306,10 @@ var _pathFinder = __webpack_require__(8);
 
 var _pathFinder2 = _interopRequireDefault(_pathFinder);
 
+var _random = __webpack_require__(10);
+
+var _random2 = _interopRequireDefault(_random);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -320,6 +324,7 @@ var Game = function () {
     this.goons = [];
     this.highlight = undefined;
     this.spawnedGoons = 0;
+    this.spawnLocations = this.getSpawnLocations();
 
     this.intervalId = window.setInterval(this.spawnGoons.bind(this), 800);
   }
@@ -401,10 +406,8 @@ var Game = function () {
     key: 'spawnGoons',
     value: function spawnGoons() {
       var NUMBER_OF_GOONS_TO_SPAWN = 10;
-      // TODO: Use fixed spawn locations
-      var row = Math.floor(Math.random() * this.grid.rowCount);
-      var col = 0;
-      this.spawnGoon(row, col);
+      var location = _random2.default.getRandomElementFromArray(this.spawnLocations);
+      this.spawnGoon(location.row, location.col);
       if (++this.spawnedGoons >= NUMBER_OF_GOONS_TO_SPAWN) {
         window.clearInterval(this.intervalId);
       }
@@ -440,6 +443,21 @@ var Game = function () {
         return goon.update(delta);
       });
       this.updateHighlight();
+    }
+  }, {
+    key: 'getSpawnLocations',
+    value: function getSpawnLocations() {
+      var middle = Math.round(this.grid.rowCount / 2);
+      var count = Math.min(10, Math.round(this.grid.rowCount / 3));
+      var row = middle - Math.round(count / 2);
+      var locations = [];
+      while (count-- > 0) {
+        locations.push({
+          row: row++,
+          col: 0
+        });
+      }
+      return locations;
     }
   }, {
     key: '_getCellsBoudaries',
@@ -1172,6 +1190,80 @@ var Renderer = function () {
 }();
 
 exports.default = Renderer;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Random = function () {
+  function Random() {
+    _classCallCheck(this, Random);
+  }
+
+  _createClass(Random, [{
+    key: "yesOrNo",
+    value: function yesOrNo(yesChance) {
+      yesChance = yesChance || 0.5;
+      return Math.random() < yesChance;
+    }
+  }, {
+    key: "getRandomIntExclusive",
+    value: function getRandomIntExclusive(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      // The maximum is exclusive and the minimum is inclusive
+      return Math.floor(Math.random() * (max - min)) + min;
+    }
+  }, {
+    key: "getRandomIntInclusive",
+    value: function getRandomIntInclusive(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      // The maximum is inclusive and the minimum is inclusive
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+  }, {
+    key: "getRandomElementFromArray",
+    value: function getRandomElementFromArray(array) {
+      var index = this.getRandomIntExclusive(0, array.length);
+      return array[index];
+    }
+  }, {
+    key: "shuffle",
+    value: function shuffle(array) {
+      var currentIndex = array.length;
+      var temporaryValue = void 0,
+          randomIndex = void 0;
+
+      // While there remain elements to shuffle...
+      while (currentIndex !== 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+      }
+    }
+  }]);
+
+  return Random;
+}();
+
+exports.default = new Random();
 
 /***/ })
 /******/ ]);
