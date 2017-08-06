@@ -8,7 +8,7 @@ export default class Goon {
     this.cell = initialCell
     this.cell.hasGoon = true
     this.position = this.cell.getTopLeftPosition()
-    this.speed = 60 // px/sec
+    this.speed = 50 // px/sec
   }
 
   /**
@@ -38,11 +38,10 @@ export default class Goon {
       y: nextCell.getTopLeftPosition().y + offset.y
     }
 
-    const stepSize = this.speed * delta / 1000.0
+    const stepSize = Math.max(1, this.speed * delta / 1000.0)
     const nextPosition = this.calculateNextPosition(this.position, targetPosition, stepSize)
     // Might happen that stepSize is not enought to change cell
     const nextPositionCell = this.game.grid.getCellAtPosition(nextPosition)
-    console.log(`NP:`, nextPosition)
 
     if (nextPositionCell) {
       this.cell = nextPositionCell
