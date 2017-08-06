@@ -11,9 +11,11 @@
             - Is it possible to move in pixels but to use a cell path? 
         * Another problem is that if we calculate the path in pixels, the goon might pass between two towers if there is 1 px space (and the goon image needs to be bigger than 1 px)
             - Is it possible to implement pathfinder with a goon that occupy more than 1 cell? Am I overcomplicating?
+✔ - If you deploy a tower on top of a goon he disaper
 
 - Goons going out of grid
-- If you deploy a tower on top of a goon he disaper
+- Goon stoping (ex. when they need to return)
+- Weird movement on speed 50
 
 ## Features:
 ✔︎ - expose grid draw method
@@ -36,8 +38,9 @@
 ✔ - Represent tower with cells instead of image.
 ✔ - Highlight tower boundaries on hover.
 ✔ - Define goon speed in pixels/s (instead of pixels/step)
+✔ - Detect if the path to target would be blocked before deploying a tower and avoid the deploy if so.
 
-- Detect if the path to target would be blocked before deploying a tower and avoid the deploy if so.
+- Implement pause and step to debug
 - make tower shot
     + detect goons in range (on clock)
     + deduct goon life
