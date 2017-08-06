@@ -19,6 +19,7 @@ export class Tower {
     this.topLeftPosition = boundaries.topLeft
     this.width = boundaries.bottomRight.x - boundaries.topLeft.x
     this.height = boundaries.bottomRight.y - boundaries.topLeft.y
+    // TODO fireRange = calculate tower range
   }
 
   /**
@@ -30,6 +31,16 @@ export class Tower {
     context.strokeStyle = 'dimgray'
     context.fillRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height)
     context.strokeRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height)
+  }
+  /**
+   * Update tower state.
+   * @param  {number} delta - ms since last update.
+   */
+  update (delta) {
+    // TODO 
+    // targets = getGoonsInFireRange
+    // targets[0].damage(x)
+    // startReloading
   }
 
   /**
