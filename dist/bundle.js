@@ -764,8 +764,8 @@ var Tower = exports.Tower = function () {
   _createClass(Tower, [{
     key: 'draw',
     value: function draw(context) {
-      context.fillStyle = 'azure';
-      context.strokeStyle = 'lightskyblue';
+      context.fillStyle = 'lightgray';
+      context.strokeStyle = 'dimgray';
       context.fillRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height);
       context.strokeRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height);
     }

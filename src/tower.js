@@ -26,8 +26,8 @@ export class Tower {
    * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
    */
   draw (context) {
-    context.fillStyle = 'azure'
-    context.strokeStyle = 'lightskyblue'
+    context.fillStyle = 'lightgray'
+    context.strokeStyle = 'dimgray'
     context.fillRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height)
     context.strokeRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height)
   }
