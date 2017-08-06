@@ -21,4 +21,12 @@ function initCtrlPanel (game) {
     const y = document.getElementById('y').value
     game.spawnGoon(x, y)
   }
+
+  document.getElementById('speedUpdate').onclick = function (e) {
+    e.stopPropagation()
+    e.preventDefault()
+
+    const speed = parseInt(document.getElementById('speed').value)
+    game.goons.forEach(goon => {goon.speed = speed})
+  }
 }

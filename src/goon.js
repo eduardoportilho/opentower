@@ -1,4 +1,10 @@
 import {imageCache} from './image-cache.js'
+import {CELL_EDGE_SIZE} from './cell'
+
+const GOON_IMAGE_SIZE = {
+  width: 14,
+  height: 20
+}
 
 export default class Goon {
   constructor (id, initialCell, game, pathFinder) {
@@ -18,8 +24,12 @@ export default class Goon {
    * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
    */
   draw (context) {
-    var img = imageCache['goon-1']
-    context.drawImage(img, this.position.x, this.position.y)
+    // context.fillStyle = 'gold'
+    // const cellOrigin = this.cell.getTopLeftPosition()
+    // context.fillRect(cellOrigin.x, cellOrigin.y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
+
+    const img = imageCache['goon-1']
+    context.drawImage(img, this.position.x, this.position.y - Math.round(GOON_IMAGE_SIZE.height / 2))
   }
 
   /**

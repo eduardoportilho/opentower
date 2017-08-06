@@ -73,55 +73,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.loadImageCache = loadImageCache;
-/* global Image */
-
-/**
- * List of images to load.
- * @type {Object}
- */
-var imageUrls = {
-  'tower-1': '../images/tower-1.png',
-  'goon-1': '../images/goon-1.png'
-
-  /**
-   * Global image cache.
-   * @type {Object}
-   */
-};var imageCache = exports.imageCache = {};
-
-/**
- * Load the images on the cache and call the callback when ready.
- * @param  {function} onLoadComplete
- */
-function loadImageCache(onLoadComplete) {
-  var _loop = function _loop(key) {
-    var url = imageUrls[key];
-    var img = new Image();
-    img.onload = function () {
-      imageCache[key] = img;
-      if (Object.keys(imageCache).length === Object.keys(imageUrls).length) {
-        onLoadComplete();
-      }
-    };
-    img.src = url;
-  };
-
-  for (var key in imageUrls) {
-    _loop(key);
-  }
-}
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 exports.Cell = exports.CELL_EDGE_SIZE = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
@@ -236,13 +187,62 @@ var Cell = exports.Cell = function () {
 }();
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.loadImageCache = loadImageCache;
+/* global Image */
+
+/**
+ * List of images to load.
+ * @type {Object}
+ */
+var imageUrls = {
+  'tower-1': '../images/tower-1.png',
+  'goon-1': '../images/goon-1.png'
+
+  /**
+   * Global image cache.
+   * @type {Object}
+   */
+};var imageCache = exports.imageCache = {};
+
+/**
+ * Load the images on the cache and call the callback when ready.
+ * @param  {function} onLoadComplete
+ */
+function loadImageCache(onLoadComplete) {
+  var _loop = function _loop(key) {
+    var url = imageUrls[key];
+    var img = new Image();
+    img.onload = function () {
+      imageCache[key] = img;
+      if (Object.keys(imageCache).length === Object.keys(imageUrls).length) {
+        onLoadComplete();
+      }
+    };
+    img.src = url;
+  };
+
+  for (var key in imageUrls) {
+    _loop(key);
+  }
+}
+
+/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _imageCache = __webpack_require__(0);
+var _imageCache = __webpack_require__(1);
 
 var _game = __webpack_require__(3);
 
@@ -272,6 +272,16 @@ function initCtrlPanel(game) {
     var x = document.getElementById('x').value;
     var y = document.getElementById('y').value;
     game.spawnGoon(x, y);
+  };
+
+  document.getElementById('speedUpdate').onclick = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    var speed = parseInt(document.getElementById('speed').value);
+    game.goons.forEach(function (goon) {
+      goon.speed = speed;
+    });
   };
 }
 
@@ -489,7 +499,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} nextStep - Next cell on the path to target.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _cell = __webpack_require__(1);
+var _cell = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -815,9 +825,16 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _imageCache = __webpack_require__(0);
+var _imageCache = __webpack_require__(1);
+
+var _cell = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var GOON_IMAGE_SIZE = {
+  width: 14,
+  height: 20
+};
 
 var Goon = function () {
   function Goon(id, initialCell, game, pathFinder) {
@@ -843,8 +860,12 @@ var Goon = function () {
   _createClass(Goon, [{
     key: 'draw',
     value: function draw(context) {
+      // context.fillStyle = 'gold'
+      // const cellOrigin = this.cell.getTopLeftPosition()
+      // context.fillRect(cellOrigin.x, cellOrigin.y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
+
       var img = _imageCache.imageCache['goon-1'];
-      context.drawImage(img, this.position.x, this.position.y);
+      context.drawImage(img, this.position.x, this.position.y - Math.round(GOON_IMAGE_SIZE.height / 2));
     }
 
     /**
@@ -1106,7 +1127,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
  * @property {number} y - The Y Coordinate.
  */
 
-var _cell = __webpack_require__(1);
+var _cell = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
