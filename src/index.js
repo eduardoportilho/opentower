@@ -9,4 +9,16 @@ function init () {
   const game = new Game()
   const renderer = new Renderer(canvas, game)
   renderer.start()
+  initCtrlPanel(game)
+}
+
+function initCtrlPanel (game) {
+  document.getElementById('spawn').onclick = function (e) {
+    e.stopPropagation()
+    e.preventDefault()
+
+    const x = document.getElementById('x').value
+    const y = document.getElementById('y').value
+    game.spawnGoon(x, y)
+  }
 }

@@ -18,7 +18,7 @@ export default class Game {
     this.highlight = undefined
     this.spawnedGoons = 0
 
-    this.intervalId = window.setInterval(this.spawnGoon.bind(this), 800)
+    this.intervalId = window.setInterval(this.spawnGoons.bind(this), 800)
   }
 
   /**
@@ -75,20 +75,22 @@ export default class Game {
   /**
    * Spawn a new goon.
    */
-  spawnGoon () {
+  spawnGoons () {
     const NUMBER_OF_GOONS_TO_SPAWN = 10
     // TODO: Use fixed spawn locations
-    const spawnCoords = {
-      row: Math.floor(Math.random() * this.grid.rowCount),
-      col: 0
-    }
-    const spawnCell = this.grid.get(spawnCoords.row, spawnCoords.col)
-    const id = Date.now()
-    const goon = new Goon(id, spawnCell, this, this.pathFinder)
-    this.goons.push(goon)
+    const row = Math.floor(Math.random() * this.grid.rowCount)
+    const col = 0
+    this.spawnGoon(row, col)
     if (++this.spawnedGoons >= NUMBER_OF_GOONS_TO_SPAWN) {
       window.clearInterval(this.intervalId)
     }
+  }
+
+  spawnGoon (row, col) {
+    const spawnCell = this.grid.get(row, col)
+    const id = Date.now()
+    const goon = new Goon(id, spawnCell, this, this.pathFinder)
+    this.goons.push(goon)
   }
 
   removeGoon (goon) {

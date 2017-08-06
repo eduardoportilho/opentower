@@ -214,6 +214,22 @@ var Cell = exports.Cell = function () {
       var y = (this.coord.row + 1) * CELL_EDGE_SIZE;
       return { x: x, y: y };
     }
+
+    /**
+     * Get the offset of a point inside the cell from the cell's top-left corner.
+     * @param  {Point} pointInCell
+     * @return {Point} offset
+     */
+
+  }, {
+    key: 'getOffset',
+    value: function getOffset(pointInCell) {
+      var zero = this.getTopLeftPosition();
+      return {
+        x: pointInCell.x - zero.x,
+        y: pointInCell.y - zero.y
+      };
+    }
   }]);
 
   return Cell;
@@ -245,6 +261,18 @@ function init() {
   var game = new _game2.default();
   var renderer = new _renderer2.default(canvas, game);
   renderer.start();
+  initCtrlPanel(game);
+}
+
+function initCtrlPanel(game) {
+  document.getElementById('spawn').onclick = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    var x = document.getElementById('x').value;
+    var y = document.getElementById('y').value;
+    game.spawnGoon(x, y);
+  };
 }
 
 /***/ }),
@@ -293,7 +321,7 @@ var Game = function () {
     this.highlight = undefined;
     this.spawnedGoons = 0;
 
-    this.intervalId = window.setInterval(this.spawnGoon.bind(this), 800);
+    //this.intervalId = window.setInterval(this.spawnGoons.bind(this), 800)
   }
 
   /**
@@ -370,21 +398,24 @@ var Game = function () {
      */
 
   }, {
-    key: 'spawnGoon',
-    value: function spawnGoon() {
+    key: 'spawnsGoons',
+    value: function spawnsGoons() {
       var NUMBER_OF_GOONS_TO_SPAWN = 10;
       // TODO: Use fixed spawn locations
-      var spawnCoords = {
-        row: Math.floor(Math.random() * this.grid.rowCount),
-        col: 0
-      };
-      var spawnCell = this.grid.get(spawnCoords.row, spawnCoords.col);
-      var id = Date.now();
-      var goon = new _goon2.default(id, spawnCell, this, this.pathFinder);
-      this.goons.push(goon);
+      var row = Math.floor(Math.random() * this.grid.rowCount);
+      var col = 0;
+      this.spawnGoon(row, col);
       if (++this.spawnedGoons >= NUMBER_OF_GOONS_TO_SPAWN) {
         window.clearInterval(this.intervalId);
       }
+    }
+  }, {
+    key: 'spawnGoon',
+    value: function spawnGoon(row, col) {
+      var spawnCell = this.grid.get(row, col);
+      var id = Date.now();
+      var goon = new _goon2.default(id, spawnCell, this, this.pathFinder);
+      this.goons.push(goon);
     }
   }, {
     key: 'removeGoon',
@@ -814,12 +845,18 @@ var Goon = function () {
         this.game.removeGoon(this);
         return;
       }
+
+      var offset = this.cell.getOffset(this.position);
+      var targetPosition = {
+        x: nextCell.getTopLeftPosition().x + offset.x,
+        y: nextCell.getTopLeftPosition().y + offset.y
+      };
+
       var stepSize = this.speed * delta / 1000.0;
-      // TODO: change path from [pos -> center2] to [center1 -> center2 - offset(pos, center1)]
-      // this will make the size of path constant.
-      var targetPosition = nextCell.getCenterPosition();
       var nextPosition = this.calculateNextPosition(this.position, targetPosition, stepSize);
+      // Might happen that stepSize is not enought to change cell
       var nextPositionCell = this.game.grid.getCellAtPosition(nextPosition);
+      console.log('NP:', nextPosition);
 
       if (nextPositionCell) {
         this.cell = nextPositionCell;
