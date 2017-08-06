@@ -31,11 +31,24 @@ export default class Game {
     if (!towerCells || towerCells.some(cell => cell.blocked || cell.hasGoon)) {
       return
     }
+    // 1: block
     towerCells.forEach(cell => { cell.blocked = true })
+    // 2: recalculate paths
+    this.pathFinder.recalculate()
+    // 3: check if there is any goon trapped
+    const goonCells = this.goons.map(goon => goon.cell)
+    // TODO: check the spawn locations as well
+    const trapped = goonCells.some(cell => !cell.reachable)
+    // 4: if trapped, rollback
+    if (trapped) {
+      towerCells.forEach(cell => { cell.blocked = false })
+      this.pathFinder.recalculate()
+      return
+    }
+
     const towerBoundaries = this._getCellsBoudaries(towerCells)
     const tower = new Tower(towerBoundaries)
     this.towers.push(tower)
-    this.pathFinder.recalculate()
   }
 
   onMouseMove (position) {
@@ -64,6 +77,7 @@ export default class Game {
    */
   spawnGoon () {
     const NUMBER_OF_GOONS_TO_SPAWN = 10
+    // TODO: Use fixed spawn locations
     const spawnCoords = {
       row: Math.floor(Math.random() * this.grid.rowCount),
       col: 0

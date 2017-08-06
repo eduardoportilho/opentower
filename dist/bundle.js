@@ -312,13 +312,32 @@ var Game = function () {
       })) {
         return;
       }
+      // 1: block
       towerCells.forEach(function (cell) {
         cell.blocked = true;
       });
+      // 2: recalculate paths
+      this.pathFinder.recalculate();
+      // 3: check if there is any goon trapped
+      var goonCells = this.goons.map(function (goon) {
+        return goon.cell;
+      });
+      // TODO: check the spawn locations as well
+      var trapped = goonCells.some(function (cell) {
+        return !cell.reachable;
+      });
+      // 4: if trapped, rollback
+      if (trapped) {
+        towerCells.forEach(function (cell) {
+          cell.blocked = false;
+        });
+        this.pathFinder.recalculate();
+        return;
+      }
+
       var towerBoundaries = this._getCellsBoudaries(towerCells);
       var tower = new _tower.Tower(towerBoundaries);
       this.towers.push(tower);
-      this.pathFinder.recalculate();
     }
   }, {
     key: 'onMouseMove',
@@ -354,6 +373,7 @@ var Game = function () {
     key: 'spawnGoon',
     value: function spawnGoon() {
       var NUMBER_OF_GOONS_TO_SPAWN = 10;
+      // TODO: Use fixed spawn locations
       var spawnCoords = {
         row: Math.floor(Math.random() * this.grid.rowCount),
         col: 0
@@ -764,7 +784,7 @@ var Goon = function () {
     this.cell = initialCell;
     this.cell.hasGoon = true;
     this.position = this.cell.getTopLeftPosition();
-    this.speed = 100; // px/sec
+    this.speed = 60; // px/sec
   }
 
   /**

@@ -8,7 +8,7 @@ export default class Goon {
     this.cell = initialCell
     this.cell.hasGoon = true
     this.position = this.cell.getTopLeftPosition()
-    this.speed = 100 // px/sec
+    this.speed = 60 // px/sec
   }
 
   /**
