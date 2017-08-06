@@ -8,7 +8,9 @@ export default class Goon {
     this.cell = initialCell
     this.cell.hasGoon = true
     this.position = this.cell.getTopLeftPosition()
-    this.speed = 50 // px/sec
+    this.speed = 20 // px/sec
+
+    this._residualStep = 0
   }
 
   /**
@@ -38,9 +40,12 @@ export default class Goon {
       y: nextCell.getTopLeftPosition().y + offset.y
     }
 
-    const stepSize = Math.max(1, this.speed * delta / 1000.0)
-    const nextPosition = this.calculateNextPosition(this.position, targetPosition, stepSize)
-    // Might happen that stepSize is not enought to change cell
+    const step = (this.speed * delta / 1000.0) + this._residualStep
+    const intStep = Math.floor(step)
+    this._residualStep = step - intStep
+
+    const nextPosition = this.calculateNextPosition(this.position, targetPosition, intStep)
+    // Might happen that step is not enought to change cell
     const nextPositionCell = this.game.grid.getCellAtPosition(nextPosition)
 
     if (nextPositionCell) {
@@ -70,8 +75,8 @@ export default class Goon {
     const dyStep = sin * stepSize
     const dxStep = cos * stepSize
 
-    const nextX = Math.ceil(current.x + dxStep)
-    const nextY = Math.ceil(current.y + dyStep)
+    const nextX = current.x + dxStep
+    const nextY = current.y + dyStep
     return {x: nextX, y: nextY}
   }
 }

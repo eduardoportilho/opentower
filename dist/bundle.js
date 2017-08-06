@@ -321,7 +321,7 @@ var Game = function () {
     this.highlight = undefined;
     this.spawnedGoons = 0;
 
-    //this.intervalId = window.setInterval(this.spawnGoons.bind(this), 800)
+    this.intervalId = window.setInterval(this.spawnGoons.bind(this), 800);
   }
 
   /**
@@ -398,8 +398,8 @@ var Game = function () {
      */
 
   }, {
-    key: 'spawnsGoons',
-    value: function spawnsGoons() {
+    key: 'spawnGoons',
+    value: function spawnGoons() {
       var NUMBER_OF_GOONS_TO_SPAWN = 10;
       // TODO: Use fixed spawn locations
       var row = Math.floor(Math.random() * this.grid.rowCount);
@@ -815,7 +815,9 @@ var Goon = function () {
     this.cell = initialCell;
     this.cell.hasGoon = true;
     this.position = this.cell.getTopLeftPosition();
-    this.speed = 60; // px/sec
+    this.speed = 20; // px/sec
+
+    this._residualStep = 0;
   }
 
   /**
@@ -852,11 +854,13 @@ var Goon = function () {
         y: nextCell.getTopLeftPosition().y + offset.y
       };
 
-      var stepSize = this.speed * delta / 1000.0;
-      var nextPosition = this.calculateNextPosition(this.position, targetPosition, stepSize);
-      // Might happen that stepSize is not enought to change cell
+      var step = this.speed * delta / 1000.0 + this._residualStep;
+      var intStep = Math.floor(step);
+      this._residualStep = step - intStep;
+
+      var nextPosition = this.calculateNextPosition(this.position, targetPosition, intStep);
+      // Might happen that step is not enought to change cell
       var nextPositionCell = this.game.grid.getCellAtPosition(nextPosition);
-      console.log('NP:', nextPosition);
 
       if (nextPositionCell) {
         this.cell = nextPositionCell;
@@ -888,8 +892,8 @@ var Goon = function () {
       var dyStep = sin * stepSize;
       var dxStep = cos * stepSize;
 
-      var nextX = Math.ceil(current.x + dxStep);
-      var nextY = Math.ceil(current.y + dyStep);
+      var nextX = current.x + dxStep;
+      var nextY = current.y + dyStep;
       return { x: nextX, y: nextY };
     }
   }]);
