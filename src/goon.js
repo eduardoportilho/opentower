@@ -31,12 +31,18 @@ export default class Goon {
       this.game.removeGoon(this)
       return
     }
+
+    const offset = this.cell.getOffset(this.position)
+    const targetPosition = {
+      x: nextCell.getTopLeftPosition().x + offset.x,
+      y: nextCell.getTopLeftPosition().y + offset.y
+    }
+
     const stepSize = this.speed * delta / 1000.0
-    // TODO: change path from [pos -> center2] to [center1 -> center2 - offset(pos, center1)]
-    // this will make the size of path constant.
-    const targetPosition = nextCell.getCenterPosition()
     const nextPosition = this.calculateNextPosition(this.position, targetPosition, stepSize)
+    // Might happen that stepSize is not enought to change cell
     const nextPositionCell = this.game.grid.getCellAtPosition(nextPosition)
+    console.log(`NP:`, nextPosition)
 
     if (nextPositionCell) {
       this.cell = nextPositionCell

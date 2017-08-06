@@ -66,4 +66,17 @@ export class Cell {
     let y = (this.coord.row + 1) * CELL_EDGE_SIZE
     return {x, y}
   }
+
+  /**
+   * Get the offset of a point inside the cell from the cell's top-left corner.
+   * @param  {Point} pointInCell
+   * @return {Point} offset
+   */
+  getOffset (pointInCell) {
+    const zero = this.getTopLeftPosition()
+    return {
+      x: pointInCell.x - zero.x,
+      y: pointInCell.y - zero.y
+    }
+  }
 }
