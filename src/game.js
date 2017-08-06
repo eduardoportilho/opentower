@@ -18,7 +18,7 @@ export default class Game {
     this.goons = []
     this.highlight = undefined
     this.spawnedGoons = 0
-    this.spawnLocations = this.getSpawnLocations()
+    this.spawnCells = this.getSpawnCells()
 
     this.intervalId = window.setInterval(this.spawnGoons.bind(this), 800)
   }
@@ -37,12 +37,12 @@ export default class Game {
     towerCells.forEach(cell => { cell.blocked = true })
     // 2: recalculate paths
     this.pathFinder.recalculate()
-    // 3: check if there is any goon trapped
-    const goonCells = this.goons.map(goon => goon.cell)
-    // TODO: check the spawn locations as well
-    const trapped = goonCells.some(cell => !cell.reachable)
+    // 3: check for trapped goons and spawn locations
+    const doNotTrapCells = this.goons.map(goon => goon.cell)
+      .concat(this.spawnCells)
+    const isInvalidPosition = doNotTrapCells.some(cell => !cell.reachable)
     // 4: if trapped, rollback
-    if (trapped) {
+    if (isInvalidPosition) {
       towerCells.forEach(cell => { cell.blocked = false })
       this.pathFinder.recalculate()
       return
@@ -79,7 +79,7 @@ export default class Game {
    */
   spawnGoons () {
     const NUMBER_OF_GOONS_TO_SPAWN = 10
-    const location = random.getRandomElementFromArray(this.spawnLocations)
+    const location = random.getRandomElementFromArray(this.spawnCells).coord
     this.spawnGoon(location.row, location.col)
     if (++this.spawnedGoons >= NUMBER_OF_GOONS_TO_SPAWN) {
       window.clearInterval(this.intervalId)
@@ -109,18 +109,17 @@ export default class Game {
     this.updateHighlight()
   }
 
-  getSpawnLocations () {
+  getSpawnCells () {
     const middle = Math.round(this.grid.rowCount / 2)
     let count = Math.min(10, Math.round(this.grid.rowCount / 3))
     let row = middle - Math.round(count / 2)
-    const locations = []
+    const cells = []
     while (count-- > 0) {
-      locations.push({
-        row: row++,
-        col: 0
-      })
+      cells.push(
+        this.grid.get(row++, 0)
+      )
     }
-    return locations
+    return cells
   }
 
   _getCellsBoudaries (cells) {

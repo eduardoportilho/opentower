@@ -248,7 +248,7 @@ var _game = __webpack_require__(3);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _renderer = __webpack_require__(9);
+var _renderer = __webpack_require__(10);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
@@ -306,7 +306,7 @@ var _pathFinder = __webpack_require__(8);
 
 var _pathFinder2 = _interopRequireDefault(_pathFinder);
 
-var _random = __webpack_require__(10);
+var _random = __webpack_require__(9);
 
 var _random2 = _interopRequireDefault(_random);
 
@@ -324,7 +324,7 @@ var Game = function () {
     this.goons = [];
     this.highlight = undefined;
     this.spawnedGoons = 0;
-    this.spawnLocations = this.getSpawnLocations();
+    this.spawnCells = this.getSpawnCells();
 
     this.intervalId = window.setInterval(this.spawnGoons.bind(this), 800);
   }
@@ -351,16 +351,15 @@ var Game = function () {
       });
       // 2: recalculate paths
       this.pathFinder.recalculate();
-      // 3: check if there is any goon trapped
-      var goonCells = this.goons.map(function (goon) {
+      // 3: check for trapped goons and spawn locations
+      var doNotTrapCells = this.goons.map(function (goon) {
         return goon.cell;
-      });
-      // TODO: check the spawn locations as well
-      var trapped = goonCells.some(function (cell) {
+      }).concat(this.spawnCells);
+      var isInvalidPosition = doNotTrapCells.some(function (cell) {
         return !cell.reachable;
       });
       // 4: if trapped, rollback
-      if (trapped) {
+      if (isInvalidPosition) {
         towerCells.forEach(function (cell) {
           cell.blocked = false;
         });
@@ -406,7 +405,7 @@ var Game = function () {
     key: 'spawnGoons',
     value: function spawnGoons() {
       var NUMBER_OF_GOONS_TO_SPAWN = 10;
-      var location = _random2.default.getRandomElementFromArray(this.spawnLocations);
+      var location = _random2.default.getRandomElementFromArray(this.spawnCells).coord;
       this.spawnGoon(location.row, location.col);
       if (++this.spawnedGoons >= NUMBER_OF_GOONS_TO_SPAWN) {
         window.clearInterval(this.intervalId);
@@ -445,19 +444,16 @@ var Game = function () {
       this.updateHighlight();
     }
   }, {
-    key: 'getSpawnLocations',
-    value: function getSpawnLocations() {
+    key: 'getSpawnCells',
+    value: function getSpawnCells() {
       var middle = Math.round(this.grid.rowCount / 2);
       var count = Math.min(10, Math.round(this.grid.rowCount / 3));
       var row = middle - Math.round(count / 2);
-      var locations = [];
+      var cells = [];
       while (count-- > 0) {
-        locations.push({
-          row: row++,
-          col: 0
-        });
+        cells.push(this.grid.get(row++, 0));
       }
-      return locations;
+      return cells;
     }
   }, {
     key: '_getCellsBoudaries',
@@ -1028,6 +1024,80 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Random = function () {
+  function Random() {
+    _classCallCheck(this, Random);
+  }
+
+  _createClass(Random, [{
+    key: "yesOrNo",
+    value: function yesOrNo(yesChance) {
+      yesChance = yesChance || 0.5;
+      return Math.random() < yesChance;
+    }
+  }, {
+    key: "getRandomIntExclusive",
+    value: function getRandomIntExclusive(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      // The maximum is exclusive and the minimum is inclusive
+      return Math.floor(Math.random() * (max - min)) + min;
+    }
+  }, {
+    key: "getRandomIntInclusive",
+    value: function getRandomIntInclusive(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      // The maximum is inclusive and the minimum is inclusive
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+  }, {
+    key: "getRandomElementFromArray",
+    value: function getRandomElementFromArray(array) {
+      var index = this.getRandomIntExclusive(0, array.length);
+      return array[index];
+    }
+  }, {
+    key: "shuffle",
+    value: function shuffle(array) {
+      var currentIndex = array.length;
+      var temporaryValue = void 0,
+          randomIndex = void 0;
+
+      // While there remain elements to shuffle...
+      while (currentIndex !== 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+      }
+    }
+  }]);
+
+  return Random;
+}();
+
+exports.default = new Random();
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* global requestAnimationFrame */
 
 /**
@@ -1190,80 +1260,6 @@ var Renderer = function () {
 }();
 
 exports.default = Renderer;
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Random = function () {
-  function Random() {
-    _classCallCheck(this, Random);
-  }
-
-  _createClass(Random, [{
-    key: "yesOrNo",
-    value: function yesOrNo(yesChance) {
-      yesChance = yesChance || 0.5;
-      return Math.random() < yesChance;
-    }
-  }, {
-    key: "getRandomIntExclusive",
-    value: function getRandomIntExclusive(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      // The maximum is exclusive and the minimum is inclusive
-      return Math.floor(Math.random() * (max - min)) + min;
-    }
-  }, {
-    key: "getRandomIntInclusive",
-    value: function getRandomIntInclusive(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      // The maximum is inclusive and the minimum is inclusive
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-  }, {
-    key: "getRandomElementFromArray",
-    value: function getRandomElementFromArray(array) {
-      var index = this.getRandomIntExclusive(0, array.length);
-      return array[index];
-    }
-  }, {
-    key: "shuffle",
-    value: function shuffle(array) {
-      var currentIndex = array.length;
-      var temporaryValue = void 0,
-          randomIndex = void 0;
-
-      // While there remain elements to shuffle...
-      while (currentIndex !== 0) {
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-      }
-    }
-  }]);
-
-  return Random;
-}();
-
-exports.default = new Random();
 
 /***/ })
 /******/ ]);
