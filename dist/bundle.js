@@ -261,10 +261,10 @@ function init() {
   var game = new _game2.default();
   var renderer = new _renderer2.default(canvas, game);
   renderer.start();
-  initCtrlPanel(game);
+  initCtrlPanel(game, renderer);
 }
 
-function initCtrlPanel(game) {
+function initCtrlPanel(game, renderer) {
   document.getElementById('spawn').onclick = function (e) {
     e.stopPropagation();
     e.preventDefault();
@@ -282,6 +282,17 @@ function initCtrlPanel(game) {
     game.goons.forEach(function (goon) {
       goon.speed = speed;
     });
+  };
+
+  document.getElementById('pause').onclick = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (renderer.isRunning()) {
+      renderer.stop();
+    } else {
+      renderer.start();
+    }
   };
 }
 
@@ -777,6 +788,7 @@ var Tower = exports.Tower = function () {
     this.topLeftPosition = boundaries.topLeft;
     this.width = boundaries.bottomRight.x - boundaries.topLeft.x;
     this.height = boundaries.bottomRight.y - boundaries.topLeft.y;
+    // TODO fireRange = calculate tower range
   }
 
   /**
@@ -793,6 +805,19 @@ var Tower = exports.Tower = function () {
       context.fillRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height);
       context.strokeRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height);
     }
+    /**
+     * Update tower state.
+     * @param  {number} delta - ms since last update.
+     */
+
+  }, {
+    key: 'update',
+    value: function update(delta) {}
+    // TODO 
+    // targets = getGoonsInFireRange
+    // targets[0].damage(x)
+    // startReloading
+
 
     /**
      * Get to top-left and bottom-right points of the tower.
@@ -1144,6 +1169,7 @@ var Renderer = function () {
     this.canvas.width = this.game.grid.canvasSize.width;
     this.canvas.height = this.game.grid.canvasSize.height;
     this.context = this.canvas.getContext('2d');
+    this.animationId = null;
 
     // bind events
     this.canvas.onclick = this.onCanvasClick.bind(this);
@@ -1162,6 +1188,16 @@ var Renderer = function () {
       this.lastTick = Date.now();
       this.animationId = requestAnimationFrame(this.tick.bind(this));
     }
+  }, {
+    key: 'stop',
+    value: function stop() {
+      this.animationId = null;
+    }
+  }, {
+    key: 'isRunning',
+    value: function isRunning() {
+      return this.animationId !== null;
+    }
 
     /**
      * Update state, render and restart the game loop every X ms.
@@ -1170,6 +1206,10 @@ var Renderer = function () {
   }, {
     key: 'tick',
     value: function tick() {
+      if (!this.animationId) {
+        return;
+      }
+
       var now = Date.now();
       var delta = now - this.lastTick;
 

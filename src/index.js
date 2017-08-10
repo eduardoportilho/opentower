@@ -9,10 +9,10 @@ function init () {
   const game = new Game()
   const renderer = new Renderer(canvas, game)
   renderer.start()
-  initCtrlPanel(game)
+  initCtrlPanel(game, renderer)
 }
 
-function initCtrlPanel (game) {
+function initCtrlPanel (game, renderer) {
   document.getElementById('spawn').onclick = function (e) {
     e.stopPropagation()
     e.preventDefault()
@@ -28,5 +28,16 @@ function initCtrlPanel (game) {
 
     const speed = parseInt(document.getElementById('speed').value)
     game.goons.forEach(goon => {goon.speed = speed})
+  }
+
+  document.getElementById('pause').onclick = function (e) {
+    e.stopPropagation()
+    e.preventDefault()
+
+    if (renderer.isRunning()) {
+      renderer.stop()
+    } else {
+      renderer.start()
+    }
   }
 }

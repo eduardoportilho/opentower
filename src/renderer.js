@@ -19,6 +19,7 @@ class Renderer {
     this.canvas.width = this.game.grid.canvasSize.width
     this.canvas.height = this.game.grid.canvasSize.height
     this.context = this.canvas.getContext('2d')
+    this.animationId = null
 
     // bind events
     this.canvas.onclick = this.onCanvasClick.bind(this)
@@ -34,10 +35,22 @@ class Renderer {
     this.animationId = requestAnimationFrame(this.tick.bind(this))
   }
 
+  stop () {
+    this.animationId = null
+  }
+
+  isRunning () {
+    return this.animationId !== null
+  }
+
   /**
    * Update state, render and restart the game loop every X ms.
    */
   tick () {
+    if (!this.animationId) {
+      return
+    }
+
     const now = Date.now()
     const delta = (now - this.lastTick)
 
