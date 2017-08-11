@@ -16,7 +16,9 @@ export default class Goon {
     this.cell.hasGoon = true
     this.position = this.cell.getTopLeftPosition()
     this.speed = 20 // px/sec
+    this.life = 100
 
+    // store the decimals lost in the last step to maintain constant speed
     this._residualStep = 0
   }
 
@@ -39,6 +41,17 @@ export default class Goon {
    * @param  {number} delta - ms since last update.
    */
   update (delta) {
+    this.updatePosition(delta)
+    this.updateLife(delta)
+  }
+
+  updateLife (delta) {
+    if (this.life <= 0) {
+      this.game.removeGoon(this)
+    }
+  }
+
+  updatePosition (delta) {
     this.cell.hasGoon = false
     const nextCell = this.pathFinder.nextCell(this.cell, 1)
     if (!nextCell) {
