@@ -49,7 +49,7 @@ export default class Game {
     }
 
     const towerBoundaries = this._getCellsBoudaries(towerCells)
-    const tower = new Tower(towerBoundaries)
+    const tower = new Tower(towerBoundaries, this)
     this.towers.push(tower)
   }
 
@@ -105,6 +105,7 @@ export default class Game {
    * @param  {number} delta - ms since last update.
    */
   update (delta) {
+    this.towers.forEach((tower) => tower.update(delta))
     this.goons.forEach((goon) => goon.update(delta))
     this.updateHighlight()
   }

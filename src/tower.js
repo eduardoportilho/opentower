@@ -1,3 +1,4 @@
+import {calculateDistance} from './geometry'
 /**
  * @typedef {Object} Point
  * @property {number} x - The X Coordinate.
@@ -15,11 +16,22 @@ export const TOWER_SIZE = {
 }
 
 export class Tower {
-  constructor (boundaries) {
+  constructor (boundaries, game) {
+    this.game = game
     this.topLeftPosition = boundaries.topLeft
     this.width = boundaries.bottomRight.x - boundaries.topLeft.x
     this.height = boundaries.bottomRight.y - boundaries.topLeft.y
-    // TODO fireRange = calculate tower range
+    this.centerPosition = {
+      x: Math.round(boundaries.topLeft.x + (this.width / 2)),
+      y: Math.round(boundaries.topLeft.y + (this.height / 2))
+    }
+    // shooting consts
+    this.reloadTime = 2000
+    this.fireRange = 150
+    this.damage = 5
+
+    // shoting props
+    this.timeUntilReloaded = 0
   }
 
   /**
@@ -37,10 +49,39 @@ export class Tower {
    * @param  {number} delta - ms since last update.
    */
   update (delta) {
-    // TODO 
-    // targets = getGoonsInFireRange
-    // targets[0].damage(x)
-    // startReloading
+    if (this.isLoaded()) {
+      this.shoot()
+    } else {
+      this.reload(delta)
+    }
+  }
+
+  reload (delta) {
+    this.timeUntilReloaded -= delta
+  }
+
+  shoot () {
+    const goon = this.getClosestGoonInRange()
+    if (goon) {
+      goon.life -= this.damage
+      this.timeUntilReloaded = this.reloadTime
+    }
+  }
+
+  isLoaded () {
+    return this.timeUntilReloaded <= 0
+  }
+
+  getClosestGoonInRange () {
+    let towerCenter = this.centerPosition
+    const goonsInRange = this.game.goons
+      .map(goon => {
+        const dist = calculateDistance(towerCenter, goon.position)
+        return {goon, dist}
+      })
+      .filter(goonDist => goonDist.dist <= this.fireRange)
+      .sort((a, b) => a.dist - b.dist)
+    return goonsInRange.length > 0 ? goonsInRange[0].goon : undefined
   }
 
   /**
