@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -81,7 +81,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _coord = __webpack_require__(5);
+var _coord = __webpack_require__(6);
 
 var _coord2 = _interopRequireDefault(_coord);
 
@@ -242,13 +242,58 @@ function loadImageCache(onLoadComplete) {
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**
+ * Calculate the distance between 2 points.
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @return {number} distance
+ */
+var calculateDistance = exports.calculateDistance = function calculateDistance(pointA, pointB) {
+  var dx = pointB.x - pointA.x;
+  var dy = pointB.y - pointA.y;
+  return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+};
+
+/**
+ * Let L be the line formed by the 2 given points `origin` and `anyPointInLine`.
+ * Return the point in L with the given distance to `origin`.
+ * @param  {Point} origin - Origin point.
+ * @param  {Point} anyPointInLine - Another poin in the desired line (define direction).
+ * @param  {number} distance - Distance from origin to the returned point in pixels.
+ * @return {Point} Point in L with the given distance to `origin`.
+ */
+var getPointInLine = exports.getPointInLine = function getPointInLine(origin, anyPointInLine, distance) {
+  var hyp = calculateDistance(origin, anyPointInLine);
+  var dx = anyPointInLine.x - origin.x;
+  var dy = anyPointInLine.y - origin.y;
+  var sin = dy / hyp;
+  var cos = dx / hyp;
+
+  var dyStep = sin * distance;
+  var dxStep = cos * distance;
+
+  var nextX = origin.x + dxStep;
+  var nextY = origin.y + dyStep;
+  return { x: nextX, y: nextY };
+};
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _imageCache = __webpack_require__(1);
 
-var _game = __webpack_require__(3);
+var _game = __webpack_require__(4);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _renderer = __webpack_require__(10);
+var _renderer = __webpack_require__(11);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
@@ -297,7 +342,7 @@ function initCtrlPanel(game, renderer) {
 }
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -313,21 +358,21 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _grid = __webpack_require__(4);
+var _grid = __webpack_require__(5);
 
 var _grid2 = _interopRequireDefault(_grid);
 
-var _tower = __webpack_require__(6);
+var _tower = __webpack_require__(7);
 
-var _goon = __webpack_require__(7);
+var _goon = __webpack_require__(8);
 
 var _goon2 = _interopRequireDefault(_goon);
 
-var _pathFinder = __webpack_require__(8);
+var _pathFinder = __webpack_require__(9);
 
 var _pathFinder2 = _interopRequireDefault(_pathFinder);
 
-var _random = __webpack_require__(9);
+var _random = __webpack_require__(10);
 
 var _random2 = _interopRequireDefault(_random);
 
@@ -389,7 +434,7 @@ var Game = function () {
       }
 
       var towerBoundaries = this._getCellsBoudaries(towerCells);
-      var tower = new _tower.Tower(towerBoundaries);
+      var tower = new _tower.Tower(towerBoundaries, this);
       this.towers.push(tower);
     }
   }, {
@@ -459,6 +504,9 @@ var Game = function () {
   }, {
     key: 'update',
     value: function update(delta) {
+      this.towers.forEach(function (tower) {
+        return tower.update(delta);
+      });
       this.goons.forEach(function (goon) {
         return goon.update(delta);
       });
@@ -492,7 +540,7 @@ var Game = function () {
 exports.default = Game;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -705,7 +753,7 @@ var Grid = function () {
 exports.default = Grid;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -751,7 +799,7 @@ var Coord = function () {
 exports.default = Coord;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -760,8 +808,11 @@ exports.default = Coord;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.Tower = exports.TOWER_SIZE = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _geometry = __webpack_require__(2);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -782,13 +833,23 @@ var TOWER_SIZE = exports.TOWER_SIZE = {
 };
 
 var Tower = exports.Tower = function () {
-  function Tower(boundaries) {
+  function Tower(boundaries, game) {
     _classCallCheck(this, Tower);
 
+    this.game = game;
     this.topLeftPosition = boundaries.topLeft;
     this.width = boundaries.bottomRight.x - boundaries.topLeft.x;
     this.height = boundaries.bottomRight.y - boundaries.topLeft.y;
-    // TODO fireRange = calculate tower range
+    this.centerPosition = {
+      x: Math.round(boundaries.topLeft.x + this.width / 2),
+      y: Math.round(boundaries.topLeft.y + this.height / 2)
+      // shooting consts
+    };this.reloadTime = 2000;
+    this.fireRange = 150;
+    this.damage = 5;
+
+    // shoting props
+    this.timeUntilReloaded = 0;
   }
 
   /**
@@ -812,12 +873,48 @@ var Tower = exports.Tower = function () {
 
   }, {
     key: 'update',
-    value: function update(delta) {}
-    // TODO 
-    // targets = getGoonsInFireRange
-    // targets[0].damage(x)
-    // startReloading
+    value: function update(delta) {
+      if (this.isLoaded()) {
+        this.shoot();
+      } else {
+        this.reload(delta);
+      }
+    }
+  }, {
+    key: 'reload',
+    value: function reload(delta) {
+      this.timeUntilReloaded -= delta;
+    }
+  }, {
+    key: 'shoot',
+    value: function shoot() {
+      var goon = this.getClosestGoonInRange();
+      if (goon) {
+        goon.life -= this.damage;
+        this.timeUntilReloaded = this.reloadTime;
+      }
+    }
+  }, {
+    key: 'isLoaded',
+    value: function isLoaded() {
+      return this.timeUntilReloaded <= 0;
+    }
+  }, {
+    key: 'getClosestGoonInRange',
+    value: function getClosestGoonInRange() {
+      var _this = this;
 
+      var towerCenter = this.centerPosition;
+      var goonsInRange = this.game.goons.map(function (goon) {
+        var dist = (0, _geometry.calculateDistance)(towerCenter, goon.position);
+        return { goon: goon, dist: dist };
+      }).filter(function (goonDist) {
+        return goonDist.dist <= _this.fireRange;
+      }).sort(function (a, b) {
+        return a.dist - b.dist;
+      });
+      return goonsInRange.length > 0 ? goonsInRange[0].goon : undefined;
+    }
 
     /**
      * Get to top-left and bottom-right points of the tower.
@@ -838,7 +935,7 @@ var Tower = exports.Tower = function () {
 }();
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -851,6 +948,8 @@ Object.defineProperty(exports, "__esModule", {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _imageCache = __webpack_require__(1);
+
+var _geometry = __webpack_require__(2);
 
 var _cell = __webpack_require__(0);
 
@@ -872,7 +971,9 @@ var Goon = function () {
     this.cell.hasGoon = true;
     this.position = this.cell.getTopLeftPosition();
     this.speed = 20; // px/sec
+    this.life = 100;
 
+    // store the decimals lost in the last step to maintain constant speed
     this._residualStep = 0;
   }
 
@@ -885,12 +986,31 @@ var Goon = function () {
   _createClass(Goon, [{
     key: 'draw',
     value: function draw(context) {
+      // _Paint cell base:
       // context.fillStyle = 'gold'
       // const cellOrigin = this.cell.getTopLeftPosition()
       // context.fillRect(cellOrigin.x, cellOrigin.y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
 
       var img = _imageCache.imageCache['goon-1'];
       context.drawImage(img, this.position.x, this.position.y - Math.round(GOON_IMAGE_SIZE.height / 2));
+      this.drawLifeBar(context);
+    }
+  }, {
+    key: 'drawLifeBar',
+    value: function drawLifeBar(context) {
+      var height = 3;
+      var width = 20;
+      var greenWidth = Math.max(0, Math.round(width * this.life / 100));
+      var redWidth = width - greenWidth;
+
+      var y = this.position.y - 20;
+      var greenX = this.position.x;
+      var redX = this.position.x + greenWidth;
+
+      context.fillStyle = 'green';
+      context.fillRect(greenX, y, greenWidth, height);
+      context.fillStyle = 'red';
+      context.fillRect(redX, y, redWidth, height);
     }
 
     /**
@@ -901,6 +1021,19 @@ var Goon = function () {
   }, {
     key: 'update',
     value: function update(delta) {
+      this.updatePosition(delta);
+      this.updateLife(delta);
+    }
+  }, {
+    key: 'updateLife',
+    value: function updateLife(delta) {
+      if (this.life <= 0) {
+        this.game.removeGoon(this);
+      }
+    }
+  }, {
+    key: 'updatePosition',
+    value: function updatePosition(delta) {
       this.cell.hasGoon = false;
       var nextCell = this.pathFinder.nextCell(this.cell, 1);
       if (!nextCell) {
@@ -918,7 +1051,7 @@ var Goon = function () {
       var intStep = Math.floor(step);
       this._residualStep = step - intStep;
 
-      var nextPosition = this.calculateNextPosition(this.position, targetPosition, intStep);
+      var nextPosition = (0, _geometry.getPointInLine)(this.position, targetPosition, intStep);
       // Might happen that step is not enought to change cell
       var nextPositionCell = this.game.grid.getCellAtPosition(nextPosition);
 
@@ -930,32 +1063,6 @@ var Goon = function () {
         this.game.removeGoon(this);
       }
     }
-
-    /**
-     * Given the current and target position and the size of a step, calculate the new position after one step.
-     * @param  {Point} current - Current position.
-     * @param  {Point} target - Target position.
-     * @param  {number} stepSize - Size of the step (in pixels).
-     * @return {Point} Position after one step.
-     */
-
-  }, {
-    key: 'calculateNextPosition',
-    value: function calculateNextPosition(current, target, stepSize) {
-      // TODO: check this logic for negative dy
-      var dx = target.x - current.x;
-      var dy = target.y - current.y;
-      var hyp = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-      var sin = dy / hyp;
-      var cos = dx / hyp;
-
-      var dyStep = sin * stepSize;
-      var dxStep = cos * stepSize;
-
-      var nextX = current.x + dxStep;
-      var nextY = current.y + dyStep;
-      return { x: nextX, y: nextY };
-    }
   }]);
 
   return Goon;
@@ -964,7 +1071,7 @@ var Goon = function () {
 exports.default = Goon;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1060,7 +1167,7 @@ var PathFinder = function () {
 exports.default = PathFinder;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1134,7 +1241,7 @@ var Random = function () {
 exports.default = new Random();
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -34,6 +34,23 @@ export default class Goon {
 
     const img = imageCache['goon-1']
     context.drawImage(img, this.position.x, this.position.y - Math.round(GOON_IMAGE_SIZE.height / 2))
+    this.drawLifeBar(context)
+  }
+
+  drawLifeBar (context) {
+    const height = 3
+    const width = 20
+    const greenWidth = Math.max(0, Math.round(width * this.life / 100))
+    const redWidth = width - greenWidth
+
+    const y = this.position.y - 20
+    const greenX = this.position.x
+    const redX = this.position.x + greenWidth
+
+    context.fillStyle = 'green'
+    context.fillRect(greenX, y, greenWidth, height)
+    context.fillStyle = 'red'
+    context.fillRect(redX, y, redWidth, height)
   }
 
   /**
