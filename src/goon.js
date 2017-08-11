@@ -1,4 +1,5 @@
 import {imageCache} from './image-cache.js'
+import {getPointInLine} from './geometry'
 import {CELL_EDGE_SIZE} from './cell'
 
 const GOON_IMAGE_SIZE = {
@@ -24,6 +25,7 @@ export default class Goon {
    * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
    */
   draw (context) {
+    // _Paint cell base:
     // context.fillStyle = 'gold'
     // const cellOrigin = this.cell.getTopLeftPosition()
     // context.fillRect(cellOrigin.x, cellOrigin.y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
@@ -54,7 +56,7 @@ export default class Goon {
     const intStep = Math.floor(step)
     this._residualStep = step - intStep
 
-    const nextPosition = this.calculateNextPosition(this.position, targetPosition, intStep)
+    const nextPosition = getPointInLine(this.position, targetPosition, intStep)
     // Might happen that step is not enought to change cell
     const nextPositionCell = this.game.grid.getCellAtPosition(nextPosition)
 
@@ -65,28 +67,5 @@ export default class Goon {
     } else {
       this.game.removeGoon(this)
     }
-  }
-
-  /**
-   * Given the current and target position and the size of a step, calculate the new position after one step.
-   * @param  {Point} current - Current position.
-   * @param  {Point} target - Target position.
-   * @param  {number} stepSize - Size of the step (in pixels).
-   * @return {Point} Position after one step.
-   */
-  calculateNextPosition (current, target, stepSize) {
-    // TODO: check this logic for negative dy
-    const dx = target.x - current.x
-    const dy = target.y - current.y
-    const hyp = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
-    const sin = dy / hyp
-    const cos = dx / hyp
-
-    const dyStep = sin * stepSize
-    const dxStep = cos * stepSize
-
-    const nextX = current.x + dxStep
-    const nextY = current.y + dyStep
-    return {x: nextX, y: nextY}
   }
 }
