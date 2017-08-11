@@ -10,7 +10,6 @@ export const calculateDistance = (pointA, pointB) => {
   return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
 }
 
-
 /**
  * Let L be the line formed by the 2 given points `origin` and `anyPointInLine`.
  * Return the point in L with the given distance to `origin`.

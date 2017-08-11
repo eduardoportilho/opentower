@@ -1,6 +1,5 @@
 import {imageCache} from './image-cache.js'
 import {getPointInLine} from './geometry'
-import {CELL_EDGE_SIZE} from './cell'
 
 const GOON_IMAGE_SIZE = {
   width: 14,

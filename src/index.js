@@ -27,7 +27,7 @@ function initCtrlPanel (game, renderer) {
     e.preventDefault()
 
     const speed = parseInt(document.getElementById('speed').value)
-    game.goons.forEach(goon => {goon.speed = speed})
+    game.goons.forEach(goon => { goon.speed = speed })
   }
 
   document.getElementById('pause').onclick = function (e) {
