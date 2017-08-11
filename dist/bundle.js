@@ -314,8 +314,8 @@ function initCtrlPanel(game, renderer) {
     e.stopPropagation();
     e.preventDefault();
 
-    var x = document.getElementById('x').value;
-    var y = document.getElementById('y').value;
+    var x = parseInt(document.getElementById('x').value);
+    var y = parseInt(document.getElementById('y').value);
     game.spawnGoon(x, y);
   };
 
@@ -996,7 +996,7 @@ var Goon = function () {
   }, {
     key: 'drawLifeBar',
     value: function drawLifeBar(context) {
-      var height = 3;
+      var height = 4;
       var width = 20;
       var greenWidth = Math.max(0, Math.round(width * this.life / 100));
       var redWidth = width - greenWidth;

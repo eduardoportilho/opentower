@@ -17,8 +17,8 @@ function initCtrlPanel (game, renderer) {
     e.stopPropagation()
     e.preventDefault()
 
-    const x = document.getElementById('x').value
-    const y = document.getElementById('y').value
+    const x = parseInt(document.getElementById('x').value)
+    const y = parseInt(document.getElementById('y').value)
     game.spawnGoon(x, y)
   }
 

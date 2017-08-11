@@ -37,7 +37,7 @@ export default class Goon {
   }
 
   drawLifeBar (context) {
-    const height = 3
+    const height = 4
     const width = 20
     const greenWidth = Math.max(0, Math.round(width * this.life / 100))
     const redWidth = width - greenWidth
