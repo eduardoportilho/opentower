@@ -1,4 +1,4 @@
-import {calculateDistance} from './geometry'
+import {calculateDistance} from './geometry-utils'
 /**
  * @typedef {Object} Point
  * @property {number} x - The X Coordinate.
