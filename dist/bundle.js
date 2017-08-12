@@ -293,7 +293,7 @@ var _game = __webpack_require__(4);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _renderer = __webpack_require__(11);
+var _renderer = __webpack_require__(12);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
@@ -364,15 +364,15 @@ var _grid2 = _interopRequireDefault(_grid);
 
 var _tower = __webpack_require__(7);
 
-var _goon = __webpack_require__(8);
+var _goon = __webpack_require__(9);
 
 var _goon2 = _interopRequireDefault(_goon);
 
-var _pathFinder = __webpack_require__(9);
+var _pathFinder = __webpack_require__(10);
 
 var _pathFinder2 = _interopRequireDefault(_pathFinder);
 
-var _random = __webpack_require__(10);
+var _random = __webpack_require__(11);
 
 var _random2 = _interopRequireDefault(_random);
 
@@ -812,7 +812,9 @@ exports.Tower = exports.TOWER_SIZE = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _geometry = __webpack_require__(2);
+var _geometryUtils = __webpack_require__(2);
+
+var _drawingUtils = __webpack_require__(8);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -850,6 +852,7 @@ var Tower = exports.Tower = function () {
 
     // shoting props
     this.timeUntilReloaded = 0;
+    this.canonAngle = 180;
   }
 
   /**
@@ -861,11 +864,51 @@ var Tower = exports.Tower = function () {
   _createClass(Tower, [{
     key: 'draw',
     value: function draw(context) {
-      context.fillStyle = 'lightgray';
-      context.strokeStyle = 'dimgray';
-      context.fillRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height);
-      context.strokeRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height);
+      // grass
+      var x = this.topLeftPosition.x;
+      var y = this.topLeftPosition.y;
+      var width = this.width;
+      var height = this.height;
+      context.fillStyle = '#B8E986';
+      context.strokeStyle = '#7ED321';
+      (0, _drawingUtils.roundRect)(context, x, y, width, height, true, true);
+
+      // base
+      var basePct = 3 / 5;
+      var baseWidth = Math.round(width * basePct);
+      var baseHeight = Math.round(height * basePct);
+      var baseX = x + Math.round((width - baseWidth) / 2);
+      var baseY = y + Math.round((height - baseHeight) / 2);
+      context.fillStyle = '#D3D3D3';
+      context.strokeStyle = '#979797';
+      context.fillRect(baseX, baseY, baseWidth, baseHeight);
+      context.strokeRect(baseX, baseY, baseWidth, baseHeight);
+
+      // Rotatory device
+      var rotPct = 2 / 5;
+      var rotRadius = Math.round(width * rotPct / 2);
+      var rotCenterX = x + Math.round(width / 2);
+      var rotCenterY = y + Math.round(height / 2);
+      context.fillStyle = '#9B9B9B';
+      context.strokeStyle = '#979797';
+      (0, _drawingUtils.circle)(context, rotCenterX, rotCenterY, rotRadius, true, true);
+
+      // canon
+      var canonAngleRad = Math.PI / 180 * this.canonAngle;
+      var canonPct = 22 / 50;
+      var canonWidth = Math.round(width * canonPct);
+      var canonHeight = 8;
+      var canonX = 0;
+      var canonY = 0 - Math.round(canonHeight / 2);
+      context.save();
+      context.translate(rotCenterX, rotCenterY);
+      context.rotate(canonAngleRad);
+      context.fillStyle = '#9B9B9B';
+      context.strokeStyle = '#979797';
+      context.fillRect(canonX, canonY, canonWidth, canonHeight);
+      context.restore();
     }
+
     /**
      * Update tower state.
      * @param  {number} delta - ms since last update.
@@ -906,7 +949,7 @@ var Tower = exports.Tower = function () {
 
       var towerCenter = this.centerPosition;
       var goonsInRange = this.game.goons.map(function (goon) {
-        var dist = (0, _geometry.calculateDistance)(towerCenter, goon.position);
+        var dist = (0, _geometryUtils.calculateDistance)(towerCenter, goon.position);
         return { goon: goon, dist: dist };
       }).filter(function (goonDist) {
         return goonDist.dist <= _this.fireRange;
@@ -944,12 +987,112 @@ var Tower = exports.Tower = function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.buildSquarePath = buildSquarePath;
+exports.roundRect = roundRect;
+exports.circle = circle;
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+/* global Path2D */
+
+/**
+ * @typedef {Object} Point
+ * @property {number} x - The X Coordinate.
+ * @property {number} y - The Y Coordinate.
+ */
+
+/**
+ * Build a square path.
+ * @param  {Point} startPosition
+ * @param  {number} edgeSize
+ * @return {Path2D}
+ */
+function buildSquarePath(startPosition, edgeSize) {
+  var path = new Path2D();
+  var startCorner = [startPosition.x, startPosition.y];
+  var corners = [[startPosition.x + edgeSize, startPosition.y], [startPosition.x + edgeSize, startPosition.y + edgeSize], [startPosition.x, startPosition.y + edgeSize], [startPosition.x, startPosition.y]];
+  path.moveTo.apply(path, startCorner);
+  corners.forEach(function (corner) {
+    path.lineTo.apply(path, _toConsumableArray(corner));
+  });
+  return path;
+}
+
+/**
+ * Draws a rounded rectangle using the current state of the canvas.
+ * If you omit the last three params, it will draw a rectangle
+ * outline with a 5 pixel border radius
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Number} x The top left x coordinate
+ * @param {Number} y The top left y coordinate
+ * @param {Number} width The width of the rectangle
+ * @param {Number} height The height of the rectangle
+ * @param {Boolean} [fill = false] Whether to fill the rectangle.
+ * @param {Boolean} [stroke = true] Whether to stroke the rectangle.
+ * @param {Number} [radius = 5] The corner radius; It can also be an object
+ *                 to specify different radii for corners
+ * @param {Number} [radius.tl = 0] Top left
+ * @param {Number} [radius.tr = 0] Top right
+ * @param {Number} [radius.br = 0] Bottom right
+ * @param {Number} [radius.bl = 0] Bottom left
+ */
+function roundRect(ctx, x, y, width, height, fill, stroke, radius) {
+  if (typeof stroke === 'undefined') {
+    stroke = true;
+  }
+  if (typeof radius === 'undefined') {
+    radius = 5;
+  }
+  if (typeof radius === 'number') {
+    radius = { tl: radius, tr: radius, br: radius, bl: radius };
+  } else {
+    var defaultRadius = { tl: 0, tr: 0, br: 0, bl: 0 };
+    for (var side in defaultRadius) {
+      radius[side] = radius[side] || defaultRadius[side];
+    }
+  }
+  ctx.beginPath();
+  ctx.moveTo(x + radius.tl, y);
+  ctx.lineTo(x + width - radius.tr, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+  ctx.lineTo(x + width, y + height - radius.br);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+  ctx.lineTo(x + radius.bl, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+  ctx.lineTo(x, y + radius.tl);
+  ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+  ctx.closePath();
+  if (fill) {
+    ctx.fill();
+  }
+  if (stroke) {
+    ctx.stroke();
+  }
+}
+
+function circle(ctx, x, y, radius, fill, stroke) {
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+  fill && ctx.fill();
+  stroke && ctx.stroke();
+}
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _imageCache = __webpack_require__(0);
 
-var _geometry = __webpack_require__(2);
+var _geometryUtils = __webpack_require__(2);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1049,7 +1192,7 @@ var Goon = function () {
       var intStep = Math.floor(step);
       this._residualStep = step - intStep;
 
-      var nextPosition = (0, _geometry.getPointInLine)(this.position, targetPosition, intStep);
+      var nextPosition = (0, _geometryUtils.getPointInLine)(this.position, targetPosition, intStep);
       // Might happen that step is not enought to change cell
       var nextPositionCell = this.game.grid.getCellAtPosition(nextPosition);
 
@@ -1069,7 +1212,7 @@ var Goon = function () {
 exports.default = Goon;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1165,7 +1308,7 @@ var PathFinder = function () {
 exports.default = PathFinder;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1239,7 +1382,7 @@ var Random = function () {
 exports.default = new Random();
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

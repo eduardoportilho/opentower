@@ -1,4 +1,5 @@
 import {calculateDistance} from './geometry-utils'
+import {roundRect, circle} from './drawing-utils'
 /**
  * @typedef {Object} Point
  * @property {number} x - The X Coordinate.
@@ -32,6 +33,7 @@ export class Tower {
 
     // shoting props
     this.timeUntilReloaded = 0
+    this.canonAngle = 180
   }
 
   /**
@@ -39,11 +41,51 @@ export class Tower {
    * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
    */
   draw (context) {
-    context.fillStyle = 'lightgray'
-    context.strokeStyle = 'dimgray'
-    context.fillRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height)
-    context.strokeRect(this.topLeftPosition.x, this.topLeftPosition.y, this.width, this.height)
+    // grass
+    let x = this.topLeftPosition.x
+    let y = this.topLeftPosition.y
+    let width = this.width
+    let height = this.height
+    context.fillStyle = '#B8E986'
+    context.strokeStyle = '#7ED321'
+    roundRect(context, x, y, width, height, true, true)
+
+    // base
+    const basePct = 3 / 5
+    const baseWidth = Math.round(width * basePct)
+    const baseHeight = Math.round(height * basePct)
+    const baseX = x + Math.round((width - baseWidth) / 2)
+    const baseY = y + Math.round((height - baseHeight) / 2)
+    context.fillStyle = '#D3D3D3'
+    context.strokeStyle = '#979797'
+    context.fillRect(baseX, baseY, baseWidth, baseHeight)
+    context.strokeRect(baseX, baseY, baseWidth, baseHeight)
+
+    // Rotatory device
+    const rotPct = 2 / 5
+    const rotRadius = Math.round(width * rotPct / 2)
+    const rotCenterX = x + Math.round(width / 2)
+    const rotCenterY = y + Math.round(height / 2)
+    context.fillStyle = '#9B9B9B'
+    context.strokeStyle = '#979797'
+    circle(context, rotCenterX, rotCenterY, rotRadius, true, true)
+
+    // canon
+    const canonAngleRad = (Math.PI / 180) * this.canonAngle
+    const canonPct = 22 / 50
+    const canonWidth = Math.round(width * canonPct)
+    const canonHeight = 8
+    const canonX = 0
+    const canonY = 0 - Math.round(canonHeight / 2)
+    context.save()
+    context.translate(rotCenterX, rotCenterY)
+    context.rotate(canonAngleRad)
+    context.fillStyle = '#9B9B9B'
+    context.strokeStyle = '#979797'
+    context.fillRect(canonX, canonY, canonWidth, canonHeight)
+    context.restore()
   }
+
   /**
    * Update tower state.
    * @param  {number} delta - ms since last update.
