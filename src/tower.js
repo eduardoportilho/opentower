@@ -1,4 +1,4 @@
-import {calculateDistance} from './geometry-utils'
+import {calculateDistance, getAngleRadians} from './geometry-utils'
 import {roundRect, circle} from './drawing-utils'
 /**
  * @typedef {Object} Point
@@ -33,7 +33,7 @@ export class Tower {
 
     // shoting props
     this.timeUntilReloaded = 0
-    this.canonAngle = 180
+    this.canonAngle = Math.PI
   }
 
   /**
@@ -71,7 +71,6 @@ export class Tower {
     circle(context, rotCenterX, rotCenterY, rotRadius, true, true)
 
     // canon
-    const canonAngleRad = (Math.PI / 180) * this.canonAngle
     const canonPct = 22 / 50
     const canonWidth = Math.round(width * canonPct)
     const canonHeight = 8
@@ -79,7 +78,7 @@ export class Tower {
     const canonY = 0 - Math.round(canonHeight / 2)
     context.save()
     context.translate(rotCenterX, rotCenterY)
-    context.rotate(canonAngleRad)
+    context.rotate(this.canonAngle)
     context.fillStyle = '#9B9B9B'
     context.strokeStyle = '#979797'
     context.fillRect(canonX, canonY, canonWidth, canonHeight)
@@ -107,6 +106,10 @@ export class Tower {
     if (goon) {
       goon.life -= this.damage
       this.timeUntilReloaded = this.reloadTime
+      this.canonAngle = getAngleRadians(this.centerPosition, goon.position)
+      if (goon.position.x < this.centerPosition.x) {
+        this.canonAngle = Math.PI - this.canonAngle
+      }
     }
   }
 

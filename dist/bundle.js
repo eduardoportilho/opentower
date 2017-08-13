@@ -280,6 +280,27 @@ var getPointInLine = exports.getPointInLine = function getPointInLine(origin, an
   return { x: nextX, y: nextY };
 };
 
+/**
+ * Return the angle between the line conecting 2 points and the horizontal axis.
+ *
+ * Angle signal:
+ *  B     |     B
+ *    (-) | (-)
+ * -------A-------
+ *    (+) | (+)
+ *  B     |     B
+ *
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @return {number} Angle in radians.
+ */
+var getAngleRadians = exports.getAngleRadians = function getAngleRadians(pointA, pointB) {
+  var dy = pointB.y - pointA.y;
+  var hyp = calculateDistance(pointA, pointB);
+  var sin = dy / hyp;
+  return Math.asin(sin);
+};
+
 /***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -852,7 +873,7 @@ var Tower = exports.Tower = function () {
 
     // shoting props
     this.timeUntilReloaded = 0;
-    this.canonAngle = 180;
+    this.canonAngle = Math.PI;
   }
 
   /**
@@ -894,7 +915,6 @@ var Tower = exports.Tower = function () {
       (0, _drawingUtils.circle)(context, rotCenterX, rotCenterY, rotRadius, true, true);
 
       // canon
-      var canonAngleRad = Math.PI / 180 * this.canonAngle;
       var canonPct = 22 / 50;
       var canonWidth = Math.round(width * canonPct);
       var canonHeight = 8;
@@ -902,7 +922,7 @@ var Tower = exports.Tower = function () {
       var canonY = 0 - Math.round(canonHeight / 2);
       context.save();
       context.translate(rotCenterX, rotCenterY);
-      context.rotate(canonAngleRad);
+      context.rotate(this.canonAngle);
       context.fillStyle = '#9B9B9B';
       context.strokeStyle = '#979797';
       context.fillRect(canonX, canonY, canonWidth, canonHeight);
@@ -935,6 +955,10 @@ var Tower = exports.Tower = function () {
       if (goon) {
         goon.life -= this.damage;
         this.timeUntilReloaded = this.reloadTime;
+        this.canonAngle = (0, _geometryUtils.getAngleRadians)(this.centerPosition, goon.position);
+        if (goon.position.x < this.centerPosition.x) {
+          this.canonAngle = Math.PI - this.canonAngle;
+        }
       }
     }
   }, {

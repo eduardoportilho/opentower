@@ -32,3 +32,24 @@ export const getPointInLine = (origin, anyPointInLine, distance) => {
   const nextY = origin.y + dyStep
   return {x: nextX, y: nextY}
 }
+
+/**
+ * Return the angle between the line conecting 2 points and the horizontal axis.
+ *
+ * Angle signal:
+ *  B     |     B
+ *    (-) | (-)
+ * -------A-------
+ *    (+) | (+)
+ *  B     |     B
+ *
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @return {number} Angle in radians.
+ */
+export const getAngleRadians = (pointA, pointB) => {
+  const dy = pointB.y - pointA.y
+  const hyp = calculateDistance(pointA, pointB)
+  const sin = dy / hyp
+  return Math.asin(sin)
+}
