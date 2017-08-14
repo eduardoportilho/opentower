@@ -38,15 +38,15 @@
 ✔ - Highlight tower boundaries on hover.
 ✔ - Define goon speed in pixels/s (instead of pixels/step)
 ✔ - Detect if the path to target would be blocked before deploying a tower and avoid the deploy if so.
-
-- Redraw tower
-- Implement pause and step to debug
-- make tower shot
-    + detect goons in range (on clock)
-    + deduct goon life
-        * Show goon life
-    + kill goon on 0 life
-    + reload gun
+✔ - Redraw tower
+✔ - Implement pause and step to debug
+✔ - make tower shot
+    ✔ + detect goons in range (on clock)
+    ✔ + deduct goon life
+        ✔ * Show goon life
+    ✔ + kill goon on 0 life
+    ✔ + reload gun
+    
     + Animate shot?
 - Deploy goons in waves
 - Control cash:
