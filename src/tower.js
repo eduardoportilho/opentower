@@ -140,3 +140,4 @@ export class Tower {
     }
   }
 }
+Tower.cost = 10

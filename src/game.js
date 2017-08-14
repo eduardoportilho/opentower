@@ -19,6 +19,8 @@ export default class Game {
     this.highlight = undefined
     this.spawnedGoons = 0
     this.spawnCells = this.getSpawnCells()
+    this.cash = 50
+    this.updateCashDisplay()
 
     this.intervalId = window.setInterval(this.spawnGoons.bind(this), 800)
   }
@@ -28,6 +30,10 @@ export default class Game {
    * @param  {Point} position - Cell upper-left position.
    */
   onUserClick (position) {
+    if (this.cash < Tower.cost) {
+      // no money, no tower
+      return
+    }
     const towerCells = this.grid.getCellsAround(position, TOWER_SIZE.rows, TOWER_SIZE.cols)
     // occupied ?
     if (!towerCells || towerCells.some(cell => cell.blocked || cell.hasGoon)) {
@@ -51,6 +57,8 @@ export default class Game {
     const towerBoundaries = this._getCellsBoudaries(towerCells)
     const tower = new Tower(towerBoundaries, this)
     this.towers.push(tower)
+    this.cash -= Tower.cost
+    this.updateCashDisplay()
   }
 
   onMouseMove (position) {
@@ -108,6 +116,10 @@ export default class Game {
     this.towers.forEach((tower) => tower.update(delta))
     this.goons.forEach((goon) => goon.update(delta))
     this.updateHighlight()
+  }
+
+  updateCashDisplay () {
+    document.getElementById('cash').textContent = this.cash
   }
 
   getSpawnCells () {
