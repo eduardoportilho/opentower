@@ -13,6 +13,7 @@ export default class PathFinder {
     let targetCell = this.grid.getTarget()
     targetCell.dist = 0
     targetCell.reachable = true
+    targetCell.isTarget = true
     targetCell.nextStep = undefined
     this.frontier = [targetCell]
 

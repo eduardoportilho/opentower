@@ -26,6 +26,7 @@ export class Cell {
     this.dist = undefined
     this.nextStep = undefined
     this.blocked = false
+    this.isTarget = false
   }
 
   /**

@@ -16,6 +16,7 @@ export default class Goon {
     this.position = this.cell.getTopLeftPosition()
     this.speed = 20 // px/sec
     this.life = 100
+    this.bounty = 20
 
     // store the decimals lost in the last step to maintain constant speed
     this._residualStep = 0
@@ -63,7 +64,7 @@ export default class Goon {
 
   updateLife (delta) {
     if (this.life <= 0) {
-      this.game.removeGoon(this)
+      this.game.killGoon(this)
     }
   }
 
@@ -71,8 +72,9 @@ export default class Goon {
     this.cell.hasGoon = false
     const nextCell = this.pathFinder.nextCell(this.cell, 1)
     if (!nextCell) {
-      this.game.removeGoon(this)
-      return
+      throw new Error('Goon traped!')
+      //this.game.goonArrived(this)
+      //return
     }
 
     const offset = this.cell.getOffset(this.position)
@@ -89,12 +91,12 @@ export default class Goon {
     // Might happen that step is not enought to change cell
     const nextPositionCell = this.game.grid.getCellAtPosition(nextPosition)
 
-    if (nextPositionCell) {
+    if (nextPositionCell.isTarget) {
+      this.game.goonArrived(this)
+    } else {
       this.cell = nextPositionCell
       this.cell.hasGoon = true
       this.position = nextPosition
-    } else {
-      this.game.removeGoon(this)
     }
   }
 }

@@ -17,10 +17,12 @@ export default class Game {
     this.towers = []
     this.goons = []
     this.highlight = undefined
-    this.spawnedGoons = 0
+    this.spawnedGoonCount = 0
     this.spawnCells = this.getSpawnCells()
     this.cash = 50
     this.updateCashDisplay()
+    this.goonsInside = 0
+    this.updateGoonsInsideDisplay()
 
     this.intervalId = window.setInterval(this.spawnGoons.bind(this), 800)
   }
@@ -99,6 +101,16 @@ export default class Game {
     const id = Date.now()
     const goon = new Goon(id, spawnCell, this, this.pathFinder)
     this.goons.push(goon)
+  killGoon (goon) {
+    this.cash += goon.bounty
+    this.removeGoon(goon)
+    this.updateCashDisplay()
+  }
+
+  goonArrived (goon) {
+    this.goonsInside++
+    this.updateGoonsInsideDisplay()
+    this.removeGoon(goon)
   }
 
   removeGoon (goon) {
@@ -120,6 +132,10 @@ export default class Game {
 
   updateCashDisplay () {
     document.getElementById('cash').textContent = this.cash
+  }
+
+  updateGoonsInsideDisplay () {
+    document.getElementById('goons-inside').textContent = this.goonsInside
   }
 
   getSpawnCells () {
