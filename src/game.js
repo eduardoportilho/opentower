@@ -24,7 +24,7 @@ export default class Game {
     this.goonsInside = 0
     this.updateGoonsInsideDisplay()
 
-    this.intervalId = window.setInterval(this.spawnGoons.bind(this), 800)
+    this.intervalId = window.setInterval(this.spawnGoons.bind(this), 1500)
   }
 
   /**
@@ -87,20 +87,14 @@ export default class Game {
   /**
    * Spawn a new goon.
    */
-  spawnGoons () {
-    const NUMBER_OF_GOONS_TO_SPAWN = 10
-    const location = random.getRandomElementFromArray(this.spawnCells).coord
-    this.spawnGoon(location.row, location.col)
-    if (++this.spawnedGoons >= NUMBER_OF_GOONS_TO_SPAWN) {
-      window.clearInterval(this.intervalId)
-    }
+  spawnGoon (goon) {
+    const NUMBER_OF_GOONS_TO_SPAWN = 5
+    const spawnCell = random.getRandomElementFromArray(this.spawnCells)
+    // TODO create method goon.setInitialCell
+    goon.cell = spawnCell
+    this.goons.push(goon)
   }
 
-  spawnGoon (row, col) {
-    const spawnCell = this.grid.get(row, col)
-    const id = Date.now()
-    const goon = new Goon(id, spawnCell, this, this.pathFinder)
-    this.goons.push(goon)
   killGoon (goon) {
     this.cash += goon.bounty
     this.removeGoon(goon)

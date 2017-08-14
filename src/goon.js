@@ -7,10 +7,10 @@ const GOON_IMAGE_SIZE = {
 }
 
 export default class Goon {
-  constructor (id, initialCell, game, pathFinder) {
+  constructor (id, initialCell, game) {
     this.id = id
     this.game = game
-    this.pathFinder = pathFinder
+    this.pathFinder = this.game.pathFinder
     this.cell = initialCell
     this.cell.hasGoon = true
     this.position = this.cell.getTopLeftPosition()

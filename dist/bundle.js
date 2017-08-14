@@ -161,6 +161,7 @@ var Cell = exports.Cell = function () {
     this.dist = undefined;
     this.nextStep = undefined;
     this.blocked = false;
+    this.isTarget = false;
   }
 
   /**
@@ -410,10 +411,14 @@ var Game = function () {
     this.towers = [];
     this.goons = [];
     this.highlight = undefined;
-    this.spawnedGoons = 0;
+    this.spawnedGoonCount = 0;
     this.spawnCells = this.getSpawnCells();
+    this.cash = 50;
+    this.updateCashDisplay();
+    this.goonsInside = 0;
+    this.updateGoonsInsideDisplay();
 
-    this.intervalId = window.setInterval(this.spawnGoons.bind(this), 800);
+    this.intervalId = window.setInterval(this.spawnGoons.bind(this), 1500);
   }
 
   /**
@@ -425,6 +430,10 @@ var Game = function () {
   _createClass(Game, [{
     key: 'onUserClick',
     value: function onUserClick(position) {
+      if (this.cash < _tower.Tower.cost) {
+        // no money, no tower
+        return;
+      }
       var towerCells = this.grid.getCellsAround(position, _tower.TOWER_SIZE.rows, _tower.TOWER_SIZE.cols);
       // occupied ?
       if (!towerCells || towerCells.some(function (cell) {
@@ -457,6 +466,8 @@ var Game = function () {
       var towerBoundaries = this._getCellsBoudaries(towerCells);
       var tower = new _tower.Tower(towerBoundaries, this);
       this.towers.push(tower);
+      this.cash -= _tower.Tower.cost;
+      this.updateCashDisplay();
     }
   }, {
     key: 'onMouseMove',
@@ -489,22 +500,27 @@ var Game = function () {
      */
 
   }, {
-    key: 'spawnGoons',
-    value: function spawnGoons() {
-      var NUMBER_OF_GOONS_TO_SPAWN = 10;
-      var location = _random2.default.getRandomElementFromArray(this.spawnCells).coord;
-      this.spawnGoon(location.row, location.col);
-      if (++this.spawnedGoons >= NUMBER_OF_GOONS_TO_SPAWN) {
-        window.clearInterval(this.intervalId);
-      }
+    key: 'spawnGoon',
+    value: function spawnGoon(goon) {
+      var NUMBER_OF_GOONS_TO_SPAWN = 5;
+      var spawnCell = _random2.default.getRandomElementFromArray(this.spawnCells);
+      // TODO create method goon.setInitialCell
+      goon.cell = spawnCell;
+      this.goons.push(goon);
     }
   }, {
-    key: 'spawnGoon',
-    value: function spawnGoon(row, col) {
-      var spawnCell = this.grid.get(row, col);
-      var id = Date.now();
-      var goon = new _goon2.default(id, spawnCell, this, this.pathFinder);
-      this.goons.push(goon);
+    key: 'killGoon',
+    value: function killGoon(goon) {
+      this.cash += goon.bounty;
+      this.removeGoon(goon);
+      this.updateCashDisplay();
+    }
+  }, {
+    key: 'goonArrived',
+    value: function goonArrived(goon) {
+      this.goonsInside++;
+      this.updateGoonsInsideDisplay();
+      this.removeGoon(goon);
     }
   }, {
     key: 'removeGoon',
@@ -532,6 +548,16 @@ var Game = function () {
         return goon.update(delta);
       });
       this.updateHighlight();
+    }
+  }, {
+    key: 'updateCashDisplay',
+    value: function updateCashDisplay() {
+      document.getElementById('cash').textContent = this.cash;
+    }
+  }, {
+    key: 'updateGoonsInsideDisplay',
+    value: function updateGoonsInsideDisplay() {
+      document.getElementById('goons-inside').textContent = this.goonsInside;
     }
   }, {
     key: 'getSpawnCells',
@@ -1001,6 +1027,8 @@ var Tower = exports.Tower = function () {
   return Tower;
 }();
 
+Tower.cost = 10;
+
 /***/ }),
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -1126,17 +1154,18 @@ var GOON_IMAGE_SIZE = {
 };
 
 var Goon = function () {
-  function Goon(id, initialCell, game, pathFinder) {
+  function Goon(id, initialCell, game) {
     _classCallCheck(this, Goon);
 
     this.id = id;
     this.game = game;
-    this.pathFinder = pathFinder;
+    this.pathFinder = this.game.pathFinder;
     this.cell = initialCell;
     this.cell.hasGoon = true;
     this.position = this.cell.getTopLeftPosition();
     this.speed = 20; // px/sec
     this.life = 100;
+    this.bounty = 20;
 
     // store the decimals lost in the last step to maintain constant speed
     this._residualStep = 0;
@@ -1193,7 +1222,7 @@ var Goon = function () {
     key: 'updateLife',
     value: function updateLife(delta) {
       if (this.life <= 0) {
-        this.game.removeGoon(this);
+        this.game.killGoon(this);
       }
     }
   }, {
@@ -1202,8 +1231,9 @@ var Goon = function () {
       this.cell.hasGoon = false;
       var nextCell = this.pathFinder.nextCell(this.cell, 1);
       if (!nextCell) {
-        this.game.removeGoon(this);
-        return;
+        throw new Error('Goon traped!');
+        //this.game.goonArrived(this)
+        //return
       }
 
       var offset = this.cell.getOffset(this.position);
@@ -1220,12 +1250,12 @@ var Goon = function () {
       // Might happen that step is not enought to change cell
       var nextPositionCell = this.game.grid.getCellAtPosition(nextPosition);
 
-      if (nextPositionCell) {
+      if (nextPositionCell.isTarget) {
+        this.game.goonArrived(this);
+      } else {
         this.cell = nextPositionCell;
         this.cell.hasGoon = true;
         this.position = nextPosition;
-      } else {
-        this.game.removeGoon(this);
       }
     }
   }]);
@@ -1270,6 +1300,7 @@ var PathFinder = function () {
       var targetCell = this.grid.getTarget();
       targetCell.dist = 0;
       targetCell.reachable = true;
+      targetCell.isTarget = true;
       targetCell.nextStep = undefined;
       this.frontier = [targetCell];
 
