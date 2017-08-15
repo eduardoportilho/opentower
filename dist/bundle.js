@@ -315,7 +315,7 @@ var _game = __webpack_require__(4);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _renderer = __webpack_require__(13);
+var _renderer = __webpack_require__(14);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
@@ -326,6 +326,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function init() {
   var canvas = document.getElementById('canvas');
   var game = new _game2.default();
+  // TODO game as the object root: create render and delegate
   var renderer = new _renderer2.default(canvas, game);
   renderer.start();
   initCtrlPanel(game, renderer);
@@ -392,11 +393,11 @@ var _goonWave = __webpack_require__(9);
 
 var _goonWave2 = _interopRequireDefault(_goonWave);
 
-var _pathFinder = __webpack_require__(11);
+var _pathFinder = __webpack_require__(12);
 
 var _pathFinder2 = _interopRequireDefault(_pathFinder);
 
-var _random = __webpack_require__(12);
+var _random = __webpack_require__(13);
 
 var _random2 = _interopRequireDefault(_random);
 
@@ -1150,6 +1151,10 @@ var _goon = __webpack_require__(10);
 
 var _goon2 = _interopRequireDefault(_goon);
 
+var _wavesConfig = __webpack_require__(11);
+
+var _wavesConfig2 = _interopRequireDefault(_wavesConfig);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1158,19 +1163,12 @@ var GoonWave = function () {
   function GoonWave(game) {
     _classCallCheck(this, GoonWave);
 
-    // const
     this.game = game;
-    this.intervalBetweenWaves = 20000;
-    this.numberOfGoonPerWave = 5;
-    this.intervalBetweenSpawns = 1500;
-    this.goonSpeed = 20;
-    this.goonLife = 100;
-
-    // let
-    this.waveStarted = false;
-    this.timeSinceLastWave = this.intervalBetweenWaves; // start imediatelly
-    this.timeSinceLastSpawn = 0;
-    this.goonsLeft = this.numberOfGoonPerWave;
+    this.currentWave = null;
+    this.timeUntilNexWave = 0;
+    this.timeUntilNextSpawn = 0;
+    this.goonsLeft = 0;
+    this.config = _wavesConfig2.default.slice(0);
   }
 
   _createClass(GoonWave, [{
@@ -1182,19 +1180,23 @@ var GoonWave = function () {
   }, {
     key: 'startOrStopWave',
     value: function startOrStopWave(delta) {
-      if (this.waveStarted) {
+      if (this.currentWave) {
         // no more goons, end wave
         if (this.goonsLeft === 0) {
-          this.waveStarted = false;
-          this.timeSinceLastWave = 0;
+          this.timeUntilNexWave = this.currentWave.intervalAfterWave;
+          this.currentWave = null;
         }
       } else {
-        this.timeSinceLastWave += delta;
+        this.timeUntilNexWave -= delta;
         // interval ended, start wave
-        if (this.timeSinceLastWave >= this.intervalBetweenWaves) {
-          this.waveStarted = true;
-          this.timeSinceLastSpawn = 0;
-          this.goonsLeft = this.numberOfGoonPerWave;
+        if (this.timeUntilNexWave <= 0) {
+          if (this.config.length === 0) {
+            // no more waves, quit
+            return;
+          }
+          this.currentWave = this.config.shift();
+          this.timeUntilNextSpawn = this.currentWave.intervalBetweenSpawns;
+          this.goonsLeft = this.currentWave.numberOfGoons;
         }
       }
     }
@@ -1202,17 +1204,17 @@ var GoonWave = function () {
     key: 'deployGoons',
     value: function deployGoons(delta) {
       // is wave running?
-      if (!this.waveStarted || this.goonsLeft === 0) {
+      if (!this.currentWave || this.goonsLeft === 0) {
         return;
       }
       // is in interval between spawns? wait...
-      if (this.timeSinceLastSpawn < this.intervalBetweenSpawns) {
-        this.timeSinceLastSpawn += delta;
+      if (this.timeUntilNextSpawn > 0) {
+        this.timeUntilNextSpawn -= delta;
         return;
       }
 
       // spawn!
-      this.timeSinceLastSpawn = 0;
+      this.timeUntilNextSpawn = this.currentWave.intervalBetweenSpawns;
       this.goonsLeft--;
       this.game.spawnGoon(this.newGoon());
     }
@@ -1221,8 +1223,8 @@ var GoonWave = function () {
     value: function newGoon() {
       var id = Date.now();
       var goon = new _goon2.default(id, this.game);
-      goon.speed = this.goonSpeed;
-      goon.life = this.goonLife;
+      goon.speed = this.currentWave.goonSpeed;
+      goon.life = this.currentWave.goonLife;
       return goon;
     }
   }]);
@@ -1383,6 +1385,42 @@ exports.default = Goon;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = [{
+  intervalAfterWave: 20000,
+  numberOfGoons: 5,
+  intervalBetweenSpawns: 1500,
+  goonSpeed: 20,
+  goonLife: 100
+}, {
+  intervalAfterWave: 20000,
+  numberOfGoons: 10,
+  intervalBetweenSpawns: 1500,
+  goonSpeed: 20,
+  goonLife: 100
+}, {
+  intervalAfterWave: 20000,
+  numberOfGoons: 10,
+  intervalBetweenSpawns: 1500,
+  goonSpeed: 25,
+  goonLife: 120
+}, {
+  intervalAfterWave: 20000,
+  numberOfGoons: 10,
+  intervalBetweenSpawns: 1000,
+  goonSpeed: 25,
+  goonLife: 120
+}];
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -1471,7 +1509,7 @@ var PathFinder = function () {
 exports.default = PathFinder;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1545,7 +1583,7 @@ var Random = function () {
 exports.default = new Random();
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
