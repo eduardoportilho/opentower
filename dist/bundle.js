@@ -315,7 +315,7 @@ var _game = __webpack_require__(4);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _renderer = __webpack_require__(12);
+var _renderer = __webpack_require__(13);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
@@ -386,15 +386,17 @@ var _grid2 = _interopRequireDefault(_grid);
 
 var _tower = __webpack_require__(7);
 
-var _goon = __webpack_require__(9);
+var _tower2 = _interopRequireDefault(_tower);
 
-var _goon2 = _interopRequireDefault(_goon);
+var _goonWave = __webpack_require__(9);
 
-var _pathFinder = __webpack_require__(10);
+var _goonWave2 = _interopRequireDefault(_goonWave);
+
+var _pathFinder = __webpack_require__(11);
 
 var _pathFinder2 = _interopRequireDefault(_pathFinder);
 
-var _random = __webpack_require__(11);
+var _random = __webpack_require__(12);
 
 var _random2 = _interopRequireDefault(_random);
 
@@ -413,12 +415,14 @@ var Game = function () {
     this.highlight = undefined;
     this.spawnedGoonCount = 0;
     this.spawnCells = this.getSpawnCells();
+
     this.cash = 50;
     this.updateCashDisplay();
+
     this.goonsInside = 0;
     this.updateGoonsInsideDisplay();
 
-    this.intervalId = window.setInterval(this.spawnGoons.bind(this), 1500);
+    this.goonWave = new _goonWave2.default(this);
   }
 
   /**
@@ -430,11 +434,11 @@ var Game = function () {
   _createClass(Game, [{
     key: 'onUserClick',
     value: function onUserClick(position) {
-      if (this.cash < _tower.Tower.cost) {
+      if (this.cash < _tower2.default.cost) {
         // no money, no tower
         return;
       }
-      var towerCells = this.grid.getCellsAround(position, _tower.TOWER_SIZE.rows, _tower.TOWER_SIZE.cols);
+      var towerCells = this.grid.getCellsAround(position, _tower2.default.sizeInCells.rows, _tower2.default.sizeInCells.cols);
       // occupied ?
       if (!towerCells || towerCells.some(function (cell) {
         return cell.blocked || cell.hasGoon;
@@ -464,9 +468,9 @@ var Game = function () {
       }
 
       var towerBoundaries = this._getCellsBoudaries(towerCells);
-      var tower = new _tower.Tower(towerBoundaries, this);
+      var tower = new _tower2.default(towerBoundaries, this);
       this.towers.push(tower);
-      this.cash -= _tower.Tower.cost;
+      this.cash -= _tower2.default.cost;
       this.updateCashDisplay();
     }
   }, {
@@ -480,7 +484,7 @@ var Game = function () {
       if (!this.mousePosition) {
         return;
       }
-      var towerCells = this.grid.getCellsAround(this.mousePosition, _tower.TOWER_SIZE.rows, _tower.TOWER_SIZE.cols);
+      var towerCells = this.grid.getCellsAround(this.mousePosition, _tower2.default.sizeInCells.rows, _tower2.default.sizeInCells.cols);
       if (!towerCells) {
         this.highlight = undefined;
         return;
@@ -502,10 +506,8 @@ var Game = function () {
   }, {
     key: 'spawnGoon',
     value: function spawnGoon(goon) {
-      var NUMBER_OF_GOONS_TO_SPAWN = 5;
       var spawnCell = _random2.default.getRandomElementFromArray(this.spawnCells);
-      // TODO create method goon.setInitialCell
-      goon.cell = spawnCell;
+      goon.setInitialCell(spawnCell);
       this.goons.push(goon);
     }
   }, {
@@ -541,6 +543,7 @@ var Game = function () {
   }, {
     key: 'update',
     value: function update(delta) {
+      this.goonWave.update(delta);
       this.towers.forEach(function (tower) {
         return tower.update(delta);
       });
@@ -855,7 +858,6 @@ exports.default = Coord;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Tower = exports.TOWER_SIZE = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -876,12 +878,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @property {Point} topLeft - top-left point of the object.
  * @property {Point} bottomRight - bottom-right point of the object.
  */
-var TOWER_SIZE = exports.TOWER_SIZE = {
-  rows: 2,
-  cols: 2
-};
 
-var Tower = exports.Tower = function () {
+var Tower = function () {
   function Tower(boundaries, game) {
     _classCallCheck(this, Tower);
 
@@ -1027,7 +1025,13 @@ var Tower = exports.Tower = function () {
   return Tower;
 }();
 
+exports.default = Tower;
+
 Tower.cost = 10;
+Tower.sizeInCells = {
+  rows: 2,
+  cols: 2
+};
 
 /***/ }),
 /* 8 */
@@ -1142,6 +1146,105 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _goon = __webpack_require__(10);
+
+var _goon2 = _interopRequireDefault(_goon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var GoonWave = function () {
+  function GoonWave(game) {
+    _classCallCheck(this, GoonWave);
+
+    // const
+    this.game = game;
+    this.intervalBetweenWaves = 20000;
+    this.numberOfGoonPerWave = 5;
+    this.intervalBetweenSpawns = 1500;
+    this.goonSpeed = 20;
+    this.goonLife = 100;
+
+    // let
+    this.waveStarted = false;
+    this.timeSinceLastWave = this.intervalBetweenWaves; // start imediatelly
+    this.timeSinceLastSpawn = 0;
+    this.goonsLeft = this.numberOfGoonPerWave;
+  }
+
+  _createClass(GoonWave, [{
+    key: 'update',
+    value: function update(delta) {
+      this.startOrStopWave(delta);
+      this.deployGoons(delta);
+    }
+  }, {
+    key: 'startOrStopWave',
+    value: function startOrStopWave(delta) {
+      if (this.waveStarted) {
+        // no more goons, end wave
+        if (this.goonsLeft === 0) {
+          this.waveStarted = false;
+          this.timeSinceLastWave = 0;
+        }
+      } else {
+        this.timeSinceLastWave += delta;
+        // interval ended, start wave
+        if (this.timeSinceLastWave >= this.intervalBetweenWaves) {
+          this.waveStarted = true;
+          this.timeSinceLastSpawn = 0;
+          this.goonsLeft = this.numberOfGoonPerWave;
+        }
+      }
+    }
+  }, {
+    key: 'deployGoons',
+    value: function deployGoons(delta) {
+      // is wave running?
+      if (!this.waveStarted || this.goonsLeft === 0) {
+        return;
+      }
+      // is in interval between spawns? wait...
+      if (this.timeSinceLastSpawn < this.intervalBetweenSpawns) {
+        this.timeSinceLastSpawn += delta;
+        return;
+      }
+
+      // spawn!
+      this.timeSinceLastSpawn = 0;
+      this.goonsLeft--;
+      this.game.spawnGoon(this.newGoon());
+    }
+  }, {
+    key: 'newGoon',
+    value: function newGoon() {
+      var id = Date.now();
+      var goon = new _goon2.default(id, this.game);
+      goon.speed = this.goonSpeed;
+      goon.life = this.goonLife;
+      return goon;
+    }
+  }]);
+
+  return GoonWave;
+}();
+
+exports.default = GoonWave;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _imageCache = __webpack_require__(0);
 
 var _geometryUtils = __webpack_require__(2);
@@ -1154,15 +1257,13 @@ var GOON_IMAGE_SIZE = {
 };
 
 var Goon = function () {
-  function Goon(id, initialCell, game) {
+  function Goon(id, game) {
     _classCallCheck(this, Goon);
 
     this.id = id;
     this.game = game;
     this.pathFinder = this.game.pathFinder;
-    this.cell = initialCell;
-    this.cell.hasGoon = true;
-    this.position = this.cell.getTopLeftPosition();
+
     this.speed = 20; // px/sec
     this.life = 100;
     this.bounty = 20;
@@ -1171,13 +1272,20 @@ var Goon = function () {
     this._residualStep = 0;
   }
 
-  /**
-   * Draw the goon on position.
-   * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
-   */
-
-
   _createClass(Goon, [{
+    key: 'setInitialCell',
+    value: function setInitialCell(cell) {
+      this.cell = cell;
+      this.cell.hasGoon = true;
+      this.position = this.cell.getTopLeftPosition();
+    }
+
+    /**
+     * Draw the goon on position.
+     * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
+     */
+
+  }, {
     key: 'draw',
     value: function draw(context) {
       // _Paint cell base:
@@ -1232,8 +1340,8 @@ var Goon = function () {
       var nextCell = this.pathFinder.nextCell(this.cell, 1);
       if (!nextCell) {
         throw new Error('Goon traped!');
-        //this.game.goonArrived(this)
-        //return
+        // this.game.goonArrived(this)
+        // return
       }
 
       var offset = this.cell.getOffset(this.position);
@@ -1266,7 +1374,7 @@ var Goon = function () {
 exports.default = Goon;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1363,7 +1471,7 @@ var PathFinder = function () {
 exports.default = PathFinder;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1437,7 +1545,7 @@ var Random = function () {
 exports.default = new Random();
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

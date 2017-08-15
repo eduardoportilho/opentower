@@ -5,8 +5,8 @@
  */
 
 import Grid from './grid'
-import {Tower, TOWER_SIZE} from './tower'
-import Goon from './goon'
+import Tower from './tower'
+import GoonWave from './goon-wave'
 import PathFinder from './path-finder'
 import random from './random'
 
@@ -19,12 +19,14 @@ export default class Game {
     this.highlight = undefined
     this.spawnedGoonCount = 0
     this.spawnCells = this.getSpawnCells()
+
     this.cash = 50
     this.updateCashDisplay()
+
     this.goonsInside = 0
     this.updateGoonsInsideDisplay()
 
-    this.intervalId = window.setInterval(this.spawnGoons.bind(this), 1500)
+    this.goonWave = new GoonWave(this)
   }
 
   /**
@@ -36,7 +38,7 @@ export default class Game {
       // no money, no tower
       return
     }
-    const towerCells = this.grid.getCellsAround(position, TOWER_SIZE.rows, TOWER_SIZE.cols)
+    const towerCells = this.grid.getCellsAround(position, Tower.sizeInCells.rows, Tower.sizeInCells.cols)
     // occupied ?
     if (!towerCells || towerCells.some(cell => cell.blocked || cell.hasGoon)) {
       return
@@ -71,7 +73,11 @@ export default class Game {
     if (!this.mousePosition) {
       return
     }
-    const towerCells = this.grid.getCellsAround(this.mousePosition, TOWER_SIZE.rows, TOWER_SIZE.cols)
+    const towerCells = this.grid.getCellsAround(
+      this.mousePosition,
+      Tower.sizeInCells.rows,
+      Tower.sizeInCells.cols
+    )
     if (!towerCells) {
       this.highlight = undefined
       return
@@ -88,10 +94,8 @@ export default class Game {
    * Spawn a new goon.
    */
   spawnGoon (goon) {
-    const NUMBER_OF_GOONS_TO_SPAWN = 5
     const spawnCell = random.getRandomElementFromArray(this.spawnCells)
-    // TODO create method goon.setInitialCell
-    goon.cell = spawnCell
+    goon.setInitialCell(spawnCell)
     this.goons.push(goon)
   }
 
@@ -119,6 +123,7 @@ export default class Game {
    * @param  {number} delta - ms since last update.
    */
   update (delta) {
+    this.goonWave.update(delta)
     this.towers.forEach((tower) => tower.update(delta))
     this.goons.forEach((goon) => goon.update(delta))
     this.updateHighlight()
