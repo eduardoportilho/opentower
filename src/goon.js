@@ -7,19 +7,23 @@ const GOON_IMAGE_SIZE = {
 }
 
 export default class Goon {
-  constructor (id, initialCell, game) {
+  constructor (id, game) {
     this.id = id
     this.game = game
     this.pathFinder = this.game.pathFinder
-    this.cell = initialCell
-    this.cell.hasGoon = true
-    this.position = this.cell.getTopLeftPosition()
+
     this.speed = 20 // px/sec
     this.life = 100
     this.bounty = 20
 
     // store the decimals lost in the last step to maintain constant speed
     this._residualStep = 0
+  }
+
+  setInitialCell (cell) {
+    this.cell = cell
+    this.cell.hasGoon = true
+    this.position = this.cell.getTopLeftPosition()
   }
 
   /**
@@ -73,8 +77,8 @@ export default class Goon {
     const nextCell = this.pathFinder.nextCell(this.cell, 1)
     if (!nextCell) {
       throw new Error('Goon traped!')
-      //this.game.goonArrived(this)
-      //return
+      // this.game.goonArrived(this)
+      // return
     }
 
     const offset = this.cell.getOffset(this.position)
