@@ -11,12 +11,8 @@ import {roundRect, circle} from './drawing-utils'
  * @property {Point} topLeft - top-left point of the object.
  * @property {Point} bottomRight - bottom-right point of the object.
  */
-export const TOWER_SIZE = {
-  rows: 2,
-  cols: 2
-}
 
-export class Tower {
+export default class Tower {
   constructor (boundaries, game) {
     this.game = game
     this.topLeftPosition = boundaries.topLeft
@@ -141,3 +137,7 @@ export class Tower {
   }
 }
 Tower.cost = 10
+Tower.sizeInCells = {
+  rows: 2,
+  cols: 2
+}
