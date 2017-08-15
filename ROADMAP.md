@@ -46,10 +46,14 @@
         ✔ * Show goon life
     ✔ + kill goon on 0 life
     ✔ + reload gun
-    
-    + Animate shot?
-- Deploy goons in waves
-- Control cash:
-    + tower cost
-    + goon bounty
-- Control goons that reach goal
+✔ - Deploy goons in waves
+✔ - Control cash:
+    ✔ + tower cost
+    ✔ + goon bounty
+✔ - Control goons that reach goal
+
+- Config file to tweak game parameters (waves, etc)
+- 2nd tower type
+- 2nd goon type
+- Animate shot?
+
