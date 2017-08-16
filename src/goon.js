@@ -12,6 +12,7 @@ export default class Goon {
     this.game = game
     this.pathFinder = this.game.pathFinder
     this.speed = speed // px/sec
+    this.fullLife = life
     this.life = life
     this.bounty = bounty
 
@@ -43,10 +44,10 @@ export default class Goon {
   drawLifeBar (context) {
     const height = 4
     const width = 20
-    const greenWidth = Math.max(0, Math.round(width * this.life / 100))
+    const greenWidth = Math.max(0, Math.round(width * this.life / this.fullLife))
     const redWidth = width - greenWidth
 
-    const y = this.position.y - 20
+    const y = this.position.y - width
     const greenX = this.position.x
     const redX = this.position.x + greenWidth
 

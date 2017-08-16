@@ -1312,6 +1312,7 @@ var Goon = function () {
     this.game = game;
     this.pathFinder = this.game.pathFinder;
     this.speed = speed; // px/sec
+    this.fullLife = life;
     this.life = life;
     this.bounty = bounty;
 
@@ -1349,10 +1350,10 @@ var Goon = function () {
     value: function drawLifeBar(context) {
       var height = 4;
       var width = 20;
-      var greenWidth = Math.max(0, Math.round(width * this.life / 100));
+      var greenWidth = Math.max(0, Math.round(width * this.life / this.fullLife));
       var redWidth = width - greenWidth;
 
-      var y = this.position.y - 20;
+      var y = this.position.y - width;
       var greenX = this.position.x;
       var redX = this.position.x + greenWidth;
 
