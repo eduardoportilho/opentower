@@ -16,6 +16,8 @@
 ✔ - Goon stoping (ex. when they need to return)
 ✔ - Weird movement on speed 50
 
+- Goon trapped exception
+
 ## Features:
 ✔︎ - expose grid draw method
 ✔︎ - draw grid
@@ -53,7 +55,15 @@
 ✔ - Control goons that reach goal
 
 - Config file to tweak game parameters (waves, etc)
+- Fininsh the game in the end of the waves
 - 2nd tower type
 - 2nd goon type
+- Draw target
 - Animate shot?
+
+## Refactor:
+- Game as the object root and singleton
+- MessageBoard component to handle updateCashDisplay, updateGoonsInsideDisplay, etc.
+- General code review
+
 
