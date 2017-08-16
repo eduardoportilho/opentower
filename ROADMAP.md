@@ -17,6 +17,7 @@
 ✔ - Weird movement on speed 50
 
 - Goon trapped exception
+- Unable to deploy tower (red highlight) on valid position
 
 ## Features:
 ✔︎ - expose grid draw method
