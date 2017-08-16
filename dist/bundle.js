@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -130,7 +130,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _coord = __webpack_require__(6);
+var _coord = __webpack_require__(7);
 
 var _coord2 = _interopRequireDefault(_coord);
 
@@ -309,9 +309,52 @@ var getAngleRadians = exports.getAngleRadians = function getAngleRadians(pointA,
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  initialCash: 50,
+  waves: [{
+    intervalAfterWave: 20000,
+    numberOfGoons: 5,
+    intervalBetweenSpawns: 1500,
+    goonSpeed: 20,
+    goonLife: 100,
+    goonBounty: 20
+  }, {
+    intervalAfterWave: 20000,
+    numberOfGoons: 10,
+    intervalBetweenSpawns: 1500,
+    goonSpeed: 20,
+    goonLife: 100,
+    goonBounty: 20
+  }, {
+    intervalAfterWave: 20000,
+    numberOfGoons: 10,
+    intervalBetweenSpawns: 1500,
+    goonSpeed: 25,
+    goonLife: 120,
+    goonBounty: 20
+  }, {
+    intervalAfterWave: 20000,
+    numberOfGoons: 10,
+    intervalBetweenSpawns: 1000,
+    goonSpeed: 25,
+    goonLife: 120,
+    goonBounty: 20
+  }]
+};
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _imageCache = __webpack_require__(0);
 
-var _game = __webpack_require__(4);
+var _game = __webpack_require__(5);
 
 var _game2 = _interopRequireDefault(_game);
 
@@ -365,7 +408,7 @@ function initCtrlPanel(game, renderer) {
 }
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -381,15 +424,15 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _grid = __webpack_require__(5);
+var _grid = __webpack_require__(6);
 
 var _grid2 = _interopRequireDefault(_grid);
 
-var _tower = __webpack_require__(7);
+var _tower = __webpack_require__(8);
 
 var _tower2 = _interopRequireDefault(_tower);
 
-var _goonWave = __webpack_require__(9);
+var _goonWave = __webpack_require__(10);
 
 var _goonWave2 = _interopRequireDefault(_goonWave);
 
@@ -400,6 +443,10 @@ var _pathFinder2 = _interopRequireDefault(_pathFinder);
 var _random = __webpack_require__(13);
 
 var _random2 = _interopRequireDefault(_random);
+
+var _gameConfig = __webpack_require__(3);
+
+var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -417,7 +464,7 @@ var Game = function () {
     this.spawnedGoonCount = 0;
     this.spawnCells = this.getSpawnCells();
 
-    this.cash = 50;
+    this.cash = _gameConfig2.default.initialCash;
     this.updateCashDisplay();
 
     this.goonsInside = 0;
@@ -591,7 +638,7 @@ var Game = function () {
 exports.default = Game;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -804,7 +851,7 @@ var Grid = function () {
 exports.default = Grid;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -850,7 +897,7 @@ var Coord = function () {
 exports.default = Coord;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -864,7 +911,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _geometryUtils = __webpack_require__(2);
 
-var _drawingUtils = __webpack_require__(8);
+var _drawingUtils = __webpack_require__(9);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1035,7 +1082,7 @@ Tower.sizeInCells = {
 };
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1135,7 +1182,7 @@ function circle(ctx, x, y, radius, fill, stroke) {
 }
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1147,13 +1194,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _goon = __webpack_require__(10);
+var _goon = __webpack_require__(11);
 
 var _goon2 = _interopRequireDefault(_goon);
 
-var _wavesConfig = __webpack_require__(11);
+var _gameConfig = __webpack_require__(3);
 
-var _wavesConfig2 = _interopRequireDefault(_wavesConfig);
+var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1164,11 +1211,12 @@ var GoonWave = function () {
     _classCallCheck(this, GoonWave);
 
     this.game = game;
+    this.config = _gameConfig2.default.waves.slice(0);
+
     this.currentWave = null;
     this.timeUntilNexWave = 0;
     this.timeUntilNextSpawn = 0;
     this.goonsLeft = 0;
-    this.config = _wavesConfig2.default.slice(0);
   }
 
   _createClass(GoonWave, [{
@@ -1222,9 +1270,7 @@ var GoonWave = function () {
     key: 'newGoon',
     value: function newGoon() {
       var id = Date.now();
-      var goon = new _goon2.default(id, this.game);
-      goon.speed = this.currentWave.goonSpeed;
-      goon.life = this.currentWave.goonLife;
+      var goon = new _goon2.default(id, this.game, this.currentWave.goonSpeed, this.currentWave.goonLife, this.currentWave.goonBounty);
       return goon;
     }
   }]);
@@ -1235,7 +1281,7 @@ var GoonWave = function () {
 exports.default = GoonWave;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1259,16 +1305,15 @@ var GOON_IMAGE_SIZE = {
 };
 
 var Goon = function () {
-  function Goon(id, game) {
+  function Goon(id, game, speed, life, bounty) {
     _classCallCheck(this, Goon);
 
     this.id = id;
     this.game = game;
     this.pathFinder = this.game.pathFinder;
-
-    this.speed = 20; // px/sec
-    this.life = 100;
-    this.bounty = 20;
+    this.speed = speed; // px/sec
+    this.life = life;
+    this.bounty = bounty;
 
     // store the decimals lost in the last step to maintain constant speed
     this._residualStep = 0;
@@ -1374,42 +1419,6 @@ var Goon = function () {
 }();
 
 exports.default = Goon;
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = [{
-  intervalAfterWave: 20000,
-  numberOfGoons: 5,
-  intervalBetweenSpawns: 1500,
-  goonSpeed: 20,
-  goonLife: 100
-}, {
-  intervalAfterWave: 20000,
-  numberOfGoons: 10,
-  intervalBetweenSpawns: 1500,
-  goonSpeed: 20,
-  goonLife: 100
-}, {
-  intervalAfterWave: 20000,
-  numberOfGoons: 10,
-  intervalBetweenSpawns: 1500,
-  goonSpeed: 25,
-  goonLife: 120
-}, {
-  intervalAfterWave: 20000,
-  numberOfGoons: 10,
-  intervalBetweenSpawns: 1000,
-  goonSpeed: 25,
-  goonLife: 120
-}];
 
 /***/ }),
 /* 12 */

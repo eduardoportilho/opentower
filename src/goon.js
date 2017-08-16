@@ -7,14 +7,13 @@ const GOON_IMAGE_SIZE = {
 }
 
 export default class Goon {
-  constructor (id, game) {
+  constructor (id, game, speed, life, bounty) {
     this.id = id
     this.game = game
     this.pathFinder = this.game.pathFinder
-
-    this.speed = 20 // px/sec
-    this.life = 100
-    this.bounty = 20
+    this.speed = speed // px/sec
+    this.life = life
+    this.bounty = bounty
 
     // store the decimals lost in the last step to maintain constant speed
     this._residualStep = 0

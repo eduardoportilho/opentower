@@ -9,6 +9,7 @@ import Tower from './tower'
 import GoonWave from './goon-wave'
 import PathFinder from './path-finder'
 import random from './random'
+import gameConfig from './game-config.js'
 
 export default class Game {
   constructor () {
@@ -20,7 +21,7 @@ export default class Game {
     this.spawnedGoonCount = 0
     this.spawnCells = this.getSpawnCells()
 
-    this.cash = 50
+    this.cash = gameConfig.initialCash
     this.updateCashDisplay()
 
     this.goonsInside = 0

@@ -1,14 +1,15 @@
 import Goon from './goon'
-import wavesConfig from './waves-config.js'
+import gameConfig from './game-config.js'
 
 export default class GoonWave {
   constructor (game) {
     this.game = game
+    this.config = gameConfig.waves.slice(0)
+
     this.currentWave = null
     this.timeUntilNexWave = 0
     this.timeUntilNextSpawn = 0
     this.goonsLeft = 0
-    this.config = wavesConfig.slice(0)
   }
 
   update (delta) {
@@ -57,9 +58,13 @@ export default class GoonWave {
 
   newGoon () {
     const id = Date.now()
-    const goon = new Goon(id, this.game)
-    goon.speed = this.currentWave.goonSpeed
-    goon.life = this.currentWave.goonLife
+    const goon = new Goon(
+      id, 
+      this.game,
+      this.currentWave.goonSpeed,
+      this.currentWave.goonLife,
+      this.currentWave.goonBounty
+    )
     return goon
   }
 }
