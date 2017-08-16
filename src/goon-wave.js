@@ -59,7 +59,7 @@ export default class GoonWave {
   newGoon () {
     const id = Date.now()
     const goon = new Goon(
-      id, 
+      id,
       this.game,
       this.currentWave.goonSpeed,
       this.currentWave.goonLife,
