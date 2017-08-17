@@ -7,6 +7,7 @@ export default class GoonWave {
     this.config = gameConfig.waves.slice(0)
 
     this.currentWave = null
+    this.waveNumber = 0
     this.timeUntilNexWave = 0
     this.timeUntilNextSpawn = 0
     this.goonsLeft = 0
@@ -33,6 +34,7 @@ export default class GoonWave {
           return
         }
         this.currentWave = this.config.shift()
+        this.waveNumber++
         this.timeUntilNextSpawn = this.currentWave.intervalBetweenSpawns
         this.goonsLeft = this.currentWave.numberOfGoons
       }

@@ -10,6 +10,7 @@ import GoonWave from './goon-wave'
 import PathFinder from './path-finder'
 import random from './random'
 import gameConfig from './game-config.js'
+import ScoreBoard from './score-board.js'
 
 export default class Game {
   constructor () {
@@ -22,12 +23,13 @@ export default class Game {
     this.spawnCells = this.getSpawnCells()
 
     this.cash = gameConfig.initialCash
-    this.updateCashDisplay()
 
     this.goonsInside = 0
-    this.updateGoonsInsideDisplay()
 
     this.goonWave = new GoonWave(this)
+
+    const scoreBoardContainer = document.getElementById('scoreBoard')
+    this.scoreBoard = new ScoreBoard(this, scoreBoardContainer)
   }
 
   /**
@@ -63,7 +65,6 @@ export default class Game {
     const tower = new Tower(towerBoundaries, this)
     this.towers.push(tower)
     this.cash -= Tower.cost
-    this.updateCashDisplay()
   }
 
   onMouseMove (position) {
@@ -103,12 +104,10 @@ export default class Game {
   killGoon (goon) {
     this.cash += goon.bounty
     this.removeGoon(goon)
-    this.updateCashDisplay()
   }
 
   goonArrived (goon) {
     this.goonsInside++
-    this.updateGoonsInsideDisplay()
     this.removeGoon(goon)
   }
 
@@ -128,14 +127,7 @@ export default class Game {
     this.towers.forEach((tower) => tower.update(delta))
     this.goons.forEach((goon) => goon.update(delta))
     this.updateHighlight()
-  }
-
-  updateCashDisplay () {
-    document.getElementById('cash').textContent = this.cash
-  }
-
-  updateGoonsInsideDisplay () {
-    document.getElementById('goons-inside').textContent = this.goonsInside
+    this.scoreBoard.update()
   }
 
   getSpawnCells () {

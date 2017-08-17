@@ -7,15 +7,18 @@
   </head>
   <body>
     <div class="container">
-      <div>
+      <div id="debug">
         <input type="text" name="x" id="x" value="0" />
         <input type="text" name="y" id="y" value="0" />
         <button id="spawn">Spawn</button>
         <input type="text" name="speed" id="speed" value="50"/>
         <button id="speedUpdate">Update</button>
         <button id="pause">⏯</button>
-        <span>Cash: </span><span id="cash"></span>
-        <span>Goons inside: </span><span id="goons-inside">0</span>
+      </div>
+      <div id="scoreBoard">
+        <span>Cash: </span><span id="cashDisplay"></span>
+        <span>Wave: </span><span id="waveNumberDisplay">0</span>
+        <span>Goons inside: </span><span id="goonsInsideDisplay">0</span>
       </div>
       <canvas id="canvas"></canvas>
     </div>

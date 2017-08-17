@@ -358,7 +358,7 @@ var _game = __webpack_require__(5);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _renderer = __webpack_require__(14);
+var _renderer = __webpack_require__(15);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
@@ -369,6 +369,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function init() {
   var canvas = document.getElementById('canvas');
   var game = new _game2.default();
+
   // TODO game as the object root: create render and delegate
   var renderer = new _renderer2.default(canvas, game);
   renderer.start();
@@ -448,6 +449,10 @@ var _gameConfig = __webpack_require__(3);
 
 var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
+var _scoreBoard = __webpack_require__(14);
+
+var _scoreBoard2 = _interopRequireDefault(_scoreBoard);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -465,12 +470,13 @@ var Game = function () {
     this.spawnCells = this.getSpawnCells();
 
     this.cash = _gameConfig2.default.initialCash;
-    this.updateCashDisplay();
 
     this.goonsInside = 0;
-    this.updateGoonsInsideDisplay();
 
     this.goonWave = new _goonWave2.default(this);
+
+    var scoreBoardContainer = document.getElementById('scoreBoard');
+    this.scoreBoard = new _scoreBoard2.default(this, scoreBoardContainer);
   }
 
   /**
@@ -519,7 +525,6 @@ var Game = function () {
       var tower = new _tower2.default(towerBoundaries, this);
       this.towers.push(tower);
       this.cash -= _tower2.default.cost;
-      this.updateCashDisplay();
     }
   }, {
     key: 'onMouseMove',
@@ -563,13 +568,11 @@ var Game = function () {
     value: function killGoon(goon) {
       this.cash += goon.bounty;
       this.removeGoon(goon);
-      this.updateCashDisplay();
     }
   }, {
     key: 'goonArrived',
     value: function goonArrived(goon) {
       this.goonsInside++;
-      this.updateGoonsInsideDisplay();
       this.removeGoon(goon);
     }
   }, {
@@ -599,16 +602,7 @@ var Game = function () {
         return goon.update(delta);
       });
       this.updateHighlight();
-    }
-  }, {
-    key: 'updateCashDisplay',
-    value: function updateCashDisplay() {
-      document.getElementById('cash').textContent = this.cash;
-    }
-  }, {
-    key: 'updateGoonsInsideDisplay',
-    value: function updateGoonsInsideDisplay() {
-      document.getElementById('goons-inside').textContent = this.goonsInside;
+      this.scoreBoard.update();
     }
   }, {
     key: 'getSpawnCells',
@@ -1214,6 +1208,7 @@ var GoonWave = function () {
     this.config = _gameConfig2.default.waves.slice(0);
 
     this.currentWave = null;
+    this.waveNumber = 0;
     this.timeUntilNexWave = 0;
     this.timeUntilNextSpawn = 0;
     this.goonsLeft = 0;
@@ -1243,6 +1238,7 @@ var GoonWave = function () {
             return;
           }
           this.currentWave = this.config.shift();
+          this.waveNumber++;
           this.timeUntilNextSpawn = this.currentWave.intervalBetweenSpawns;
           this.goonsLeft = this.currentWave.numberOfGoons;
         }
@@ -1594,6 +1590,70 @@ exports.default = new Random();
 
 /***/ }),
 /* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ScoreBoard = function () {
+  function ScoreBoard(game, containerEl) {
+    _classCallCheck(this, ScoreBoard);
+
+    this.game = game;
+    this.cashDisplay = containerEl.querySelector('#cashDisplay');
+    this.goonsInsideDisplay = containerEl.querySelector('#goonsInsideDisplay');
+    this.waveNumberDisplay = containerEl.querySelector('#waveNumberDisplay');
+    this.update();
+  }
+
+  _createClass(ScoreBoard, [{
+    key: 'updateCash',
+    value: function updateCash(cash) {
+      if (this.cash !== cash) {
+        this.cash = cash;
+        this.cashDisplay.textContent = cash;
+      }
+    }
+  }, {
+    key: 'updateGoonsInside',
+    value: function updateGoonsInside(goonsInside) {
+      if (this.goonsInside !== goonsInside) {
+        this.goonsInside = goonsInside;
+        this.goonsInsideDisplay.textContent = goonsInside;
+      }
+    }
+  }, {
+    key: 'updateWaveNumber',
+    value: function updateWaveNumber(waveNumber) {
+      if (this.waveNumber !== waveNumber) {
+        this.waveNumber = waveNumber;
+        this.waveNumberDisplay.textContent = waveNumber;
+      }
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      this.updateCash(this.game.cash);
+      this.updateGoonsInside(this.game.goonsInside);
+      this.updateWaveNumber(this.game.goonWave.waveNumber);
+    }
+  }]);
+
+  return ScoreBoard;
+}();
+
+exports.default = ScoreBoard;
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

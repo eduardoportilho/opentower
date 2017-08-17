@@ -7,6 +7,7 @@ loadImageCache(init)
 function init () {
   const canvas = document.getElementById('canvas')
   const game = new Game()
+
   // TODO game as the object root: create render and delegate
   const renderer = new Renderer(canvas, game)
   renderer.start()
