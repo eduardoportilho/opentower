@@ -66,8 +66,8 @@
 
 ## Refactor:
 ✔ - MessageBoard component to handle updateCashDisplay, updateGoonsInsideDisplay, etc.
+✔ - Game as the object root and singleton
 
-- Game as the object root and singleton
 - General code review
 
 
