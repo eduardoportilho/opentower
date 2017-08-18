@@ -55,8 +55,8 @@
     ✔ + goon bounty
 ✔ - Control goons that reach goal
 ✔ - Config file to tweak game parameters (waves, etc)
+✔ - Create message board
 
-- Create message board
 - Fininsh the game in the end of the waves
 - 2nd tower type
 - 2nd goon type
@@ -65,8 +65,9 @@
 - Calculate grid size based on viewport size
 
 ## Refactor:
+✔ - MessageBoard component to handle updateCashDisplay, updateGoonsInsideDisplay, etc.
+
 - Game as the object root and singleton
-- MessageBoard component to handle updateCashDisplay, updateGoonsInsideDisplay, etc.
 - General code review
 
 
