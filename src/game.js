@@ -11,25 +11,55 @@ import PathFinder from './path-finder'
 import random from './random'
 import gameConfig from './game-config.js'
 import ScoreBoard from './score-board.js'
+import Renderer from './renderer.js'
 
-export default class Game {
-  constructor () {
-    this.grid = new Grid({width: 1000, height: 600})
-    this.pathFinder = new PathFinder(this.grid)
+let gameSingleton
+
+export function initGame (canvas, scoreBoard) {
+  if (!gameSingleton) {
+    gameSingleton = new Game(canvas, scoreBoard)
+  }
+  return gameSingleton
+}
+
+export function getGame () {
+  if (!gameSingleton) {
+    throw new Error('Game not initialized')
+  }
+  return gameSingleton
+}
+
+class Game {
+  constructor (canvas, scoreBoard) {
+    this.canvas = canvas
+    this.scoreBoard = scoreBoard
     this.towers = []
     this.goons = []
     this.highlight = undefined
     this.spawnedGoonCount = 0
-    this.spawnCells = this.getSpawnCells()
-
     this.cash = gameConfig.initialCash
-
     this.goonsInside = 0
+  }
 
-    this.goonWave = new GoonWave(this)
+  _init () {
+    this.grid = new Grid({width: 1000, height: 600})
+    this.pathFinder = new PathFinder(this.grid)
+    this.goonWave = new GoonWave()
+    this.scoreBoard = new ScoreBoard(this.scoreBoard)
+    this.renderer = new Renderer(this.canvas)
+    this.cellsWhereGoonCanSpawn = this.getCellsWhereGoonCanSpawn()
+    this.gameInitialized = true
+  }
 
-    const scoreBoardContainer = document.getElementById('scoreBoard')
-    this.scoreBoard = new ScoreBoard(this, scoreBoardContainer)
+  start () {
+    if (!this.gameInitialized) {
+      this._init()
+    }
+    this.renderer.start()
+  }
+
+  stop () {
+    this.renderer.stop()
   }
 
   /**
@@ -52,7 +82,7 @@ export default class Game {
     this.pathFinder.recalculate()
     // 3: check for trapped goons and spawn locations
     const doNotTrapCells = this.goons.map(goon => goon.cell)
-      .concat(this.spawnCells)
+      .concat(this.cellsWhereGoonCanSpawn)
     const isInvalidPosition = doNotTrapCells.some(cell => !cell.reachable)
     // 4: if trapped, rollback
     if (isInvalidPosition) {
@@ -62,7 +92,7 @@ export default class Game {
     }
 
     const towerBoundaries = this._getCellsBoudaries(towerCells)
-    const tower = new Tower(towerBoundaries, this)
+    const tower = new Tower(towerBoundaries)
     this.towers.push(tower)
     this.cash -= Tower.cost
   }
@@ -96,7 +126,7 @@ export default class Game {
    * Spawn a new goon.
    */
   spawnGoon (goon) {
-    const spawnCell = random.getRandomElementFromArray(this.spawnCells)
+    const spawnCell = random.getRandomElementFromArray(this.cellsWhereGoonCanSpawn)
     goon.setInitialCell(spawnCell)
     this.goons.push(goon)
   }
@@ -130,7 +160,7 @@ export default class Game {
     this.scoreBoard.update()
   }
 
-  getSpawnCells () {
+  getCellsWhereGoonCanSpawn () {
     const middle = Math.round(this.grid.rowCount / 2)
     let count = Math.min(10, Math.round(this.grid.rowCount / 3))
     let row = middle - Math.round(count / 2)

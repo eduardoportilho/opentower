@@ -1,5 +1,6 @@
 import {imageCache} from './image-cache.js'
 import {getPointInLine} from './geometry-utils'
+import {getGame} from './game.js'
 
 const GOON_IMAGE_SIZE = {
   width: 14,
@@ -7,9 +8,9 @@ const GOON_IMAGE_SIZE = {
 }
 
 export default class Goon {
-  constructor (id, game, speed, life, bounty) {
+  constructor (id, speed, life, bounty) {
     this.id = id
-    this.game = game
+    this.game = getGame()
     this.pathFinder = this.game.pathFinder
     this.speed = speed // px/sec
     this.fullLife = life

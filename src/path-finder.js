@@ -1,4 +1,3 @@
-
 export default class PathFinder {
   constructor (grid) {
     this.grid = grid

@@ -1,4 +1,5 @@
 /* global requestAnimationFrame */
+import {getGame} from './game.js'
 
 /**
  * @typedef {Object} Point
@@ -11,11 +12,12 @@ import {CELL_EDGE_SIZE} from './cell'
 class Renderer {
   /**
    * Grid constructor
+   * @param  {Game} game - Main game controller.
    * @param  {HTMLCanvasElement} canvas - HTML canvas.
    */
-  constructor (canvas, game) {
+  constructor (canvas) {
     this.canvas = canvas
-    this.game = game
+    this.game = getGame()
     this.canvas.width = this.game.grid.canvasSize.width
     this.canvas.height = this.game.grid.canvasSize.height
     this.context = this.canvas.getContext('2d')

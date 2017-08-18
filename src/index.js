@@ -1,27 +1,26 @@
 import {loadImageCache} from './image-cache.js'
-import Game from './game.js'
-import Renderer from './renderer.js'
+import {initGame, getGame} from './game.js'
 
 loadImageCache(init)
 
 function init () {
   const canvas = document.getElementById('canvas')
-  const game = new Game()
+  const scoreBoard = document.getElementById('scoreBoard')
 
-  // TODO game as the object root: create render and delegate
-  const renderer = new Renderer(canvas, game)
-  renderer.start()
-  initCtrlPanel(game, renderer)
+  const game = initGame(canvas, scoreBoard)
+  game.start()
+
+  initDebugPanel()
 }
 
-function initCtrlPanel (game, renderer) {
+function initDebugPanel () {
   document.getElementById('spawn').onclick = function (e) {
     e.stopPropagation()
     e.preventDefault()
 
     const x = parseInt(document.getElementById('x').value)
     const y = parseInt(document.getElementById('y').value)
-    game.spawnGoon(x, y)
+    getGame().spawnGoon(x, y)
   }
 
   document.getElementById('speedUpdate').onclick = function (e) {
@@ -29,17 +28,18 @@ function initCtrlPanel (game, renderer) {
     e.preventDefault()
 
     const speed = parseInt(document.getElementById('speed').value)
-    game.goons.forEach(goon => { goon.speed = speed })
+    getGame().goons.forEach(goon => { goon.speed = speed })
   }
 
   document.getElementById('pause').onclick = function (e) {
     e.stopPropagation()
     e.preventDefault()
+    const game = getGame()
 
-    if (renderer.isRunning()) {
-      renderer.stop()
+    if (game.renderer.isRunning()) {
+      game.stop()
     } else {
-      renderer.start()
+      game.start()
     }
   }
 }

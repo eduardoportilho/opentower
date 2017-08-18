@@ -1,5 +1,6 @@
 import {calculateDistance, getAngleRadians} from './geometry-utils'
 import {roundRect, circle} from './drawing-utils'
+import {getGame} from './game.js'
 /**
  * @typedef {Object} Point
  * @property {number} x - The X Coordinate.
@@ -13,8 +14,8 @@ import {roundRect, circle} from './drawing-utils'
  */
 
 export default class Tower {
-  constructor (boundaries, game) {
-    this.game = game
+  constructor (boundaries) {
+    this.game = getGame()
     this.topLeftPosition = boundaries.topLeft
     this.width = boundaries.bottomRight.x - boundaries.topLeft.x
     this.height = boundaries.bottomRight.y - boundaries.topLeft.y

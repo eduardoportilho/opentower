@@ -1,9 +1,10 @@
 import Goon from './goon'
 import gameConfig from './game-config.js'
+import {getGame} from './game.js'
 
 export default class GoonWave {
-  constructor (game) {
-    this.game = game
+  constructor () {
+    this.game = getGame()
     this.config = gameConfig.waves.slice(0)
 
     this.currentWave = null
@@ -62,7 +63,6 @@ export default class GoonWave {
     const id = Date.now()
     const goon = new Goon(
       id,
-      this.game,
       this.currentWave.goonSpeed,
       this.currentWave.goonLife,
       this.currentWave.goonBounty

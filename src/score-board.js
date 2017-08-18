@@ -1,6 +1,8 @@
+import {getGame} from './game.js'
+
 export default class ScoreBoard {
-  constructor (game, containerEl) {
-    this.game = game
+  constructor (containerEl) {
+    this.game = getGame()
     this.cashDisplay = containerEl.querySelector('#cashDisplay')
     this.goonsInsideDisplay = containerEl.querySelector('#goonsInsideDisplay')
     this.waveNumberDisplay = containerEl.querySelector('#waveNumberDisplay')
