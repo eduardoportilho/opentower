@@ -62,6 +62,15 @@ class Game {
     this.renderer.stop()
   }
 
+  endGame (won) {
+    this.stop()
+    this.scoreBoard.updateWaveNumber(won ? 'You won!' : 'You lost!')
+  }
+
+  onWaveEnd () {
+    this.wavesEnded = true
+  }
+
   /**
    * When a user click a cell.
    * @param  {Point} position - Cell upper-left position.
@@ -139,12 +148,19 @@ class Game {
   goonArrived (goon) {
     this.goonsInside++
     this.removeGoon(goon)
+
+    if (this.goonsInside >= 5) {
+      this.endGame(false)
+    }
   }
 
   removeGoon (goon) {
     const index = this.goons.findIndex((aGoon) => aGoon.id === goon.id)
     if (index >= 0) {
       this.goons.splice(index, 1)
+    }
+    if (this.goons.length <= 0 && this.wavesEnded) {
+      this.endGame(true)
     }
   }
 

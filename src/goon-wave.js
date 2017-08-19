@@ -31,7 +31,7 @@ export default class GoonWave {
       // interval ended, start wave
       if (this.timeUntilNexWave <= 0) {
         if (this.config.length === 0) {
-          // no more waves, quit
+          this.game.onWavesEnd()
           return
         }
         this.currentWave = this.config.shift()
