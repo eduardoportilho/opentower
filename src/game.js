@@ -64,10 +64,10 @@ class Game {
 
   endGame (won) {
     this.stop()
-    this.scoreBoard.updateWaveNumber(won ? 'You won!' : 'You lost!')
+    this.scoreBoard.updateMessage(won ? 'You won!' : 'You lost!')
   }
 
-  onWaveEnd () {
+  onWavesEnd () {
     this.wavesEnded = true
   }
 

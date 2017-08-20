@@ -60,116 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _imageCache = __webpack_require__(1);
-
-var _game = __webpack_require__(2);
-
-(0, _imageCache.loadImageCache)(init);
-
-function init() {
-  var canvas = document.getElementById('canvas');
-  var scoreBoard = document.getElementById('scoreBoard');
-
-  var game = (0, _game.initGame)(canvas, scoreBoard);
-  game.start();
-
-  initDebugPanel();
-}
-
-function initDebugPanel() {
-  document.getElementById('spawn').onclick = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-
-    var x = parseInt(document.getElementById('x').value);
-    var y = parseInt(document.getElementById('y').value);
-    (0, _game.getGame)().spawnGoon(x, y);
-  };
-
-  document.getElementById('speedUpdate').onclick = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-
-    var speed = parseInt(document.getElementById('speed').value);
-    (0, _game.getGame)().goons.forEach(function (goon) {
-      goon.speed = speed;
-    });
-  };
-
-  document.getElementById('pause').onclick = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-    var game = (0, _game.getGame)();
-
-    if (game.renderer.isRunning()) {
-      game.stop();
-    } else {
-      game.start();
-    }
-  };
-}
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.loadImageCache = loadImageCache;
-/* global Image */
-
-/**
- * List of images to load.
- * @type {Object}
- */
-var imageUrls = {
-  'tower-1': '../images/tower-1.png',
-  'goon-1': '../images/goon-1.png'
-
-  /**
-   * Global image cache.
-   * @type {Object}
-   */
-};var imageCache = exports.imageCache = {};
-
-/**
- * Load the images on the cache and call the callback when ready.
- * @param  {function} onLoadComplete
- */
-function loadImageCache(onLoadComplete) {
-  var _loop = function _loop(key) {
-    var url = imageUrls[key];
-    var img = new Image();
-    img.onload = function () {
-      imageCache[key] = img;
-      if (Object.keys(imageCache).length === Object.keys(imageUrls).length) {
-        onLoadComplete();
-      }
-    };
-    img.src = url;
-  };
-
-  for (var key in imageUrls) {
-    _loop(key);
-  }
-}
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -208,7 +103,7 @@ var _random = __webpack_require__(13);
 
 var _random2 = _interopRequireDefault(_random);
 
-var _gameConfig = __webpack_require__(5);
+var _gameConfig = __webpack_require__(4);
 
 var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
@@ -282,11 +177,11 @@ var Game = function () {
     key: 'endGame',
     value: function endGame(won) {
       this.stop();
-      this.scoreBoard.updateWaveNumber(won ? 'You won!' : 'You lost!');
+      this.scoreBoard.updateMessage(won ? 'You won!' : 'You lost!');
     }
   }, {
-    key: 'onWaveEnd',
-    value: function onWaveEnd() {
+    key: 'onWavesEnd',
+    value: function onWavesEnd() {
       this.wavesEnded = true;
     }
 
@@ -447,7 +342,56 @@ var Game = function () {
 }();
 
 /***/ }),
-/* 3 */
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.loadImageCache = loadImageCache;
+/* global Image */
+
+/**
+ * List of images to load.
+ * @type {Object}
+ */
+var imageUrls = {
+  'tower-1': '../images/tower-1.png',
+  'goon-1': '../images/goon-1.png'
+
+  /**
+   * Global image cache.
+   * @type {Object}
+   */
+};var imageCache = exports.imageCache = {};
+
+/**
+ * Load the images on the cache and call the callback when ready.
+ * @param  {function} onLoadComplete
+ */
+function loadImageCache(onLoadComplete) {
+  var _loop = function _loop(key) {
+    var url = imageUrls[key];
+    var img = new Image();
+    img.onload = function () {
+      imageCache[key] = img;
+      if (Object.keys(imageCache).length === Object.keys(imageUrls).length) {
+        onLoadComplete();
+      }
+    };
+    img.src = url;
+  };
+
+  for (var key in imageUrls) {
+    _loop(key);
+  }
+}
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -571,7 +515,7 @@ var Cell = exports.Cell = function () {
 }();
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -637,7 +581,7 @@ var getAngleRadians = exports.getAngleRadians = function getAngleRadians(pointA,
 };
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -680,6 +624,62 @@ exports.default = {
 };
 
 /***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _imageCache = __webpack_require__(1);
+
+var _game = __webpack_require__(0);
+
+(0, _imageCache.loadImageCache)(init);
+
+function init() {
+  var canvas = document.getElementById('canvas');
+  var scoreBoard = document.getElementById('scoreBoard');
+
+  var game = (0, _game.initGame)(canvas, scoreBoard);
+  game.start();
+
+  initDebugPanel();
+}
+
+function initDebugPanel() {
+  document.getElementById('spawn').onclick = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    var x = parseInt(document.getElementById('x').value);
+    var y = parseInt(document.getElementById('y').value);
+    (0, _game.getGame)().spawnGoon(x, y);
+  };
+
+  document.getElementById('speedUpdate').onclick = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    var speed = parseInt(document.getElementById('speed').value);
+    (0, _game.getGame)().goons.forEach(function (goon) {
+      goon.speed = speed;
+    });
+  };
+
+  document.getElementById('pause').onclick = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    var game = (0, _game.getGame)();
+
+    if (game.renderer.isRunning()) {
+      game.stop();
+    } else {
+      game.start();
+    }
+  };
+}
+
+/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -698,7 +698,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} nextStep - Next cell on the path to target.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _cell = __webpack_require__(3);
+var _cell = __webpack_require__(2);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -951,11 +951,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _geometryUtils = __webpack_require__(4);
+var _geometryUtils = __webpack_require__(3);
 
 var _drawingUtils = __webpack_require__(9);
 
-var _game = __webpack_require__(2);
+var _game = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1242,11 +1242,11 @@ var _goon = __webpack_require__(11);
 
 var _goon2 = _interopRequireDefault(_goon);
 
-var _gameConfig = __webpack_require__(5);
+var _gameConfig = __webpack_require__(4);
 
 var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
-var _game = __webpack_require__(2);
+var _game = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1343,9 +1343,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _imageCache = __webpack_require__(1);
 
-var _geometryUtils = __webpack_require__(4);
+var _geometryUtils = __webpack_require__(3);
 
-var _game = __webpack_require__(2);
+var _game = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1655,7 +1655,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _game = __webpack_require__(2);
+var _game = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1667,6 +1667,7 @@ var ScoreBoard = function () {
     this.cashDisplay = containerEl.querySelector('#cashDisplay');
     this.goonsInsideDisplay = containerEl.querySelector('#goonsInsideDisplay');
     this.waveNumberDisplay = containerEl.querySelector('#waveNumberDisplay');
+    this.messageDisplay = containerEl.querySelector('#messageDisplay');
     this.update();
   }
 
@@ -1693,6 +1694,11 @@ var ScoreBoard = function () {
         this.waveNumber = waveNumber;
         this.waveNumberDisplay.textContent = waveNumber;
       }
+    }
+  }, {
+    key: 'updateMessage',
+    value: function updateMessage(message) {
+      this.messageDisplay.textContent = message;
     }
   }, {
     key: 'update',
@@ -1728,9 +1734,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
  * @property {number} y - The Y Coordinate.
  */
 
-var _game = __webpack_require__(2);
+var _game = __webpack_require__(0);
 
-var _cell = __webpack_require__(3);
+var _cell = __webpack_require__(2);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1793,6 +1799,10 @@ var Renderer = function () {
       var delta = now - this.lastTick;
 
       this.game.update(delta);
+
+      if (!this.animationId) {
+        return;
+      }
       this.lastTick = now;
 
       this.render();

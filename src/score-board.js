@@ -6,6 +6,7 @@ export default class ScoreBoard {
     this.cashDisplay = containerEl.querySelector('#cashDisplay')
     this.goonsInsideDisplay = containerEl.querySelector('#goonsInsideDisplay')
     this.waveNumberDisplay = containerEl.querySelector('#waveNumberDisplay')
+    this.messageDisplay = containerEl.querySelector('#messageDisplay')
     this.update()
   }
 
@@ -28,6 +29,10 @@ export default class ScoreBoard {
       this.waveNumber = waveNumber
       this.waveNumberDisplay.textContent = waveNumber
     }
+  }
+
+  updateMessage (message) {
+    this.messageDisplay.textContent = message
   }
 
   update () {
