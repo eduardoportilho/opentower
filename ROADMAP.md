@@ -16,8 +16,8 @@
 ✔ - Goon stoping (ex. when they need to return)
 ✔ - Weird movement on speed 50
 
-- Goon trapped exception
 - Unable to deploy tower (red highlight) on valid position
+- Goon trapped exception
 
 ## Features:
 ✔︎ - expose grid draw method
@@ -56,8 +56,8 @@
 ✔ - Control goons that reach goal
 ✔ - Config file to tweak game parameters (waves, etc)
 ✔ - Create message board
+✔ - Fininsh the game in the end of the waves
 
-- Fininsh the game in the end of the waves
 - 2nd tower type
 - 2nd goon type
 - Draw target
