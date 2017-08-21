@@ -39,6 +39,7 @@ class Game {
     this.spawnedGoonCount = 0
     this.cash = gameConfig.initialCash
     this.goonsInside = 0
+    this._isPaused = false
   }
 
   _init () {
@@ -69,6 +70,10 @@ class Game {
 
   onWavesEnd () {
     this.wavesEnded = true
+  }
+
+  pauseResume () {
+    this._isPaused = !this._isPaused
   }
 
   /**
@@ -169,9 +174,11 @@ class Game {
    * @param  {number} delta - ms since last update.
    */
   update (delta) {
-    this.goonWave.update(delta)
-    this.towers.forEach((tower) => tower.update(delta))
-    this.goons.forEach((goon) => goon.update(delta))
+    if (!this._isPaused) {
+      this.goonWave.update(delta)
+      this.towers.forEach((tower) => tower.update(delta))
+      this.goons.forEach((goon) => goon.update(delta))
+    }
     this.updateHighlight()
     this.scoreBoard.update()
   }

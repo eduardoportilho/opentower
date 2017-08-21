@@ -34,12 +34,6 @@ function initDebugPanel () {
   document.getElementById('pause').onclick = function (e) {
     e.stopPropagation()
     e.preventDefault()
-    const game = getGame()
-
-    if (game.renderer.isRunning()) {
-      game.stop()
-    } else {
-      game.start()
-    }
+    getGame().pauseResume()
   }
 }

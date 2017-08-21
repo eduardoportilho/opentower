@@ -57,7 +57,7 @@ class Renderer {
     const delta = (now - this.lastTick)
 
     this.game.update(delta)
-    
+
     if (!this.animationId) {
       return
     }
