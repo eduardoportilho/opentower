@@ -15,8 +15,8 @@
 ✔ - Goons going out of grid
 ✔ - Goon stoping (ex. when they need to return)
 ✔ - Weird movement on speed 50
+✔ - Unable to deploy tower (red highlight) on valid position
 
-- Unable to deploy tower (red highlight) on valid position
 - Goon trapped exception
 
 ## Features:
