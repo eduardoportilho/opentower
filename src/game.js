@@ -160,6 +160,7 @@ class Game {
   }
 
   removeGoon (goon) {
+    goon.cell.hasGoon = false
     const index = this.goons.findIndex((aGoon) => aGoon.id === goon.id)
     if (index >= 0) {
       this.goons.splice(index, 1)

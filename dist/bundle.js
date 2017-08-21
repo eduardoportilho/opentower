@@ -147,6 +147,7 @@ var Game = function () {
     this.spawnedGoonCount = 0;
     this.cash = _gameConfig2.default.initialCash;
     this.goonsInside = 0;
+    this._isPaused = false;
   }
 
   _createClass(Game, [{
@@ -183,6 +184,11 @@ var Game = function () {
     key: 'onWavesEnd',
     value: function onWavesEnd() {
       this.wavesEnded = true;
+    }
+  }, {
+    key: 'pauseResume',
+    value: function pauseResume() {
+      this._isPaused = !this._isPaused;
     }
 
     /**
@@ -287,6 +293,7 @@ var Game = function () {
   }, {
     key: 'removeGoon',
     value: function removeGoon(goon) {
+      goon.cell.hasGoon = false;
       var index = this.goons.findIndex(function (aGoon) {
         return aGoon.id === goon.id;
       });
@@ -306,13 +313,15 @@ var Game = function () {
   }, {
     key: 'update',
     value: function update(delta) {
-      this.goonWave.update(delta);
-      this.towers.forEach(function (tower) {
-        return tower.update(delta);
-      });
-      this.goons.forEach(function (goon) {
-        return goon.update(delta);
-      });
+      if (!this._isPaused) {
+        this.goonWave.update(delta);
+        this.towers.forEach(function (tower) {
+          return tower.update(delta);
+        });
+        this.goons.forEach(function (goon) {
+          return goon.update(delta);
+        });
+      }
       this.updateHighlight();
       this.scoreBoard.update();
     }
@@ -669,13 +678,7 @@ function initDebugPanel() {
   document.getElementById('pause').onclick = function (e) {
     e.stopPropagation();
     e.preventDefault();
-    var game = (0, _game.getGame)();
-
-    if (game.renderer.isRunning()) {
-      game.stop();
-    } else {
-      game.start();
-    }
+    (0, _game.getGame)().pauseResume();
   };
 }
 
