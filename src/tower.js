@@ -1,6 +1,7 @@
 import {calculateDistance, getAngleRadians} from './geometry-utils'
 import {roundRect, circle} from './drawing-utils'
 import {getGame} from './game.js'
+import Bullet from './bullet.js'
 /**
  * @typedef {Object} Point
  * @property {number} x - The X Coordinate.
@@ -101,6 +102,7 @@ export default class Tower {
   shoot () {
     const goon = this.getClosestGoonInRange()
     if (goon) {
+      this.game.addBullet(new Bullet(this.centerPosition, goon))
       goon.life -= this.damage
       this.timeUntilReloaded = this.reloadTime
       this.canonAngle = getAngleRadians(this.centerPosition, goon.position)

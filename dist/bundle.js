@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -83,35 +83,35 @@ var _createClass = function () { function defineProperties(target, props) { for 
 exports.initGame = initGame;
 exports.getGame = getGame;
 
-var _grid = __webpack_require__(6);
+var _grid = __webpack_require__(7);
 
 var _grid2 = _interopRequireDefault(_grid);
 
-var _tower = __webpack_require__(8);
+var _tower = __webpack_require__(9);
 
 var _tower2 = _interopRequireDefault(_tower);
 
-var _goonWave = __webpack_require__(10);
+var _goonWave = __webpack_require__(11);
 
 var _goonWave2 = _interopRequireDefault(_goonWave);
 
-var _pathFinder = __webpack_require__(12);
+var _pathFinder = __webpack_require__(13);
 
 var _pathFinder2 = _interopRequireDefault(_pathFinder);
 
-var _random = __webpack_require__(13);
+var _random = __webpack_require__(14);
 
 var _random2 = _interopRequireDefault(_random);
 
-var _gameConfig = __webpack_require__(4);
+var _gameConfig = __webpack_require__(5);
 
 var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
-var _scoreBoard = __webpack_require__(14);
+var _scoreBoard = __webpack_require__(15);
 
 var _scoreBoard2 = _interopRequireDefault(_scoreBoard);
 
-var _renderer = __webpack_require__(15);
+var _renderer = __webpack_require__(16);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
@@ -143,6 +143,7 @@ var Game = function () {
     this.scoreBoard = scoreBoard;
     this.towers = [];
     this.goons = [];
+    this.bullets = [];
     this.highlight = undefined;
     this.spawnedGoonCount = 0;
     this.cash = _gameConfig2.default.initialCash;
@@ -304,6 +305,21 @@ var Game = function () {
         this.endGame(true);
       }
     }
+  }, {
+    key: 'addBullet',
+    value: function addBullet(bullet) {
+      this.bullets.push(bullet);
+    }
+  }, {
+    key: 'removeBullet',
+    value: function removeBullet(bullet) {
+      var index = this.bullets.findIndex(function (aBullet) {
+        return aBullet.id === bullet.id;
+      });
+      if (index >= 0) {
+        this.bullets.splice(index, 1);
+      }
+    }
 
     /**
      * Update the state of the game entities.
@@ -320,6 +336,9 @@ var Game = function () {
         });
         this.goons.forEach(function (goon) {
           return goon.update(delta);
+        });
+        this.bullets.forEach(function (bullet) {
+          return bullet.update(delta);
         });
       }
       this.updateHighlight();
@@ -352,6 +371,96 @@ var Game = function () {
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**
+ * Calculate the distance between 2 points.
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @return {number} distance
+ */
+var calculateDistance = exports.calculateDistance = function calculateDistance(pointA, pointB) {
+  var dx = pointB.x - pointA.x;
+  var dy = pointB.y - pointA.y;
+  return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+};
+
+/**
+ * Let L be the line formed by the 2 given points `origin` and `anyPointInLine`.
+ * Return the point in L with the given distance to `origin`.
+ * @param  {Point} origin - Origin point.
+ * @param  {Point} secondPointInLine - Another point in the desired line (define direction).
+ * @param  {number} distance - Distance from origin to the returned point in pixels.
+ * @param  {boolean} maxOnSecondPoint - If true, returns the second point if the result is beyond it in the line..
+ * @return {Point} Point in L with the given distance to `origin`.
+ */
+var getPointInLine = exports.getPointInLine = function getPointInLine(origin, secondPointInLine, distance) {
+  var maxOnSecondPoint = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+  var hyp = calculateDistance(origin, secondPointInLine);
+  var dx = secondPointInLine.x - origin.x;
+  var dy = secondPointInLine.y - origin.y;
+  var sin = dy / hyp;
+  var cos = dx / hyp;
+
+  var dyStep = sin * distance;
+  var dxStep = cos * distance;
+
+  if (maxOnSecondPoint) {
+    if (Math.abs(dxStep) > Math.abs(dx)) {
+      dxStep = dx;
+    }
+    if (Math.abs(dyStep) > Math.abs(dy)) {
+      dyStep = dy;
+    }
+  }
+  var nextX = origin.x + dxStep;
+  var nextY = origin.y + dyStep;
+  return { x: nextX, y: nextY };
+};
+
+/**
+ * Return the angle between the line conecting 2 points and the horizontal axis.
+ *
+ * Angle signal:
+ *  B     |     B
+ *    (-) | (-)
+ * -------A-------
+ *    (+) | (+)
+ *  B     |     B
+ *
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @return {number} Angle in radians.
+ */
+var getAngleRadians = exports.getAngleRadians = function getAngleRadians(pointA, pointB) {
+  var dy = pointB.y - pointA.y;
+  var hyp = calculateDistance(pointA, pointB);
+  var sin = dy / hyp;
+  return Math.asin(sin);
+};
+
+/**
+ * Check is two points are in the same position given th tolerance.
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @param  {number} tolerance
+ * @return {boolean}
+ */
+var isEqualPoints = exports.isEqualPoints = function isEqualPoints(pointA, pointB) {
+  var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+
+  return Math.abs(pointA.x - pointB.x) <= tolerance && Math.abs(pointA.y - pointB.y) <= tolerance;
+};
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -400,7 +509,7 @@ function loadImageCache(onLoadComplete) {
 }
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -417,7 +526,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _coord = __webpack_require__(7);
+var _coord = __webpack_require__(8);
 
 var _coord2 = _interopRequireDefault(_coord);
 
@@ -524,7 +633,7 @@ var Cell = exports.Cell = function () {
 }();
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -533,64 +642,98 @@ var Cell = exports.Cell = function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-/**
- * Calculate the distance between 2 points.
- * @param  {Point} pointA
- * @param  {Point} pointB
- * @return {number} distance
- */
-var calculateDistance = exports.calculateDistance = function calculateDistance(pointA, pointB) {
-  var dx = pointB.x - pointA.x;
-  var dy = pointB.y - pointA.y;
-  return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-};
+exports.buildSquarePath = buildSquarePath;
+exports.roundRect = roundRect;
+exports.circle = circle;
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+/* global Path2D */
 
 /**
- * Let L be the line formed by the 2 given points `origin` and `anyPointInLine`.
- * Return the point in L with the given distance to `origin`.
- * @param  {Point} origin - Origin point.
- * @param  {Point} anyPointInLine - Another poin in the desired line (define direction).
- * @param  {number} distance - Distance from origin to the returned point in pixels.
- * @return {Point} Point in L with the given distance to `origin`.
+ * @typedef {Object} Point
+ * @property {number} x - The X Coordinate.
+ * @property {number} y - The Y Coordinate.
  */
-var getPointInLine = exports.getPointInLine = function getPointInLine(origin, anyPointInLine, distance) {
-  var hyp = calculateDistance(origin, anyPointInLine);
-  var dx = anyPointInLine.x - origin.x;
-  var dy = anyPointInLine.y - origin.y;
-  var sin = dy / hyp;
-  var cos = dx / hyp;
-
-  var dyStep = sin * distance;
-  var dxStep = cos * distance;
-
-  var nextX = origin.x + dxStep;
-  var nextY = origin.y + dyStep;
-  return { x: nextX, y: nextY };
-};
 
 /**
- * Return the angle between the line conecting 2 points and the horizontal axis.
- *
- * Angle signal:
- *  B     |     B
- *    (-) | (-)
- * -------A-------
- *    (+) | (+)
- *  B     |     B
- *
- * @param  {Point} pointA
- * @param  {Point} pointB
- * @return {number} Angle in radians.
+ * Build a square path.
+ * @param  {Point} startPosition
+ * @param  {number} edgeSize
+ * @return {Path2D}
  */
-var getAngleRadians = exports.getAngleRadians = function getAngleRadians(pointA, pointB) {
-  var dy = pointB.y - pointA.y;
-  var hyp = calculateDistance(pointA, pointB);
-  var sin = dy / hyp;
-  return Math.asin(sin);
-};
+function buildSquarePath(startPosition, edgeSize) {
+  var path = new Path2D();
+  var startCorner = [startPosition.x, startPosition.y];
+  var corners = [[startPosition.x + edgeSize, startPosition.y], [startPosition.x + edgeSize, startPosition.y + edgeSize], [startPosition.x, startPosition.y + edgeSize], [startPosition.x, startPosition.y]];
+  path.moveTo.apply(path, startCorner);
+  corners.forEach(function (corner) {
+    path.lineTo.apply(path, _toConsumableArray(corner));
+  });
+  return path;
+}
+
+/**
+ * Draws a rounded rectangle using the current state of the canvas.
+ * If you omit the last three params, it will draw a rectangle
+ * outline with a 5 pixel border radius
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Number} x The top left x coordinate
+ * @param {Number} y The top left y coordinate
+ * @param {Number} width The width of the rectangle
+ * @param {Number} height The height of the rectangle
+ * @param {Boolean} [fill = false] Whether to fill the rectangle.
+ * @param {Boolean} [stroke = true] Whether to stroke the rectangle.
+ * @param {Number} [radius = 5] The corner radius; It can also be an object
+ *                 to specify different radii for corners
+ * @param {Number} [radius.tl = 0] Top left
+ * @param {Number} [radius.tr = 0] Top right
+ * @param {Number} [radius.br = 0] Bottom right
+ * @param {Number} [radius.bl = 0] Bottom left
+ */
+function roundRect(ctx, x, y, width, height, fill, stroke, radius) {
+  if (typeof stroke === 'undefined') {
+    stroke = true;
+  }
+  if (typeof radius === 'undefined') {
+    radius = 5;
+  }
+  if (typeof radius === 'number') {
+    radius = { tl: radius, tr: radius, br: radius, bl: radius };
+  } else {
+    var defaultRadius = { tl: 0, tr: 0, br: 0, bl: 0 };
+    for (var side in defaultRadius) {
+      radius[side] = radius[side] || defaultRadius[side];
+    }
+  }
+  ctx.beginPath();
+  ctx.moveTo(x + radius.tl, y);
+  ctx.lineTo(x + width - radius.tr, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+  ctx.lineTo(x + width, y + height - radius.br);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+  ctx.lineTo(x + radius.bl, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+  ctx.lineTo(x, y + radius.tl);
+  ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+  ctx.closePath();
+  if (fill) {
+    ctx.fill();
+  }
+  if (stroke) {
+    ctx.stroke();
+  }
+}
+
+function circle(ctx, x, y, radius, fill, stroke) {
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+  fill && ctx.fill();
+  stroke && ctx.stroke();
+}
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -633,13 +776,13 @@ exports.default = {
 };
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _imageCache = __webpack_require__(1);
+var _imageCache = __webpack_require__(2);
 
 var _game = __webpack_require__(0);
 
@@ -683,7 +826,7 @@ function initDebugPanel() {
 }
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -701,7 +844,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} nextStep - Next cell on the path to target.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _cell = __webpack_require__(2);
+var _cell = __webpack_require__(3);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -896,7 +1039,7 @@ var Grid = function () {
 exports.default = Grid;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -942,7 +1085,7 @@ var Coord = function () {
 exports.default = Coord;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -954,11 +1097,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _geometryUtils = __webpack_require__(3);
+var _geometryUtils = __webpack_require__(1);
 
-var _drawingUtils = __webpack_require__(9);
+var _drawingUtils = __webpack_require__(4);
 
 var _game = __webpack_require__(0);
+
+var _bullet = __webpack_require__(10);
+
+var _bullet2 = _interopRequireDefault(_bullet);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1072,6 +1221,7 @@ var Tower = function () {
     value: function shoot() {
       var goon = this.getClosestGoonInRange();
       if (goon) {
+        this.game.addBullet(new _bullet2.default(this.centerPosition, goon));
         goon.life -= this.damage;
         this.timeUntilReloaded = this.reloadTime;
         this.canonAngle = (0, _geometryUtils.getAngleRadians)(this.centerPosition, goon.position);
@@ -1129,106 +1279,6 @@ Tower.sizeInCells = {
 };
 
 /***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.buildSquarePath = buildSquarePath;
-exports.roundRect = roundRect;
-exports.circle = circle;
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-/* global Path2D */
-
-/**
- * @typedef {Object} Point
- * @property {number} x - The X Coordinate.
- * @property {number} y - The Y Coordinate.
- */
-
-/**
- * Build a square path.
- * @param  {Point} startPosition
- * @param  {number} edgeSize
- * @return {Path2D}
- */
-function buildSquarePath(startPosition, edgeSize) {
-  var path = new Path2D();
-  var startCorner = [startPosition.x, startPosition.y];
-  var corners = [[startPosition.x + edgeSize, startPosition.y], [startPosition.x + edgeSize, startPosition.y + edgeSize], [startPosition.x, startPosition.y + edgeSize], [startPosition.x, startPosition.y]];
-  path.moveTo.apply(path, startCorner);
-  corners.forEach(function (corner) {
-    path.lineTo.apply(path, _toConsumableArray(corner));
-  });
-  return path;
-}
-
-/**
- * Draws a rounded rectangle using the current state of the canvas.
- * If you omit the last three params, it will draw a rectangle
- * outline with a 5 pixel border radius
- * @param {CanvasRenderingContext2D} ctx
- * @param {Number} x The top left x coordinate
- * @param {Number} y The top left y coordinate
- * @param {Number} width The width of the rectangle
- * @param {Number} height The height of the rectangle
- * @param {Boolean} [fill = false] Whether to fill the rectangle.
- * @param {Boolean} [stroke = true] Whether to stroke the rectangle.
- * @param {Number} [radius = 5] The corner radius; It can also be an object
- *                 to specify different radii for corners
- * @param {Number} [radius.tl = 0] Top left
- * @param {Number} [radius.tr = 0] Top right
- * @param {Number} [radius.br = 0] Bottom right
- * @param {Number} [radius.bl = 0] Bottom left
- */
-function roundRect(ctx, x, y, width, height, fill, stroke, radius) {
-  if (typeof stroke === 'undefined') {
-    stroke = true;
-  }
-  if (typeof radius === 'undefined') {
-    radius = 5;
-  }
-  if (typeof radius === 'number') {
-    radius = { tl: radius, tr: radius, br: radius, bl: radius };
-  } else {
-    var defaultRadius = { tl: 0, tr: 0, br: 0, bl: 0 };
-    for (var side in defaultRadius) {
-      radius[side] = radius[side] || defaultRadius[side];
-    }
-  }
-  ctx.beginPath();
-  ctx.moveTo(x + radius.tl, y);
-  ctx.lineTo(x + width - radius.tr, y);
-  ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
-  ctx.lineTo(x + width, y + height - radius.br);
-  ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
-  ctx.lineTo(x + radius.bl, y + height);
-  ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
-  ctx.lineTo(x, y + radius.tl);
-  ctx.quadraticCurveTo(x, y, x + radius.tl, y);
-  ctx.closePath();
-  if (fill) {
-    ctx.fill();
-  }
-  if (stroke) {
-    ctx.stroke();
-  }
-}
-
-function circle(ctx, x, y, radius, fill, stroke) {
-  ctx.beginPath();
-  ctx.arc(x, y, radius, 0, 2 * Math.PI);
-  fill && ctx.fill();
-  stroke && ctx.stroke();
-}
-
-/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1241,11 +1291,68 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _goon = __webpack_require__(11);
+var _geometryUtils = __webpack_require__(1);
+
+var _drawingUtils = __webpack_require__(4);
+
+var _game = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var SPEED = 200;
+var RADIUS = 2;
+
+var Bullet = function () {
+  function Bullet(initialPosition, targetGoon) {
+    _classCallCheck(this, Bullet);
+
+    this.id = Date.now();
+    this.position = initialPosition;
+    this.targetGoon = targetGoon;
+    this.game = (0, _game.getGame)();
+  }
+
+  _createClass(Bullet, [{
+    key: 'update',
+    value: function update(delta) {
+      var step = Math.round(SPEED * delta / 1000.0);
+      var target = this.targetGoon.position;
+      this.position = (0, _geometryUtils.getPointInLine)(this.position, target, step, true);
+      if ((0, _geometryUtils.isEqualPoints)(target, this.position)) {
+        this.game.removeBullet(this);
+      }
+    }
+  }, {
+    key: 'draw',
+    value: function draw(context) {
+      context.fillStyle = '#525252';
+      (0, _drawingUtils.circle)(context, this.position.x, this.position.y, RADIUS, true, false);
+    }
+  }]);
+
+  return Bullet;
+}();
+
+exports.default = Bullet;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _goon = __webpack_require__(12);
 
 var _goon2 = _interopRequireDefault(_goon);
 
-var _gameConfig = __webpack_require__(4);
+var _gameConfig = __webpack_require__(5);
 
 var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
@@ -1332,7 +1439,7 @@ var GoonWave = function () {
 exports.default = GoonWave;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1344,9 +1451,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _imageCache = __webpack_require__(1);
+var _imageCache = __webpack_require__(2);
 
-var _geometryUtils = __webpack_require__(3);
+var _geometryUtils = __webpack_require__(1);
 
 var _game = __webpack_require__(0);
 
@@ -1475,7 +1582,7 @@ var Goon = function () {
 exports.default = Goon;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1572,7 +1679,7 @@ var PathFinder = function () {
 exports.default = PathFinder;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1646,7 +1753,7 @@ var Random = function () {
 exports.default = new Random();
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1718,7 +1825,7 @@ var ScoreBoard = function () {
 exports.default = ScoreBoard;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1739,7 +1846,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _game = __webpack_require__(0);
 
-var _cell = __webpack_require__(2);
+var _cell = __webpack_require__(3);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1833,6 +1940,8 @@ var Renderer = function () {
         this._paintBoundaries(this.game.highlight.boundaries, stroke, fill);
       }
 
+      // TODO: Merge drawables
+
       // 1st layer: towers
       this.game.towers.forEach(function (tower) {
         tower.draw(_this.context);
@@ -1841,6 +1950,11 @@ var Renderer = function () {
       // 2nd layer: goons
       this.game.goons.forEach(function (goon) {
         goon.draw(_this.context);
+      });
+
+      // 3rd layer: bullets
+      this.game.bullets.forEach(function (bullet) {
+        bullet.draw(_this.context);
       });
     }
 

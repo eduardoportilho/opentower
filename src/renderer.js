@@ -83,6 +83,8 @@ class Renderer {
       this._paintBoundaries(this.game.highlight.boundaries, stroke, fill)
     }
 
+    // TODO: Merge drawables
+
     // 1st layer: towers
     this.game.towers.forEach((tower) => {
       tower.draw(this.context)
@@ -91,6 +93,11 @@ class Renderer {
     // 2nd layer: goons
     this.game.goons.forEach((goon) => {
       goon.draw(this.context)
+    })
+
+    // 3rd layer: bullets
+    this.game.bullets.forEach((bullet) => {
+      bullet.draw(this.context)
     })
   }
 

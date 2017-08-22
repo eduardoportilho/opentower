@@ -35,6 +35,7 @@ class Game {
     this.scoreBoard = scoreBoard
     this.towers = []
     this.goons = []
+    this.bullets = []
     this.highlight = undefined
     this.spawnedGoonCount = 0
     this.cash = gameConfig.initialCash
@@ -170,6 +171,17 @@ class Game {
     }
   }
 
+  addBullet (bullet) {
+    this.bullets.push(bullet)
+  }
+
+  removeBullet (bullet) {
+    const index = this.bullets.findIndex((aBullet) => aBullet.id === bullet.id)
+    if (index >= 0) {
+      this.bullets.splice(index, 1)
+    }
+  }
+
   /**
    * Update the state of the game entities.
    * @param  {number} delta - ms since last update.
@@ -179,6 +191,7 @@ class Game {
       this.goonWave.update(delta)
       this.towers.forEach((tower) => tower.update(delta))
       this.goons.forEach((goon) => goon.update(delta))
+      this.bullets.forEach((bullet) => bullet.update(delta))
     }
     this.updateHighlight()
     this.scoreBoard.update()

@@ -14,20 +14,29 @@ export const calculateDistance = (pointA, pointB) => {
  * Let L be the line formed by the 2 given points `origin` and `anyPointInLine`.
  * Return the point in L with the given distance to `origin`.
  * @param  {Point} origin - Origin point.
- * @param  {Point} anyPointInLine - Another poin in the desired line (define direction).
+ * @param  {Point} secondPointInLine - Another point in the desired line (define direction).
  * @param  {number} distance - Distance from origin to the returned point in pixels.
+ * @param  {boolean} maxOnSecondPoint - If true, returns the second point if the result is beyond it in the line..
  * @return {Point} Point in L with the given distance to `origin`.
  */
-export const getPointInLine = (origin, anyPointInLine, distance) => {
-  const hyp = calculateDistance(origin, anyPointInLine)
-  const dx = anyPointInLine.x - origin.x
-  const dy = anyPointInLine.y - origin.y
+export const getPointInLine = (origin, secondPointInLine, distance, maxOnSecondPoint = false) => {
+  const hyp = calculateDistance(origin, secondPointInLine)
+  const dx = secondPointInLine.x - origin.x
+  const dy = secondPointInLine.y - origin.y
   const sin = dy / hyp
   const cos = dx / hyp
 
-  const dyStep = sin * distance
-  const dxStep = cos * distance
+  let dyStep = sin * distance
+  let dxStep = cos * distance
 
+  if (maxOnSecondPoint) {
+    if (Math.abs(dxStep) > Math.abs(dx)) {
+      dxStep = dx
+    }
+    if (Math.abs(dyStep) > Math.abs(dy)) {
+      dyStep = dy
+    }
+  }
   const nextX = origin.x + dxStep
   const nextY = origin.y + dyStep
   return {x: nextX, y: nextY}
@@ -52,4 +61,16 @@ export const getAngleRadians = (pointA, pointB) => {
   const hyp = calculateDistance(pointA, pointB)
   const sin = dy / hyp
   return Math.asin(sin)
+}
+
+/**
+ * Check is two points are in the same position given th tolerance.
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @param  {number} tolerance
+ * @return {boolean}
+ */
+export const isEqualPoints = (pointA, pointB, tolerance = 1) => {
+  return Math.abs(pointA.x - pointB.x) <= tolerance &&
+    Math.abs(pointA.y - pointB.y) <= tolerance
 }
