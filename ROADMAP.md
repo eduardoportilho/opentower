@@ -57,17 +57,18 @@
 ✔ - Config file to tweak game parameters (waves, etc)
 ✔ - Create message board
 ✔ - Fininsh the game in the end of the waves
+✔ - Animate shot
 
 - 2nd tower type
 - 2nd goon type
 - Draw target
-- Animate shot?
 - Calculate grid size based on viewport size
 
 ## Refactor:
 ✔ - MessageBoard component to handle updateCashDisplay, updateGoonsInsideDisplay, etc.
 ✔ - Game as the object root and singleton
 
+- Merge drawables
 - General code review
 
 
