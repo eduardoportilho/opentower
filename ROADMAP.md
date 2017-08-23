@@ -62,6 +62,9 @@
 - 2nd tower type
 - 2nd goon type
 - Draw target
+- Animate sprites
+- Try to convert to isometric
+    + https://graphicriver.net/item/isometric-tower-defense-game-kit-pack-sprites-backgrounds/16958247
 - Calculate grid size based on viewport size
 
 ## Refactor:
