@@ -59,6 +59,8 @@
 ✔ - Fininsh the game in the end of the waves
 ✔ - Animate shot
 
+- Explore path finding variations
+    + Diagonal move with 1,5 cost (BFS -> Dijkstra: http://www.redblobgames.com/pathfinding/a-star/introduction.html)
 - 2nd tower type
 - 2nd goon type
 - Draw target
