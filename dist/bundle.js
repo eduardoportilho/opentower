@@ -939,6 +939,36 @@ var Grid = function () {
         return cell.dist === undefined && !cell.blocked;
       });
     }
+  }, {
+    key: 'getAdjacentNeighbours',
+    value: function getAdjacentNeighbours(cell) {
+      var _this2 = this;
+
+      var coord = cell.coord;
+      var grid = this;
+      return [{ row: coord.row, col: coord.col - 1 }, { row: coord.row - 1, col: coord.col }, { row: coord.row, col: coord.col + 1 }, { row: coord.row + 1, col: coord.col }].filter(function (coord) {
+        return !_this2._isOutOfGrid(coord);
+      }).map(function (coord) {
+        return grid.get(coord.row, coord.col);
+      }).filter(function (cell) {
+        return !cell.blocked;
+      });
+    }
+  }, {
+    key: 'getDiagonalNeighbours',
+    value: function getDiagonalNeighbours(cell) {
+      var _this3 = this;
+
+      var coord = cell.coord;
+      var grid = this;
+      return [{ row: coord.row - 1, col: coord.col - 1 }, { row: coord.row - 1, col: coord.col + 1 }, { row: coord.row + 1, col: coord.col + 1 }, { row: coord.row + 1, col: coord.col - 1 }].filter(function (coord) {
+        return !_this3._isOutOfGrid(coord);
+      }).map(function (coord) {
+        return grid.get(coord.row, coord.col);
+      }).filter(function (cell) {
+        return !cell.blocked;
+      });
+    }
 
     /**
      * Get the cell that contains the provided position.
@@ -1618,24 +1648,32 @@ var PathFinder = function () {
       targetCell.reachable = true;
       targetCell.isTarget = true;
       targetCell.nextStep = undefined;
-      this.frontier = [targetCell];
+      this.frontier = new PriorityQueue(false);
+      this.frontier.push(targetCell, targetCell.dist);
 
-      while (this.frontier.length > 0) {
-        var current = this.frontier.shift();
-        var neighboursCells = this.grid.getUnvisitedNeighboursCells(current);
+      while (this.frontier.size() > 0) {
+        var current = this.frontier.pop();
+
+        // adjacent cells have cost of 1
+        var adjacentCells = this.grid.getAdjacentNeighbours(current);
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
 
         try {
-          for (var _iterator = neighboursCells[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var neighbourCell = _step.value;
+          for (var _iterator = adjacentCells[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var adjacentCell = _step.value;
 
-            neighbourCell.dist = current.dist + 1;
-            neighbourCell.reachable = true;
-            neighbourCell.nextStep = current;
-            this.frontier.push(neighbourCell);
+            var distFromCurrent = current.dist + 1;
+            if (adjacentCell.dist === undefined || adjacentCell.dist > distFromCurrent) {
+              adjacentCell.dist = distFromCurrent;
+              adjacentCell.reachable = true;
+              adjacentCell.nextStep = current;
+              this.frontier.push(adjacentCell, distFromCurrent);
+            }
           }
+
+          // diagonal cells have cost of 1.5
         } catch (err) {
           _didIteratorError = true;
           _iteratorError = err;
@@ -1647,6 +1685,38 @@ var PathFinder = function () {
           } finally {
             if (_didIteratorError) {
               throw _iteratorError;
+            }
+          }
+        }
+
+        var diagonalCells = this.grid.getDiagonalNeighbours(current);
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+          for (var _iterator2 = diagonalCells[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var diagonalCell = _step2.value;
+
+            var distFromCurrent = current.dist + 1.5;
+            if (diagonalCell.dist === undefined || diagonalCell.dist > distFromCurrent) {
+              diagonalCell.dist = distFromCurrent;
+              diagonalCell.reachable = true;
+              diagonalCell.nextStep = current;
+              this.frontier.push(diagonalCell, distFromCurrent);
+            }
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+              _iterator2.return();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
             }
           }
         }
@@ -1677,6 +1747,45 @@ var PathFinder = function () {
 }();
 
 exports.default = PathFinder;
+
+var PriorityQueue = function () {
+  function PriorityQueue() {
+    var higherPriorirtyFirst = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+    _classCallCheck(this, PriorityQueue);
+
+    this.data = [];
+    this.higherPriorirtyFirst = higherPriorirtyFirst;
+  }
+
+  _createClass(PriorityQueue, [{
+    key: "push",
+    value: function push(value, priority) {
+      var index = 0;
+      while (this.data.length > index && !this.shouldComeFirst(priority, this.data[index].priority)) {
+        index++;
+      }
+      this.data.splice(index, 0, { value: value, priority: priority });
+    }
+  }, {
+    key: "pop",
+    value: function pop() {
+      return this.data.shift().value;
+    }
+  }, {
+    key: "size",
+    value: function size() {
+      return this.data.length;
+    }
+  }, {
+    key: "shouldComeFirst",
+    value: function shouldComeFirst(priorityA, priorityB) {
+      return this.higherPriorirtyFirst ? priorityA > priorityB : priorityB > priorityA;
+    }
+  }]);
+
+  return PriorityQueue;
+}();
 
 /***/ }),
 /* 14 */

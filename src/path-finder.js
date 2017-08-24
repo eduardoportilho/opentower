@@ -14,16 +14,34 @@ export default class PathFinder {
     targetCell.reachable = true
     targetCell.isTarget = true
     targetCell.nextStep = undefined
-    this.frontier = [targetCell]
+    this.frontier = new PriorityQueue(false)
+    this.frontier.push(targetCell, targetCell.dist)
 
-    while (this.frontier.length > 0) {
-      let current = this.frontier.shift()
-      let neighboursCells = this.grid.getUnvisitedNeighboursCells(current)
-      for (let neighbourCell of neighboursCells) {
-        neighbourCell.dist = current.dist + 1
-        neighbourCell.reachable = true
-        neighbourCell.nextStep = current
-        this.frontier.push(neighbourCell)
+    while (this.frontier.size() > 0) {
+      let current = this.frontier.pop()
+
+      // adjacent cells have cost of 1
+      let adjacentCells = this.grid.getAdjacentNeighbours(current)
+      for (let adjacentCell of adjacentCells) {
+        let distFromCurrent = current.dist + 1
+        if (adjacentCell.dist === undefined || adjacentCell.dist > distFromCurrent) {
+          adjacentCell.dist = distFromCurrent
+          adjacentCell.reachable = true
+          adjacentCell.nextStep = current
+          this.frontier.push(adjacentCell, distFromCurrent)
+        }
+      }
+
+      // diagonal cells have cost of 1.5
+      let diagonalCells = this.grid.getDiagonalNeighbours(current)
+      for (let diagonalCell of diagonalCells) {
+        let distFromCurrent = current.dist + 1.5
+        if (diagonalCell.dist === undefined || diagonalCell.dist > distFromCurrent) {
+          diagonalCell.dist = distFromCurrent
+          diagonalCell.reachable = true
+          diagonalCell.nextStep = current
+          this.frontier.push(diagonalCell, distFromCurrent)
+        }
       }
     }
   }
