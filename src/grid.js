@@ -88,6 +88,40 @@ export default class Grid {
     ))
   }
 
+  getAdjacentNeighbours (cell) {
+    const coord = cell.coord
+    const grid = this
+    return [
+      {row: coord.row, col: coord.col - 1},
+      {row: coord.row - 1, col: coord.col},
+      {row: coord.row, col: coord.col + 1},
+      {row: coord.row + 1, col: coord.col}
+    ].filter(coord => (
+      !this._isOutOfGrid(coord)
+    )).map(coord => (
+      grid.get(coord.row, coord.col)
+    )).filter(cell => (
+      !cell.blocked
+    ))
+  }
+
+  getDiagonalNeighbours (cell) {
+    const coord = cell.coord
+    const grid = this
+    return [
+      {row: coord.row - 1, col: coord.col - 1},
+      {row: coord.row - 1, col: coord.col + 1},
+      {row: coord.row + 1, col: coord.col + 1},
+      {row: coord.row + 1, col: coord.col - 1}
+    ].filter(coord => (
+      !this._isOutOfGrid(coord)
+    )).map(coord => (
+      grid.get(coord.row, coord.col)
+    )).filter(cell => (
+      !cell.blocked
+    ))
+  }
+
   /**
    * Get the cell that contains the provided position.
    * @param  {Point} point
