@@ -42,3 +42,33 @@ export default class PathFinder {
     return nextCell
   }
 }
+
+class PriorityQueue {
+  constructor (higherPriorirtyFirst = true) {
+    this.data = []
+    this.higherPriorirtyFirst = higherPriorirtyFirst
+  }
+
+  push (value, priority) {
+    let index = 0
+    while (
+      this.data.length > index &&
+      !this.shouldComeFirst(priority, this.data[index].priority)
+    ) {
+      index++
+    }
+    this.data.splice(index, 0, {value: value, priority: priority})
+  }
+
+  pop () {
+    return this.data.shift().value
+  }
+
+  size () {
+    return this.data.length
+  }
+
+  shouldComeFirst (priorityA, priorityB) {
+    return this.higherPriorirtyFirst ? priorityA > priorityB : priorityB > priorityA
+  }
+}
