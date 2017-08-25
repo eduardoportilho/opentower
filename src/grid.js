@@ -206,4 +206,24 @@ export default class Grid {
       coord.row < 0 ||
       coord.row >= this.rowCount
   }
+
+  draw (context) {
+    context.strokeStyle = '#333333'
+    for (var row = 0; row < this.rowCount; row++) {
+      for (var col = 0; col < this.colCount; col++) {
+        let cell = this.get(row, col)
+        if (cell.isTarget) {
+          context.fillStyle = 'rgba(0, 0, 255, 0.7)'
+          context.fillRect(cell.getTopLeftPosition().x, cell.getTopLeftPosition().y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
+        } else if (cell.blocked) {
+          context.fillStyle = 'rgba(255, 118, 0, 0.7)'
+          context.fillRect(cell.getTopLeftPosition().x, cell.getTopLeftPosition().y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
+        } else if (!cell.reachable) {
+          context.fillStyle = 'rgba(255, 0, 0, 0.37)'
+          context.fillRect(cell.getTopLeftPosition().x, cell.getTopLeftPosition().y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
+        }
+        context.strokeRect(cell.getTopLeftPosition().x, cell.getTopLeftPosition().y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
+      }
+    }
+  }
 }

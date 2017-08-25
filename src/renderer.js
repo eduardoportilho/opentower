@@ -99,6 +99,10 @@ class Renderer {
     this.game.bullets.forEach((bullet) => {
       bullet.draw(this.context)
     })
+
+    if (this.game.drawGrid) {
+      this.game.grid.draw(this.context)
+    }
   }
 
   /**

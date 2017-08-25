@@ -74,6 +74,7 @@ export default class Goon {
   }
 
   updatePosition (delta) {
+    console.log(this.cell.coord); 
     this.cell.hasGoon = false
     const nextCell = this.pathFinder.nextCell(this.cell, 1)
     if (!nextCell) {

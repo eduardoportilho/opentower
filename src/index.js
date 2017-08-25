@@ -36,4 +36,10 @@ function initDebugPanel () {
     e.preventDefault()
     getGame().pauseResume()
   }
+
+  document.getElementById('drawGrid').onclick = function (e) {
+    e.stopPropagation()
+    e.preventDefault()
+    getGame().drawGrid = !getGame().drawGrid
+  }
 }
