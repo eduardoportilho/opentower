@@ -823,6 +823,12 @@ function initDebugPanel() {
     e.preventDefault();
     (0, _game.getGame)().pauseResume();
   };
+
+  document.getElementById('drawGrid').onclick = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    (0, _game.getGame)().drawGrid = !(0, _game.getGame)().drawGrid;
+  };
 }
 
 /***/ }),
@@ -1060,6 +1066,27 @@ var Grid = function () {
     key: '_isOutOfGrid',
     value: function _isOutOfGrid(coord) {
       return coord.col < 0 || coord.col >= this.colCount || coord.row < 0 || coord.row >= this.rowCount;
+    }
+  }, {
+    key: 'draw',
+    value: function draw(context) {
+      context.strokeStyle = '#333333';
+      for (var row = 0; row < this.rowCount; row++) {
+        for (var col = 0; col < this.colCount; col++) {
+          var cell = this.get(row, col);
+          if (cell.isTarget) {
+            context.fillStyle = 'rgba(0, 0, 255, 0.7)';
+            context.fillRect(cell.getTopLeftPosition().x, cell.getTopLeftPosition().y, _cell.CELL_EDGE_SIZE, _cell.CELL_EDGE_SIZE);
+          } else if (cell.blocked) {
+            context.fillStyle = 'rgba(255, 118, 0, 0.7)';
+            context.fillRect(cell.getTopLeftPosition().x, cell.getTopLeftPosition().y, _cell.CELL_EDGE_SIZE, _cell.CELL_EDGE_SIZE);
+          } else if (!cell.reachable) {
+            context.fillStyle = 'rgba(255, 0, 0, 0.37)';
+            context.fillRect(cell.getTopLeftPosition().x, cell.getTopLeftPosition().y, _cell.CELL_EDGE_SIZE, _cell.CELL_EDGE_SIZE);
+          }
+          context.strokeRect(cell.getTopLeftPosition().x, cell.getTopLeftPosition().y, _cell.CELL_EDGE_SIZE, _cell.CELL_EDGE_SIZE);
+        }
+      }
     }
   }]);
 
@@ -1578,10 +1605,9 @@ var Goon = function () {
       var nextCell = this.pathFinder.nextCell(this.cell, 1);
       if (!nextCell) {
         throw new Error('Goon traped!');
-        // this.game.goonArrived(this)
-        // return
       }
 
+      // TODO: this logic is obscure, rewrite it
       var offset = this.cell.getOffset(this.position);
       var targetPosition = {
         x: nextCell.getTopLeftPosition().x + offset.x,
@@ -1595,6 +1621,11 @@ var Goon = function () {
       var nextPosition = (0, _geometryUtils.getPointInLine)(this.position, targetPosition, intStep);
       // Might happen that step is not enought to change cell
       var nextPositionCell = this.game.grid.getCellAtPosition(nextPosition);
+
+      // TODO: this is a hack to fix diagonal moves that passes through blocked cells. Rewrite it in a sane way.
+      if (nextPositionCell.blocked) {
+        nextPositionCell = this.cell;
+      }
 
       if (nextPositionCell.isTarget) {
         this.game.goonArrived(this);
@@ -2065,6 +2096,10 @@ var Renderer = function () {
       this.game.bullets.forEach(function (bullet) {
         bullet.draw(_this.context);
       });
+
+      if (this.game.drawGrid) {
+        this.game.grid.draw(this.context);
+      }
     }
 
     /**

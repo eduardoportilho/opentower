@@ -74,15 +74,13 @@ export default class Goon {
   }
 
   updatePosition (delta) {
-    console.log(this.cell.coord); 
     this.cell.hasGoon = false
     const nextCell = this.pathFinder.nextCell(this.cell, 1)
     if (!nextCell) {
       throw new Error('Goon traped!')
-      // this.game.goonArrived(this)
-      // return
     }
 
+    // TODO: this logic is obscure, rewrite it
     const offset = this.cell.getOffset(this.position)
     const targetPosition = {
       x: nextCell.getTopLeftPosition().x + offset.x,
@@ -95,7 +93,12 @@ export default class Goon {
 
     const nextPosition = getPointInLine(this.position, targetPosition, intStep)
     // Might happen that step is not enought to change cell
-    const nextPositionCell = this.game.grid.getCellAtPosition(nextPosition)
+    let nextPositionCell = this.game.grid.getCellAtPosition(nextPosition)
+
+    // TODO: this is a hack to fix diagonal moves that passes through blocked cells. Rewrite it in a sane way.
+    if (nextPositionCell.blocked) {
+      nextPositionCell = this.cell
+    }
 
     if (nextPositionCell.isTarget) {
       this.game.goonArrived(this)
