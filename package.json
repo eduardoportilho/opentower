@@ -27,5 +27,10 @@
     "standard": "^10.0.2",
     "webpack": "^3.3.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "standard": {
+    "ignore": [
+      "dist/*"
+    ]
+  }
 }
