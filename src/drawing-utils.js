@@ -86,3 +86,14 @@ export function circle (ctx, x, y, radius, fill, stroke) {
   fill && ctx.fill()
   stroke && ctx.stroke()
 }
+
+export function polygon (ctx, corners, fill, stroke) {
+  ctx.beginPath()
+  ctx.moveTo(corners[0].x, corners[0].y)
+  for (let corner of corners) {
+    ctx.lineTo(corner.x, corner.y)
+  }
+  ctx.closePath()
+  fill && ctx.fill()
+  stroke && ctx.stroke()
+}
