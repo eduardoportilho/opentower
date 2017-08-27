@@ -6,7 +6,8 @@
  */
 const imageUrls = {
   'tower-1': '../images/tower-1.png',
-  'goon-1': '../images/goon-1.png'
+  'goon-1': '../images/goon-1.png',
+  'landscape_sheet': '../images/landscape_sheet.png'
 }
 
 /**
