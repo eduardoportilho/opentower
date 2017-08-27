@@ -5,16 +5,16 @@ export const CELL_EDGE_SIZE = 20
 class IsoGrid {
   constructor (canvasSize) {
     this.canvasSize = canvasSize
-    this.colCount = 10
-    this.rowCount = 10
+    this.colCount = 20
+    this.rowCount = 20
     this.origin = {
       x: canvasSize.width / 2,
-      y: 0
+      y: CELL_EDGE_SIZE
     }
   }
 
   draw (context) {
-    context.strokeStyle = '#333333'
+    context.strokeStyle = '#cccccc'
     for (var row = 0; row < this.rowCount; row++) {
       for (var col = 0; col < this.colCount; col++) {
         const corners = this.getCellCorners(row, col)
@@ -28,9 +28,9 @@ class IsoGrid {
     const halfEdge = Math.round(CELL_EDGE_SIZE / 2)
     return [
       cellOrigin,
-      {x: cellOrigin.x + CELL_EDGE_SIZE, y: cellOrigin.y - halfEdge},
-      {x: cellOrigin.x, y: cellOrigin.y - CELL_EDGE_SIZE},
-      {x: cellOrigin.x - CELL_EDGE_SIZE, y: cellOrigin.y - halfEdge}
+      {x: cellOrigin.x + CELL_EDGE_SIZE, y: cellOrigin.y + halfEdge},
+      {x: cellOrigin.x, y: cellOrigin.y + CELL_EDGE_SIZE},
+      {x: cellOrigin.x - CELL_EDGE_SIZE, y: cellOrigin.y + halfEdge}
     ]
   }
 
