@@ -74,6 +74,276 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.loadImageCache = loadImageCache;
+/* global Image */
+
+/**
+ * List of images to load.
+ * @type {Object}
+ */
+var imageUrls = {
+  'tower-1': '../images/tower-1.png',
+  'goon-1': '../images/goon-1.png',
+  'landscape_sheet': '../images/landscape_sheet.png'
+
+  /**
+   * Global image cache.
+   * @type {Object}
+   */
+};var imageCache = exports.imageCache = {};
+
+/**
+ * Load the images on the cache and call the callback when ready.
+ * @param  {function} onLoadComplete
+ */
+function loadImageCache(onLoadComplete) {
+  var _loop = function _loop(key) {
+    var url = imageUrls[key];
+    var img = new Image();
+    img.onload = function () {
+      imageCache[key] = img;
+      if (Object.keys(imageCache).length === Object.keys(imageUrls).length) {
+        onLoadComplete();
+      }
+    };
+    img.src = url;
+  };
+
+  for (var key in imageUrls) {
+    _loop(key);
+  }
+}
+
+/***/ }),
+
+/***/ 17:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CELL_EDGE_SIZE = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _imageCache = __webpack_require__(1);
+
+var _drawingUtils = __webpack_require__(2);
+
+var _spriteSheet = __webpack_require__(18);
+
+var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
+
+var _landscapeSheet = __webpack_require__(19);
+
+var _landscapeSheet2 = _interopRequireDefault(_landscapeSheet);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CELL_EDGE_SIZE = exports.CELL_EDGE_SIZE = 20;
+
+var IsoGrid = function () {
+  function IsoGrid(canvasSize) {
+    _classCallCheck(this, IsoGrid);
+
+    this.canvasSize = canvasSize;
+    this.colCount = 20;
+    this.rowCount = 20;
+    this.origin = {
+      x: canvasSize.width / 2,
+      y: CELL_EDGE_SIZE
+    };
+
+    this.sprite = new _spriteSheet2.default(_imageCache.imageCache['landscape_sheet'], _landscapeSheet2.default, 2 * CELL_EDGE_SIZE, CELL_EDGE_SIZE);
+  }
+
+  _createClass(IsoGrid, [{
+    key: 'draw',
+    value: function draw(context) {
+      // grid
+      context.strokeStyle = '#cccccc';
+      for (var row = 0; row < this.rowCount; row++) {
+        for (var col = 0; col < this.colCount; col++) {
+          var corners = this.getCellCorners(row, col);
+          (0, _drawingUtils.polygon)(context, corners, false, true);
+        }
+      }
+
+      // tiles
+      var tileOrigin = this.getCellOrigin(1, 1);
+      this.sprite.draw(context, tileOrigin, 'landscape_00');
+    }
+  }, {
+    key: 'getCellCorners',
+    value: function getCellCorners(row, col) {
+      var cellOrigin = this.getCellOrigin(row, col);
+      var halfEdge = Math.round(CELL_EDGE_SIZE / 2);
+      return [cellOrigin, { x: cellOrigin.x + CELL_EDGE_SIZE, y: cellOrigin.y + halfEdge }, { x: cellOrigin.x, y: cellOrigin.y + CELL_EDGE_SIZE }, { x: cellOrigin.x - CELL_EDGE_SIZE, y: cellOrigin.y + halfEdge }];
+    }
+  }, {
+    key: 'getCellOrigin',
+    value: function getCellOrigin(row, col) {
+      // http://clintbellanger.net/articles/isometric_math/
+      return {
+        x: (col - row) * CELL_EDGE_SIZE + this.origin.x,
+        y: (col + row) * Math.round(CELL_EDGE_SIZE / 2) + this.origin.y
+      };
+    }
+  }]);
+
+  return IsoGrid;
+}();
+
+(0, _imageCache.loadImageCache)(init);
+
+function init() {
+  var canvas = document.getElementById('canvas');
+  canvas.width = 1000;
+  canvas.height = 1000;
+
+  var context = canvas.getContext('2d');
+
+  var isoGrid = new IsoGrid({
+    width: 1000,
+    height: 1000
+  });
+  isoGrid.draw(context);
+}
+
+/***/ }),
+
+/***/ 18:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var SpriteSheet = function () {
+  function SpriteSheet(spriteSheetImage, spriteSheetMap, tileWidth, tileHeight) {
+    _classCallCheck(this, SpriteSheet);
+
+    this.image = spriteSheetImage;
+    this.spriteSheetMap = spriteSheetMap;
+    this.tileWidth = tileWidth;
+    this.tileHeight = tileHeight;
+  }
+
+  _createClass(SpriteSheet, [{
+    key: "draw",
+    value: function draw(context, origin, spriteKey) {
+      var sprite = this.spriteSheetMap[spriteKey];
+      context.drawImage(this.image, sprite.x, sprite.y, sprite.width, sprite.height, origin.x, origin.y, this.tileWidth, // TODO: default values?
+      this.tileHeight);
+    }
+  }]);
+
+  return SpriteSheet;
+}();
+
+exports.default = SpriteSheet;
+
+/***/ }),
+
+/***/ 19:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  'crystals_1': { x: '1720', y: '198', width: '132', height: '112' },
+  'crystals_2': { x: '1852', y: '114', width: '132', height: '121' },
+  'crystals_3': { x: '0', y: '297', width: '133', height: '127' },
+  'crystals_4': { x: '1852', y: '0', width: '132', height: '114' },
+  'landscape_00': { x: '1192', y: '99', width: '132', height: '99' },
+  'landscape_01': { x: '1061', y: '0', width: '132', height: '99' },
+  'landscape_02': { x: '1060', y: '396', width: '132', height: '99' },
+  'landscape_03': { x: '1060', y: '297', width: '132', height: '99' },
+  'landscape_04': { x: '1060', y: '198', width: '132', height: '99' },
+  'landscape_05': { x: '1060', y: '99', width: '132', height: '99' },
+  'landscape_06': { x: '929', y: '0', width: '132', height: '99' },
+  'landscape_07': { x: '928', y: '329', width: '132', height: '99' },
+  'landscape_08': { x: '1852', y: '235', width: '132', height: '115' },
+  'landscape_09': { x: '1720', y: '409', width: '132', height: '99' },
+  'landscape_10': { x: '1720', y: '310', width: '132', height: '99' },
+  'landscape_11': { x: '1456', y: '198', width: '132', height: '99' },
+  'landscape_12': { x: '796', y: '313', width: '132', height: '99' },
+  'landscape_13': { x: '796', y: '214', width: '132', height: '99' },
+  'landscape_14': { x: '665', y: '115', width: '132', height: '99' },
+  'landscape_15': { x: '796', y: '412', width: '132', height: '99' },
+  'landscape_16': { x: '664', y: '317', width: '132', height: '99' },
+  'landscape_17': { x: '664', y: '234', width: '132', height: '83' },
+  'landscape_18': { x: '665', y: '0', width: '132', height: '115' },
+  'landscape_19': { x: '532', y: '234', width: '132', height: '99' },
+  'landscape_20': { x: '532', y: '333', width: '132', height: '115' },
+  'landscape_21': { x: '0', y: '424', width: '132', height: '83' },
+  'landscape_22': { x: '928', y: '115', width: '132', height: '115' },
+  'landscape_23': { x: '797', y: '0', width: '132', height: '115' },
+  'landscape_24': { x: '1192', y: '198', width: '132', height: '99' },
+  'landscape_25': { x: '1192', y: '297', width: '132', height: '99' },
+  'landscape_26': { x: '1192', y: '396', width: '132', height: '99' },
+  'landscape_27': { x: '1324', y: '225', width: '132', height: '115' },
+  'landscape_28': { x: '1193', y: '0', width: '132', height: '99' },
+  'landscape_29': { x: '1325', y: '0', width: '132', height: '99' },
+  'landscape_30': { x: '1456', y: '99', width: '132', height: '99' },
+  'landscape_31': { x: '1324', y: '340', width: '132', height: '99' },
+  'landscape_32': { x: '928', y: '230', width: '132', height: '99' },
+  'landscape_33': { x: '1588', y: '99', width: '132', height: '99' },
+  'landscape_34': { x: '1588', y: '297', width: '132', height: '99' },
+  'landscape_35': { x: '1588', y: '396', width: '132', height: '99' },
+  'landscape_36': { x: '1589', y: '0', width: '132', height: '99' },
+  'landscape_37': { x: '0', y: '198', width: '133', height: '99' },
+  'landscape_38': { x: '1720', y: '99', width: '132', height: '99' },
+  'landscape_39': { x: '1457', y: '0', width: '132', height: '99' },
+  'rocks_1': { x: '0', y: '0', width: '133', height: '99' },
+  'rocks_2': { x: '0', y: '99', width: '133', height: '99' },
+  'rocks_3': { x: '133', y: '0', width: '133', height: '102' },
+  'rocks_4': { x: '133', y: '102', width: '133', height: '102' },
+  'rocks_5': { x: '133', y: '204', width: '133', height: '99' },
+  'rocks_6': { x: '133', y: '303', width: '133', height: '99' },
+  'rocks_7': { x: '1588', y: '198', width: '132', height: '99' },
+  'rocks_8': { x: '133', y: '402', width: '133', height: '99' },
+  'trees_1': { x: '266', y: '241', width: '133', height: '111' },
+  'trees_10': { x: '1456', y: '297', width: '132', height: '130' },
+  'trees_11': { x: '266', y: '0', width: '133', height: '118' },
+  'trees_12': { x: '266', y: '118', width: '133', height: '123' },
+  'trees_2': { x: '399', y: '127', width: '133', height: '121' },
+  'trees_3': { x: '266', y: '352', width: '133', height: '113' },
+  'trees_4': { x: '399', y: '0', width: '133', height: '127' },
+  'trees_5': { x: '1324', y: '99', width: '132', height: '126' },
+  'trees_6': { x: '399', y: '248', width: '133', height: '124' },
+  'trees_7': { x: '399', y: '372', width: '133', height: '121' },
+  'trees_8': { x: '532', y: '0', width: '133', height: '118' },
+  'trees_9': { x: '532', y: '118', width: '133', height: '116' }
+};
+
+/***/ }),
+
+/***/ 2:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.buildSquarePath = buildSquarePath;
 exports.roundRect = roundRect;
 exports.circle = circle;
@@ -197,88 +467,6 @@ function polygon(ctx, corners, fill, stroke) {
   fill && ctx.fill();
   stroke && ctx.stroke();
 }
-
-/***/ }),
-
-/***/ 17:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CELL_EDGE_SIZE = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _drawingUtils = __webpack_require__(1);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var CELL_EDGE_SIZE = exports.CELL_EDGE_SIZE = 20;
-
-var IsoGrid = function () {
-  function IsoGrid(canvasSize) {
-    _classCallCheck(this, IsoGrid);
-
-    this.canvasSize = canvasSize;
-    this.colCount = 20;
-    this.rowCount = 20;
-    this.origin = {
-      x: canvasSize.width / 2,
-      y: CELL_EDGE_SIZE
-    };
-  }
-
-  _createClass(IsoGrid, [{
-    key: 'draw',
-    value: function draw(context) {
-      context.strokeStyle = '#cccccc';
-      for (var row = 0; row < this.rowCount; row++) {
-        for (var col = 0; col < this.colCount; col++) {
-          var corners = this.getCellCorners(row, col);
-          (0, _drawingUtils.polygon)(context, corners, false, true);
-        }
-      }
-    }
-  }, {
-    key: 'getCellCorners',
-    value: function getCellCorners(row, col) {
-      var cellOrigin = this.getCellOrigin(row, col);
-      var halfEdge = Math.round(CELL_EDGE_SIZE / 2);
-      return [cellOrigin, { x: cellOrigin.x + CELL_EDGE_SIZE, y: cellOrigin.y + halfEdge }, { x: cellOrigin.x, y: cellOrigin.y + CELL_EDGE_SIZE }, { x: cellOrigin.x - CELL_EDGE_SIZE, y: cellOrigin.y + halfEdge }];
-    }
-  }, {
-    key: 'getCellOrigin',
-    value: function getCellOrigin(row, col) {
-      // http://clintbellanger.net/articles/isometric_math/
-      return {
-        x: (col - row) * CELL_EDGE_SIZE + this.origin.x,
-        y: (col + row) * Math.round(CELL_EDGE_SIZE / 2) + this.origin.y
-      };
-    }
-  }]);
-
-  return IsoGrid;
-}();
-
-function init() {
-  var canvas = document.getElementById('canvas');
-  canvas.width = 1000;
-  canvas.height = 1000;
-
-  var context = canvas.getContext('2d');
-
-  var isoGrid = new IsoGrid({
-    width: 1000,
-    height: 1000
-  });
-  isoGrid.draw(context);
-}
-
-init();
 
 /***/ })
 

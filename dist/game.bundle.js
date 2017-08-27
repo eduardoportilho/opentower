@@ -379,6 +379,56 @@ var Game = function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.loadImageCache = loadImageCache;
+/* global Image */
+
+/**
+ * List of images to load.
+ * @type {Object}
+ */
+var imageUrls = {
+  'tower-1': '../images/tower-1.png',
+  'goon-1': '../images/goon-1.png',
+  'landscape_sheet': '../images/landscape_sheet.png'
+
+  /**
+   * Global image cache.
+   * @type {Object}
+   */
+};var imageCache = exports.imageCache = {};
+
+/**
+ * Load the images on the cache and call the callback when ready.
+ * @param  {function} onLoadComplete
+ */
+function loadImageCache(onLoadComplete) {
+  var _loop = function _loop(key) {
+    var url = imageUrls[key];
+    var img = new Image();
+    img.onload = function () {
+      imageCache[key] = img;
+      if (Object.keys(imageCache).length === Object.keys(imageUrls).length) {
+        onLoadComplete();
+      }
+    };
+    img.src = url;
+  };
+
+  for (var key in imageUrls) {
+    _loop(key);
+  }
+}
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.buildSquarePath = buildSquarePath;
 exports.roundRect = roundRect;
 exports.circle = circle;
@@ -504,7 +554,7 @@ function polygon(ctx, corners, fill, stroke) {
 }
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -592,55 +642,6 @@ var isEqualPoints = exports.isEqualPoints = function isEqualPoints(pointA, point
 
   return Math.abs(pointA.x - pointB.x) <= tolerance && Math.abs(pointA.y - pointB.y) <= tolerance;
 };
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.loadImageCache = loadImageCache;
-/* global Image */
-
-/**
- * List of images to load.
- * @type {Object}
- */
-var imageUrls = {
-  'tower-1': '../images/tower-1.png',
-  'goon-1': '../images/goon-1.png'
-
-  /**
-   * Global image cache.
-   * @type {Object}
-   */
-};var imageCache = exports.imageCache = {};
-
-/**
- * Load the images on the cache and call the callback when ready.
- * @param  {function} onLoadComplete
- */
-function loadImageCache(onLoadComplete) {
-  var _loop = function _loop(key) {
-    var url = imageUrls[key];
-    var img = new Image();
-    img.onload = function () {
-      imageCache[key] = img;
-      if (Object.keys(imageCache).length === Object.keys(imageUrls).length) {
-        onLoadComplete();
-      }
-    };
-    img.src = url;
-  };
-
-  for (var key in imageUrls) {
-    _loop(key);
-  }
-}
 
 /***/ }),
 /* 4 */
@@ -816,7 +817,7 @@ exports.default = {
 "use strict";
 
 
-var _imageCache = __webpack_require__(3);
+var _imageCache = __webpack_require__(1);
 
 var _game = __webpack_require__(0);
 
@@ -1188,9 +1189,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _geometryUtils = __webpack_require__(2);
+var _geometryUtils = __webpack_require__(3);
 
-var _drawingUtils = __webpack_require__(1);
+var _drawingUtils = __webpack_require__(2);
 
 var _game = __webpack_require__(0);
 
@@ -1382,9 +1383,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _geometryUtils = __webpack_require__(2);
+var _geometryUtils = __webpack_require__(3);
 
-var _drawingUtils = __webpack_require__(1);
+var _drawingUtils = __webpack_require__(2);
 
 var _game = __webpack_require__(0);
 
@@ -1542,9 +1543,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _imageCache = __webpack_require__(3);
+var _imageCache = __webpack_require__(1);
 
-var _geometryUtils = __webpack_require__(2);
+var _geometryUtils = __webpack_require__(3);
 
 var _game = __webpack_require__(0);
 
