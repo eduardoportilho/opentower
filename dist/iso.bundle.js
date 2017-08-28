@@ -125,7 +125,7 @@ function loadImageCache(onLoadComplete) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.CELL_EDGE_SIZE = undefined;
+exports.CELL_HEIGHT = exports.CELL_WIDTH = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -145,21 +145,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var CELL_EDGE_SIZE = exports.CELL_EDGE_SIZE = 20;
+var CELL_WIDTH = exports.CELL_WIDTH = 128; // 132 =  2 + 128 + 2
+var CELL_HEIGHT = exports.CELL_HEIGHT = 64; // 83 2 + 64 + 15 + 2
 
 var IsoGrid = function () {
   function IsoGrid(canvasSize) {
     _classCallCheck(this, IsoGrid);
 
     this.canvasSize = canvasSize;
-    this.colCount = 20;
-    this.rowCount = 20;
+    this.colCount = 9;
+    this.rowCount = 9;
     this.origin = {
       x: canvasSize.width / 2,
-      y: CELL_EDGE_SIZE
+      y: 5
     };
 
-    this.sprite = new _spriteSheet2.default(_imageCache.imageCache['landscape_sheet'], _landscapeSheet2.default, 2 * CELL_EDGE_SIZE, CELL_EDGE_SIZE);
+    this.sprite = new _spriteSheet2.default(_imageCache.imageCache['landscape_sheet'], _landscapeSheet2.default, CELL_WIDTH, CELL_HEIGHT);
   }
 
   _createClass(IsoGrid, [{
@@ -175,23 +176,30 @@ var IsoGrid = function () {
       }
 
       // tiles
-      var tileOrigin = this.getCellOrigin(1, 1);
-      this.sprite.draw(context, tileOrigin, 'landscape_00');
+      this.sprite.draw(context, this.getCellOrigin(0, 0), 'grass_single_flat');
+      this.sprite.draw(context, this.getCellOrigin(1, 1), 'grass_single_flat');
+      this.sprite.draw(context, this.getCellOrigin(1, 2), 'grass_single_flat');
+      this.sprite.draw(context, this.getCellOrigin(2, 1), 'dirt_single_flat');
+      this.sprite.draw(context, this.getCellOrigin(2, 2), 'dirt_single_flat');
+      this.sprite.draw(context, this.getCellOrigin(8, 8), 'grass_single_flat');
     }
   }, {
     key: 'getCellCorners',
     value: function getCellCorners(row, col) {
       var cellOrigin = this.getCellOrigin(row, col);
-      var halfEdge = Math.round(CELL_EDGE_SIZE / 2);
-      return [cellOrigin, { x: cellOrigin.x + CELL_EDGE_SIZE, y: cellOrigin.y + halfEdge }, { x: cellOrigin.x, y: cellOrigin.y + CELL_EDGE_SIZE }, { x: cellOrigin.x - CELL_EDGE_SIZE, y: cellOrigin.y + halfEdge }];
+      var halfHeigth = Math.round(CELL_HEIGHT / 2);
+      var halfWidth = Math.round(CELL_WIDTH / 2);
+      return [cellOrigin, { x: cellOrigin.x + halfWidth, y: cellOrigin.y + halfHeigth }, { x: cellOrigin.x, y: cellOrigin.y + CELL_HEIGHT }, { x: cellOrigin.x - halfWidth, y: cellOrigin.y + halfHeigth }];
     }
   }, {
     key: 'getCellOrigin',
     value: function getCellOrigin(row, col) {
       // http://clintbellanger.net/articles/isometric_math/
+      var halfHeigth = Math.round(CELL_HEIGHT / 2);
+      var halfWidth = Math.round(CELL_WIDTH / 2);
       return {
-        x: (col - row) * CELL_EDGE_SIZE + this.origin.x,
-        y: (col + row) * Math.round(CELL_EDGE_SIZE / 2) + this.origin.y
+        x: (col - row) * halfWidth + this.origin.x,
+        y: (col + row) * halfHeigth + this.origin.y
       };
     }
   }]);
@@ -203,14 +211,14 @@ var IsoGrid = function () {
 
 function init() {
   var canvas = document.getElementById('canvas');
-  canvas.width = 1000;
-  canvas.height = 1000;
+  canvas.width = 1400;
+  canvas.height = 800;
 
   var context = canvas.getContext('2d');
 
   var isoGrid = new IsoGrid({
-    width: 1000,
-    height: 1000
+    width: 1400,
+    height: 800
   });
   isoGrid.draw(context);
 }
@@ -245,8 +253,24 @@ var SpriteSheet = function () {
     key: "draw",
     value: function draw(context, origin, spriteKey) {
       var sprite = this.spriteSheetMap[spriteKey];
-      context.drawImage(this.image, sprite.x, sprite.y, sprite.width, sprite.height, origin.x, origin.y, this.tileWidth, // TODO: default values?
-      this.tileHeight);
+      var dimensions = this.scaleToFitWidth({
+        width: sprite.width,
+        height: sprite.height
+      }, {
+        width: this.tileWidth,
+        height: this.tileHeight
+      });
+      var x = origin.x - Math.round(dimensions.width / 2);
+      context.drawImage(this.image, sprite.x, sprite.y, sprite.width, sprite.height, x, origin.y, dimensions.width, dimensions.height);
+    }
+  }, {
+    key: "scaleToFitWidth",
+    value: function scaleToFitWidth(currentDimension, targetDimension) {
+      var ratio = currentDimension.height / currentDimension.width;
+      return {
+        width: targetDimension.width,
+        height: targetDimension.width * ratio
+      };
     }
   }]);
 
@@ -288,11 +312,11 @@ exports.default = {
   'landscape_14': { x: '665', y: '115', width: '132', height: '99' },
   'landscape_15': { x: '796', y: '412', width: '132', height: '99' },
   'landscape_16': { x: '664', y: '317', width: '132', height: '99' },
-  'landscape_17': { x: '664', y: '234', width: '132', height: '83' },
+  'dirt_single_flat': { x: '664', y: '234', width: '132', height: '83' },
   'landscape_18': { x: '665', y: '0', width: '132', height: '115' },
   'landscape_19': { x: '532', y: '234', width: '132', height: '99' },
   'landscape_20': { x: '532', y: '333', width: '132', height: '115' },
-  'landscape_21': { x: '0', y: '424', width: '132', height: '83' },
+  'grass_single_flat': { x: '0', y: '424', width: '132', height: '83' },
   'landscape_22': { x: '928', y: '115', width: '132', height: '115' },
   'landscape_23': { x: '797', y: '0', width: '132', height: '115' },
   'landscape_24': { x: '1192', y: '198', width: '132', height: '99' },
