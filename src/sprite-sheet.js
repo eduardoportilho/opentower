@@ -1,5 +1,5 @@
 export default class SpriteSheet {
-  constructor (spriteSheetImage, spriteSheetMap, tileWidth, tileHeight,) {
+  constructor (spriteSheetImage, spriteSheetMap, tileWidth, tileHeight) {
     this.image = spriteSheetImage
     this.spriteSheetMap = spriteSheetMap
     this.tileWidth = tileWidth
@@ -9,12 +9,12 @@ export default class SpriteSheet {
   draw (context, origin, spriteKey) {
     const sprite = this.spriteSheetMap[spriteKey]
     const dimensions = this.scaleToFitWidth({
-        width: sprite.width,
-        height: sprite.height
-      }, {
-        width: this.tileWidth,
-        height: this.tileHeight
-      })
+      width: sprite.width,
+      height: sprite.height
+    }, {
+      width: this.tileWidth,
+      height: this.tileHeight
+    })
     const x = origin.x - Math.round(dimensions.width / 2)
     context.drawImage(
       this.image,

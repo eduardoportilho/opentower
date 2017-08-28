@@ -1,5 +1,4 @@
-import {loadImageCache} from './image-cache.js'
-import {imageCache} from './image-cache.js'
+import {loadImageCache, imageCache} from './image-cache.js'
 import {polygon} from './drawing-utils'
 import SpriteSheet from './sprite-sheet'
 import landscapeSheetMap from './spritesheets/landscape-sheet'
@@ -77,4 +76,3 @@ function init () {
   })
   isoGrid.draw(context)
 }
-
