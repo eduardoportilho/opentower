@@ -157,7 +157,7 @@ var IsoGrid = function () {
     this.rowCount = 9;
     this.origin = {
       x: canvasSize.width / 2,
-      y: 5
+      y: CELL_HEIGHT
     };
 
     this.sprite = new _spriteSheet2.default(_imageCache.imageCache['landscape_sheet'], _landscapeSheet2.default, CELL_WIDTH, CELL_HEIGHT);
@@ -176,12 +176,15 @@ var IsoGrid = function () {
       }
 
       // tiles
-      this.sprite.draw(context, this.getCellOrigin(0, 0), 'grass_single_flat');
-      this.sprite.draw(context, this.getCellOrigin(1, 1), 'grass_single_flat');
-      this.sprite.draw(context, this.getCellOrigin(1, 2), 'grass_single_flat');
-      this.sprite.draw(context, this.getCellOrigin(2, 1), 'dirt_single_flat');
-      this.sprite.draw(context, this.getCellOrigin(2, 2), 'dirt_single_flat');
-      this.sprite.draw(context, this.getCellOrigin(8, 8), 'grass_single_flat');
+      var tiles = [['grass', 'path_curve_bl_br', 'path_tl_br', 'path_tl_br', 'path_curve_tl_bl', 'grass', 'grass', 'river_tr_bl', 'grass'], ['trees_2_t_b', 'path_tr_bl', 'grass', 'rocks_2_r_l', 'path_tr_bl', 'grass_ramp_tr_bl', 'grass_ramp_diag_r_l', 'river_tr_bl', 'rocks_2_l_r'], ['grass', 'path_tr_bl', 'grass', 'grass', 'path_tr_bl', 'grass_double_dirt', 'grass_ramp_br_tl', 'river_tr_bl', 'trees_2_tr_tl'], ['grass', 'path_tr_bl', null, 'crystal_b_t']];
+      for (var _row = 0; _row < tiles.length; _row++) {
+        var tileRow = tiles[_row];
+        for (var _col = 0; _col < tileRow.length; _col++) {
+          if (tileRow[_col]) {
+            this.sprite.draw(context, this.getCellBottom(_row, _col), tileRow[_col]);
+          }
+        }
+      }
     }
   }, {
     key: 'getCellCorners',
@@ -200,6 +203,16 @@ var IsoGrid = function () {
       return {
         x: (col - row) * halfWidth + this.origin.x,
         y: (col + row) * halfHeigth + this.origin.y
+      };
+    }
+  }, {
+    key: 'getCellBottom',
+    value: function getCellBottom(row, col) {
+      // http://clintbellanger.net/articles/isometric_math/
+      var origin = this.getCellOrigin(row, col);
+      return {
+        x: origin.x,
+        y: origin.y + CELL_HEIGHT
       };
     }
   }]);
@@ -251,7 +264,7 @@ var SpriteSheet = function () {
 
   _createClass(SpriteSheet, [{
     key: "draw",
-    value: function draw(context, origin, spriteKey) {
+    value: function draw(context, bottomPoint, spriteKey) {
       var sprite = this.spriteSheetMap[spriteKey];
       var dimensions = this.scaleToFitWidth({
         width: sprite.width,
@@ -260,8 +273,9 @@ var SpriteSheet = function () {
         width: this.tileWidth,
         height: this.tileHeight
       });
-      var x = origin.x - Math.round(dimensions.width / 2);
-      context.drawImage(this.image, sprite.x, sprite.y, sprite.width, sprite.height, x, origin.y, dimensions.width, dimensions.height);
+      var x = bottomPoint.x - Math.round(dimensions.width / 2);
+      var y = bottomPoint.y - dimensions.height;
+      context.drawImage(this.image, sprite.x, sprite.y, sprite.width, sprite.height, x, y, dimensions.width, dimensions.height);
     }
   }, {
     key: "scaleToFitWidth",
@@ -292,13 +306,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = {
   'crystals_1': { x: '1720', y: '198', width: '132', height: '112' },
-  'crystals_2': { x: '1852', y: '114', width: '132', height: '121' },
-  'crystals_3': { x: '0', y: '297', width: '133', height: '127' },
+  'crystal_b_t': { x: '1852', y: '114', width: '132', height: '121' },
+  'crystal_t_b': { x: '0', y: '297', width: '133', height: '127' },
   'crystals_4': { x: '1852', y: '0', width: '132', height: '114' },
   'landscape_00': { x: '1192', y: '99', width: '132', height: '99' },
   'landscape_01': { x: '1061', y: '0', width: '132', height: '99' },
   'landscape_02': { x: '1060', y: '396', width: '132', height: '99' },
-  'landscape_03': { x: '1060', y: '297', width: '132', height: '99' },
+  'path_curve_tl_bl': { x: '1060', y: '297', width: '132', height: '99' },
   'landscape_04': { x: '1060', y: '198', width: '132', height: '99' },
   'landscape_05': { x: '1060', y: '99', width: '132', height: '99' },
   'landscape_06': { x: '929', y: '0', width: '132', height: '99' },
@@ -308,52 +322,52 @@ exports.default = {
   'landscape_10': { x: '1720', y: '310', width: '132', height: '99' },
   'landscape_11': { x: '1456', y: '198', width: '132', height: '99' },
   'landscape_12': { x: '796', y: '313', width: '132', height: '99' },
-  'landscape_13': { x: '796', y: '214', width: '132', height: '99' },
+  'grass_double': { x: '796', y: '214', width: '132', height: '99' },
   'landscape_14': { x: '665', y: '115', width: '132', height: '99' },
   'landscape_15': { x: '796', y: '412', width: '132', height: '99' },
-  'landscape_16': { x: '664', y: '317', width: '132', height: '99' },
-  'dirt_single_flat': { x: '664', y: '234', width: '132', height: '83' },
+  'grass_ramp_tr_bl': { x: '664', y: '317', width: '132', height: '99' },
+  'dirt_single': { x: '664', y: '234', width: '132', height: '83' },
   'landscape_18': { x: '665', y: '0', width: '132', height: '115' },
   'landscape_19': { x: '532', y: '234', width: '132', height: '99' },
   'landscape_20': { x: '532', y: '333', width: '132', height: '115' },
-  'grass_single_flat': { x: '0', y: '424', width: '132', height: '83' },
-  'landscape_22': { x: '928', y: '115', width: '132', height: '115' },
-  'landscape_23': { x: '797', y: '0', width: '132', height: '115' },
+  'grass_single': { x: '0', y: '424', width: '132', height: '83' },
+  'grass_double_dirt': { x: '928', y: '115', width: '132', height: '115' },
+  'grass_ramp_br_tl': { x: '797', y: '0', width: '132', height: '115' },
   'landscape_24': { x: '1192', y: '198', width: '132', height: '99' },
   'landscape_25': { x: '1192', y: '297', width: '132', height: '99' },
-  'landscape_26': { x: '1192', y: '396', width: '132', height: '99' },
+  'grass_ramp_diag_r_l': { x: '1192', y: '396', width: '132', height: '99' },
   'landscape_27': { x: '1324', y: '225', width: '132', height: '115' },
-  'landscape_28': { x: '1193', y: '0', width: '132', height: '99' },
-  'landscape_29': { x: '1325', y: '0', width: '132', height: '99' },
+  'grass': { x: '1193', y: '0', width: '132', height: '99' },
+  'path_tr_bl': { x: '1325', y: '0', width: '132', height: '99' },
   'landscape_30': { x: '1456', y: '99', width: '132', height: '99' },
   'landscape_31': { x: '1324', y: '340', width: '132', height: '99' },
-  'landscape_32': { x: '928', y: '230', width: '132', height: '99' },
-  'landscape_33': { x: '1588', y: '99', width: '132', height: '99' },
+  'path_tl_br': { x: '928', y: '230', width: '132', height: '99' },
+  'river_tr_bl': { x: '1588', y: '99', width: '132', height: '99' },
   'landscape_34': { x: '1588', y: '297', width: '132', height: '99' },
   'landscape_35': { x: '1588', y: '396', width: '132', height: '99' },
   'landscape_36': { x: '1589', y: '0', width: '132', height: '99' },
   'landscape_37': { x: '0', y: '198', width: '133', height: '99' },
-  'landscape_38': { x: '1720', y: '99', width: '132', height: '99' },
+  'path_curve_bl_br': { x: '1720', y: '99', width: '132', height: '99' },
   'landscape_39': { x: '1457', y: '0', width: '132', height: '99' },
-  'rocks_1': { x: '0', y: '0', width: '133', height: '99' },
+  'rocks_2_r_l': { x: '0', y: '0', width: '133', height: '99' },
   'rocks_2': { x: '0', y: '99', width: '133', height: '99' },
   'rocks_3': { x: '133', y: '0', width: '133', height: '102' },
   'rocks_4': { x: '133', y: '102', width: '133', height: '102' },
-  'rocks_5': { x: '133', y: '204', width: '133', height: '99' },
+  'rocks_2_l_r': { x: '133', y: '204', width: '133', height: '99' },
   'rocks_6': { x: '133', y: '303', width: '133', height: '99' },
   'rocks_7': { x: '1588', y: '198', width: '132', height: '99' },
   'rocks_8': { x: '133', y: '402', width: '133', height: '99' },
   'trees_1': { x: '266', y: '241', width: '133', height: '111' },
   'trees_10': { x: '1456', y: '297', width: '132', height: '130' },
   'trees_11': { x: '266', y: '0', width: '133', height: '118' },
-  'trees_12': { x: '266', y: '118', width: '133', height: '123' },
+  'trees_2_t_b': { x: '266', y: '118', width: '133', height: '123' },
   'trees_2': { x: '399', y: '127', width: '133', height: '121' },
   'trees_3': { x: '266', y: '352', width: '133', height: '113' },
   'trees_4': { x: '399', y: '0', width: '133', height: '127' },
   'trees_5': { x: '1324', y: '99', width: '132', height: '126' },
   'trees_6': { x: '399', y: '248', width: '133', height: '124' },
   'trees_7': { x: '399', y: '372', width: '133', height: '121' },
-  'trees_8': { x: '532', y: '0', width: '133', height: '118' },
+  'trees_2_tr_tl': { x: '532', y: '0', width: '133', height: '118' },
   'trees_9': { x: '532', y: '118', width: '133', height: '116' }
 };
 

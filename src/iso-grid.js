@@ -13,7 +13,7 @@ class IsoGrid {
     this.rowCount = 9
     this.origin = {
       x: canvasSize.width / 2,
-      y: 5
+      y: CELL_HEIGHT
     }
 
     this.sprite = new SpriteSheet(imageCache['landscape_sheet'], landscapeSheetMap, CELL_WIDTH, CELL_HEIGHT)
@@ -30,12 +30,20 @@ class IsoGrid {
     }
 
     // tiles
-    this.sprite.draw(context, this.getCellOrigin(0, 0), 'grass_single_flat')
-    this.sprite.draw(context, this.getCellOrigin(1, 1), 'grass_single_flat')
-    this.sprite.draw(context, this.getCellOrigin(1, 2), 'grass_single_flat')
-    this.sprite.draw(context, this.getCellOrigin(2, 1), 'dirt_single_flat')
-    this.sprite.draw(context, this.getCellOrigin(2, 2), 'dirt_single_flat')
-    this.sprite.draw(context, this.getCellOrigin(8, 8), 'grass_single_flat')
+    const tiles = [
+      ['grass', 'path_curve_bl_br', 'path_tl_br', 'path_tl_br', 'path_curve_tl_bl', 'grass', 'grass', 'river_tr_bl', 'grass'],
+      ['trees_2_t_b', 'path_tr_bl', 'grass', 'rocks_2_r_l', 'path_tr_bl', 'grass_ramp_tr_bl', 'grass_ramp_diag_r_l', 'river_tr_bl', 'rocks_2_l_r'],
+      ['grass', 'path_tr_bl', 'grass', 'grass', 'path_tr_bl', 'grass_double_dirt', 'grass_ramp_br_tl', 'river_tr_bl', 'trees_2_tr_tl'],
+      ['grass', 'path_tr_bl', null, 'crystal_b_t']
+    ]
+    for (let row = 0; row < tiles.length; row++) {
+      let tileRow = tiles[row]
+      for (let col = 0; col < tileRow.length; col++) {
+        if (tileRow[col]) {
+          this.sprite.draw(context, this.getCellBottom(row, col), tileRow[col])
+        }
+      }
+    }
   }
 
   getCellCorners (row, col) {
@@ -57,6 +65,15 @@ class IsoGrid {
     return {
       x: (col - row) * halfWidth + this.origin.x,
       y: (col + row) * halfHeigth + this.origin.y
+    }
+  }
+
+  getCellBottom (row, col) {
+    // http://clintbellanger.net/articles/isometric_math/
+    const origin = this.getCellOrigin(row, col)
+    return {
+      x: origin.x,
+      y: origin.y + CELL_HEIGHT
     }
   }
 }
