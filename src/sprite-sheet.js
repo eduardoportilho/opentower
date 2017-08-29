@@ -6,7 +6,7 @@ export default class SpriteSheet {
     this.tileHeight = tileHeight
   }
 
-  draw (context, origin, spriteKey) {
+  draw (context, bottomPoint, spriteKey) {
     const sprite = this.spriteSheetMap[spriteKey]
     const dimensions = this.scaleToFitWidth({
       width: sprite.width,
@@ -15,7 +15,8 @@ export default class SpriteSheet {
       width: this.tileWidth,
       height: this.tileHeight
     })
-    const x = origin.x - Math.round(dimensions.width / 2)
+    const x = bottomPoint.x - Math.round(dimensions.width / 2)
+    const y = bottomPoint.y - dimensions.height
     context.drawImage(
       this.image,
       sprite.x,
@@ -23,7 +24,7 @@ export default class SpriteSheet {
       sprite.width,
       sprite.height,
       x,
-      origin.y,
+      y,
       dimensions.width,
       dimensions.height
     )
