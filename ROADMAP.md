@@ -61,11 +61,18 @@
 - ✅ Animate shot
 - ✅ Explore path finding variations
     - ✅ Diagonal move with 1,5 cost (BFS -> Dijkstra: http://www.redblobgames.com/pathfinding/a-star/introduction.html)
-- 🚶Try to convert to isometric
+- 🚶⚔ Convert to isometric
     - ✅ Draw iso grid
-    - 🚶Draw tile image
-        - 🆕 Fix origin
-        - 🆕 Mantain aspect ration
+    - ✅ Draw tile image
+        - ✅ Fix origin
+        - ✅ Mantain aspect ratio
+    - 🚶 Draw sample landscape
+        - 🆕 Draw tiles with veritical offset
+    - 🆕 Describe landscape in config file
+    - 🆕 Draw a tower in the landscape
+    - 🆕 Draw a goon in the landscape
+    - 🆕 Scale grid
+    - ⚔ Move goon on the grid
 
 ---*---*---*---*---*---*---
 
