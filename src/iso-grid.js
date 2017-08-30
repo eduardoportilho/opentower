@@ -2,6 +2,7 @@ import {loadImageCache, imageCache} from './image-cache.js'
 import {polygon} from './drawing-utils'
 import SpriteSheet from './sprite-sheet'
 import landscapeSheetMap from './spritesheets/landscape-sheet'
+import landscapeTiles from './config/landscape'
 
 export const CELL_WIDTH = 128 // 132 =  2 + 128 + 2
 export const CELL_HEIGHT = 64 // 83 2 + 64 + 15 + 2
@@ -9,13 +10,12 @@ export const CELL_HEIGHT = 64 // 83 2 + 64 + 15 + 2
 class IsoGrid {
   constructor (canvasSize) {
     this.canvasSize = canvasSize
-    this.colCount = 9
-    this.rowCount = 9
+    this.colCount = 10
+    this.rowCount = 8
     this.origin = {
       x: canvasSize.width / 2,
       y: CELL_HEIGHT
     }
-
     this.sprite = new SpriteSheet(imageCache['landscape_sheet'], landscapeSheetMap, CELL_WIDTH, CELL_HEIGHT)
   }
 
@@ -29,18 +29,12 @@ class IsoGrid {
       }
     }
 
-    // tiles
-    const tiles = [
-      ['grass', 'path_curve_bl_br', 'path_tl_br', 'path_tl_br', 'path_curve_tl_bl', 'grass', 'grass', 'river_tr_bl', 'grass'],
-      ['trees_2_t_b', 'path_tr_bl', 'grass', 'rocks_2_r_l', 'path_tr_bl', 'grass_ramp_tr_bl', 'grass_ramp_diag_r_l', 'river_tr_bl', 'rocks_2_l_r'],
-      ['grass', 'path_tr_bl', 'grass', 'grass', 'path_tr_bl', 'grass_double_dirt', 'grass_ramp_br_tl', 'river_tr_bl', 'trees_2_tr_tl'],
-      ['grass', 'path_tr_bl', null, 'crystal_b_t']
-    ]
-    for (let row = 0; row < tiles.length; row++) {
-      let tileRow = tiles[row]
+    for (let row = 0; row < landscapeTiles.length; row++) {
+      let tileRow = landscapeTiles[row]
       for (let col = 0; col < tileRow.length; col++) {
-        if (tileRow[col]) {
-          this.sprite.draw(context, this.getCellBottom(row, col), tileRow[col])
+        let tile = tileRow[col]
+        if (tile) {
+          this.sprite.draw(context, this.getCellBottom(row, col), tile.spriteKey, tile.verticalOffset)
         }
       }
     }
@@ -69,7 +63,6 @@ class IsoGrid {
   }
 
   getCellBottom (row, col) {
-    // http://clintbellanger.net/articles/isometric_math/
     const origin = this.getCellOrigin(row, col)
     return {
       x: origin.x,
