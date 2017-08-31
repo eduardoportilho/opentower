@@ -8,10 +8,7 @@ export default class SpriteSheet {
 
   draw (context, bottomPoint, spriteKey, verticalOffset = 0) {
     const sprite = this.spriteSheetMap[spriteKey]
-    const dimensions = this.scaleToFitWidth({
-      width: sprite.width,
-      height: sprite.height
-    }, {
+    const dimensions = this.scaleToFit(sprite, {
       width: this.tileWidth,
       height: this.tileHeight
     })
@@ -28,13 +25,29 @@ export default class SpriteSheet {
       dimensions.width,
       dimensions.height
     )
+    return dimensions
   }
 
-  scaleToFitWidth (currentDimension, targetDimension) {
-    const ratio = currentDimension.height / currentDimension.width
+  drawStacked (context, bottomPoint, spriteKeys, verticalOffset = 0) {
+    let stackHeight = verticalOffset
+    for (let spriteKey of spriteKeys) {
+      let dimensions = this.draw(context, bottomPoint, spriteKey, stackHeight)
+      stackHeight -= dimensions.offsetToTop
+    }
+  }
+
+  scaleToFit (sprite, targetDimension) {
+    const spriteRatio = sprite.height / sprite.width
+    const newHeight = Math.round(targetDimension.width * spriteRatio)
+    const scaleRatio = newHeight / sprite.height
+    let newOffsetToTop = 0
+    if (sprite.offsetToTop) {
+      newOffsetToTop = sprite.offsetToTop * scaleRatio
+    }
     return {
       width: targetDimension.width,
-      height: targetDimension.width * ratio
+      height: newHeight,
+      offsetToTop: newOffsetToTop
     }
   }
 }

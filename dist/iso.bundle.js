@@ -84,7 +84,8 @@ exports.loadImageCache = loadImageCache;
 var imageUrls = {
   'tower-1': '../images/tower-1.png',
   'goon-1': '../images/goon-1.png',
-  'landscape_sheet': '../images/landscape_sheet.png'
+  'landscape_sheet': '../images/landscape_sheet.png',
+  'towers_grey_sheet': '../images/towers_grey_sheet.png'
 
   /**
    * Global image cache.
@@ -288,9 +289,17 @@ var _landscapeSheet = __webpack_require__(19);
 
 var _landscapeSheet2 = _interopRequireDefault(_landscapeSheet);
 
-var _landscape = __webpack_require__(20);
+var _towersGreySheet = __webpack_require__(20);
+
+var _towersGreySheet2 = _interopRequireDefault(_towersGreySheet);
+
+var _landscape = __webpack_require__(21);
 
 var _landscape2 = _interopRequireDefault(_landscape);
+
+var _towersGrey = __webpack_require__(22);
+
+var _towersGrey2 = _interopRequireDefault(_towersGrey);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -310,7 +319,8 @@ var IsoGrid = function () {
       x: canvasSize.width / 2,
       y: CELL_HEIGHT
     };
-    this.sprite = new _spriteSheet2.default(_imageCache.imageCache['landscape_sheet'], _landscapeSheet2.default, CELL_WIDTH, CELL_HEIGHT);
+    this.landscapeSheet = new _spriteSheet2.default(_imageCache.imageCache['landscape_sheet'], _landscapeSheet2.default, CELL_WIDTH, CELL_HEIGHT);
+    this.towersGreySheet = new _spriteSheet2.default(_imageCache.imageCache['towers_grey_sheet'], _towersGreySheet2.default, CELL_WIDTH, CELL_HEIGHT);
   }
 
   _createClass(IsoGrid, [{
@@ -325,12 +335,40 @@ var IsoGrid = function () {
         }
       }
 
+      // ladscape
       for (var _row = 0; _row < _landscape2.default.length; _row++) {
         var tileRow = _landscape2.default[_row];
         for (var _col = 0; _col < tileRow.length; _col++) {
           var tile = tileRow[_col];
           if (tile) {
-            this.sprite.draw(context, this.getCellBottom(_row, _col), tile.spriteKey, tile.verticalOffset);
+            this.landscapeSheet.draw(context, this.getCellBottom(_row, _col), tile.spriteKey, tile.verticalOffset);
+          }
+        }
+      }
+
+      // tower
+      var floorHeight = -32;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = _towersGrey2.default[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var tower = _step.value;
+
+          this.towersGreySheet.drawStacked(context, this.getCellBottom(tower.row, tower.col), tower.tiles, floorHeight);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
           }
         }
       }
@@ -415,24 +453,61 @@ var SpriteSheet = function () {
       var verticalOffset = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
 
       var sprite = this.spriteSheetMap[spriteKey];
-      var dimensions = this.scaleToFitWidth({
-        width: sprite.width,
-        height: sprite.height
-      }, {
+      var dimensions = this.scaleToFit(sprite, {
         width: this.tileWidth,
         height: this.tileHeight
       });
       var x = bottomPoint.x - Math.round(dimensions.width / 2);
       var y = bottomPoint.y - dimensions.height + verticalOffset;
       context.drawImage(this.image, sprite.x, sprite.y, sprite.width, sprite.height, x, y, dimensions.width, dimensions.height);
+      return dimensions;
     }
   }, {
-    key: "scaleToFitWidth",
-    value: function scaleToFitWidth(currentDimension, targetDimension) {
-      var ratio = currentDimension.height / currentDimension.width;
+    key: "drawStacked",
+    value: function drawStacked(context, bottomPoint, spriteKeys) {
+      var verticalOffset = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+
+      var stackHeight = verticalOffset;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = spriteKeys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var spriteKey = _step.value;
+
+          var dimensions = this.draw(context, bottomPoint, spriteKey, stackHeight);
+          stackHeight -= dimensions.offsetToTop;
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
+  }, {
+    key: "scaleToFit",
+    value: function scaleToFit(sprite, targetDimension) {
+      var spriteRatio = sprite.height / sprite.width;
+      var newHeight = Math.round(targetDimension.width * spriteRatio);
+      var scaleRatio = newHeight / sprite.height;
+      var newOffsetToTop = 0;
+      if (sprite.offsetToTop) {
+        newOffsetToTop = sprite.offsetToTop * scaleRatio;
+      }
       return {
         width: targetDimension.width,
-        height: targetDimension.width * ratio
+        height: newHeight,
+        offsetToTop: newOffsetToTop
       };
     }
   }]);
@@ -529,7 +604,91 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = {
+  'tower_00': { x: 187, y: 150, width: 89, height: 100 },
+  'tower_01': { x: 447, y: 235, width: 79, height: 72 },
+  'tower_02': { x: 684, y: 72, width: 79, height: 72 },
+  'tower_03': { x: 0, y: 232, width: 95, height: 76 },
+  'tower_04': { x: 0, y: 156, width: 95, height: 76 },
+  'tower_05': { x: 103, y: 75, width: 90, height: 75 },
+  'base_ld_3br': { x: 103, y: 0, width: 90, height: 75, offsetToTop: 35 },
+  'tower_07': { x: 0, y: 0, width: 103, height: 78 },
+  'tower_08': { x: 526, y: 217, width: 79, height: 72 },
+  'tower_09': { x: 0, y: 78, width: 103, height: 78 },
+  'tower_10': { x: 93, y: 308, width: 92, height: 75 },
+  'tower_11': { x: 685, y: 286, width: 79, height: 72 },
+  'tower_12': { x: 606, y: 307, width: 79, height: 70 },
+  'tower_13': { x: 93, y: 383, width: 92, height: 75 },
+  'tower_14': { x: 95, y: 156, width: 92, height: 75 },
+  'tower_15': { x: 447, y: 156, width: 79, height: 79 },
+  'tower_16': { x: 763, y: 149, width: 79, height: 72 },
+  'tower_17': { x: 763, y: 79, width: 79, height: 70 },
+  'tower_18': { x: 363, y: 229, width: 84, height: 73 },
+  'tower_19': { x: 95, y: 231, width: 92, height: 75 },
+  'tower_20': { x: 362, y: 424, width: 86, height: 74 },
+  'tower_21': { x: 276, y: 103, width: 87, height: 82 },
+  'tower_22': { x: 684, y: 214, width: 79, height: 72 },
+  'tower_23': { x: 684, y: 144, width: 79, height: 70 },
+  'tower_24': { x: 363, y: 302, width: 84, height: 73 },
+  'tower_25': { x: 610, y: 0, width: 79, height: 72 },
+  'tower_26': { x: 363, y: 82, width: 86, height: 74 },
+  'tower_27': { x: 274, y: 350, width: 89, height: 74 },
+  'tower_28': { x: 605, y: 228, width: 79, height: 79 },
+  'tower_29': { x: 605, y: 149, width: 79, height: 79 },
+  'tower_30': { x: 605, y: 79, width: 79, height: 70 },
+  'tower_31': { x: 363, y: 156, width: 84, height: 73 },
+  'tower_32': { x: 527, y: 433, width: 79, height: 72 },
+  'tower_33': { x: 527, y: 361, width: 79, height: 72 },
+  'tower_34': { x: 185, y: 306, width: 89, height: 74 },
+  'tower_35': { x: 185, y: 380, width: 89, height: 98 },
+  'top_block_ld': { x: 282, y: 0, width: 87, height: 82 },
+  'tower_37': { x: 369, y: 0, width: 83, height: 73 },
+  'tower_38': { x: 449, y: 73, width: 79, height: 72 },
+  'tower_39': { x: 448, y: 386, width: 79, height: 72 },
+  'tower_40': { x: 764, y: 221, width: 78, height: 72 },
+  'tower_41': { x: 193, y: 0, width: 89, height: 103 },
+  'tower_42': { x: 763, y: 0, width: 79, height: 79 },
+  'tower_43': { x: 526, y: 289, width: 79, height: 72 },
+  'tower_44': { x: 685, y: 430, width: 79, height: 72 },
+  'tower_45': { x: 685, y: 358, width: 79, height: 72 },
+  'tower_46': { x: 0, y: 308, width: 93, height: 98 },
+  'tower_47': { x: 531, y: 0, width: 79, height: 79 },
+  'tower_48': { x: 606, y: 377, width: 79, height: 72 },
+  'tower_49': { x: 526, y: 145, width: 79, height: 72 },
+  'tower_50': { x: 0, y: 406, width: 93, height: 98 },
+  'tower_51': { x: 274, y: 424, width: 88, height: 82 },
+  'tower_52': { x: 452, y: 0, width: 79, height: 72 },
+  'tower_53': { x: 274, y: 250, width: 89, height: 100 },
+  'tower_54': { x: 447, y: 307, width: 79, height: 79 }
+};
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.default = [[{ spriteKey: 'grass' }, { spriteKey: 'path_curve_bl_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_curve_tl_bl' }, { spriteKey: 'trees_2_t_b', verticalOffset: -24 }, { spriteKey: 'grass' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl', verticalOffset: 16 }], [{ spriteKey: 'trees_2_t_b' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'rocks_2_r_l' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass_ramp_tr_bl' }, { spriteKey: 'grass_ramp_diag_r_l' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'rocks_2_l_r' }, { spriteKey: 'path_tr_bl', verticalOffset: 50 }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass_double_dirt' }, { spriteKey: 'grass_ramp_br_tl' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'trees_2_tr_tl' }, { spriteKey: 'path_tr_bl' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass', verticalOffset: -50 }, { spriteKey: 'crystal_b_t' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass_ramp_bl_tr' }, { spriteKey: 'path_curve_bl_br' }, { spriteKey: 'bridge_tl_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_curve_tl_tr' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'crystal_r_l' }, { spriteKey: 'grass' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'river_curve_tr_br' }, { spriteKey: 'river_tl_br' }, { spriteKey: 'river_tl_br' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'trees_3_tr_tl_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }], [{ spriteKey: 'grass', verticalOffset: -52 }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_curve_tr_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_curve_tl_tr' }, { spriteKey: 'grass' }, { spriteKey: 'rocks_1_tl' }, { spriteKey: 'grass' }]];
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = [{
+  row: 6,
+  col: 2,
+  tiles: ['base_ld_3br', 'top_block_ld']
+}];
 
 /***/ })
 /******/ ]);
