@@ -66,12 +66,13 @@
     - ✅ Draw tile image
         - ✅ Fix origin
         - ✅ Mantain aspect ratio
-    - 🚶 Draw sample landscape
-        - 🆕 Draw tiles with veritical offset
-    - 🆕 Describe landscape in config file
-    - 🆕 Draw a tower in the landscape
-    - 🆕 Draw a goon in the landscape
+    - ✅ Draw sample landscape
+        - ✅ Draw tiles with veritical offset
+    - ✅ Describe landscape in config file
+    - ✅ Draw a tower in the landscape
+        - ✅ Fix origin
     - 🆕 Scale grid
+    - 🆕 Draw a goon in the landscape
     - ⚔ Move goon on the grid
 
 ---*---*---*---*---*---*---
