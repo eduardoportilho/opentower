@@ -629,9 +629,9 @@ exports.default = {
   'tower_21': { x: 276, y: 103, width: 87, height: 82 },
   'tower_22': { x: 684, y: 214, width: 79, height: 72 },
   'tower_23': { x: 684, y: 144, width: 79, height: 70 },
-  'tower_24': { x: 363, y: 302, width: 84, height: 73 },
-  'tower_25': { x: 610, y: 0, width: 79, height: 72 },
-  'tower_26': { x: 363, y: 82, width: 86, height: 74 },
+  'base_lgrect_dk_2br': { x: 363, y: 302, width: 84, height: 73 },
+  'middle_light-corner': { x: 610, y: 0, width: 79, height: 72, offsetToTop: 32 },
+  'base_light-rect2x_dark_2brl': { x: 363, y: 82, width: 86, height: 74, offsetToTop: 34 },
   'tower_27': { x: 274, y: 350, width: 89, height: 74 },
   'tower_28': { x: 605, y: 228, width: 79, height: 79 },
   'tower_29': { x: 605, y: 149, width: 79, height: 79 },
@@ -642,14 +642,14 @@ exports.default = {
   'tower_34': { x: 185, y: 306, width: 89, height: 74 },
   'tower_35': { x: 185, y: 380, width: 89, height: 98 },
   'top_block_ld': { x: 282, y: 0, width: 87, height: 82 },
-  'tower_37': { x: 369, y: 0, width: 83, height: 73 },
-  'tower_38': { x: 449, y: 73, width: 79, height: 72 },
+  'base_light-rect_dark_winl': { x: 369, y: 0, width: 83, height: 73, offsetToTop: 33 },
+  'middle_light-corner_win-left': { x: 449, y: 73, width: 79, height: 72, offsetToTop: 32 },
   'tower_39': { x: 448, y: 386, width: 79, height: 72 },
   'tower_40': { x: 764, y: 221, width: 78, height: 72 },
-  'tower_41': { x: 193, y: 0, width: 89, height: 103 },
+  'top_green-tri_white-top': { x: 193, y: 0, width: 89, height: 103 },
   'tower_42': { x: 763, y: 0, width: 79, height: 79 },
   'tower_43': { x: 526, y: 289, width: 79, height: 72 },
-  'tower_44': { x: 685, y: 430, width: 79, height: 72 },
+  'middle_light-corner_dark-base_win-left': { x: 685, y: 430, width: 79, height: 72, offsetToTop: 32 },
   'tower_45': { x: 685, y: 358, width: 79, height: 72 },
   'tower_46': { x: 0, y: 308, width: 93, height: 98 },
   'tower_47': { x: 531, y: 0, width: 79, height: 79 },
@@ -672,7 +672,7 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = [[{ spriteKey: 'grass' }, { spriteKey: 'path_curve_bl_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_curve_tl_bl' }, { spriteKey: 'trees_2_t_b', verticalOffset: -24 }, { spriteKey: 'grass' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl', verticalOffset: 16 }], [{ spriteKey: 'trees_2_t_b' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'rocks_2_r_l' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass_ramp_tr_bl' }, { spriteKey: 'grass_ramp_diag_r_l' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'rocks_2_l_r' }, { spriteKey: 'path_tr_bl', verticalOffset: 50 }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass_double_dirt' }, { spriteKey: 'grass_ramp_br_tl' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'trees_2_tr_tl' }, { spriteKey: 'path_tr_bl' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass', verticalOffset: -50 }, { spriteKey: 'crystal_b_t' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass_ramp_bl_tr' }, { spriteKey: 'path_curve_bl_br' }, { spriteKey: 'bridge_tl_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_curve_tl_tr' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'crystal_r_l' }, { spriteKey: 'grass' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'river_curve_tr_br' }, { spriteKey: 'river_tl_br' }, { spriteKey: 'river_tl_br' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'trees_3_tr_tl_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }], [{ spriteKey: 'grass', verticalOffset: -52 }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_curve_tr_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_curve_tl_tr' }, { spriteKey: 'grass' }, { spriteKey: 'rocks_1_tl' }, { spriteKey: 'grass' }]];
+exports.default = [[{ spriteKey: 'grass' }, { spriteKey: 'path_curve_bl_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_curve_tl_bl' }, { spriteKey: 'trees_2_t_b', verticalOffset: -24 }, { spriteKey: 'grass' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }], [{ spriteKey: 'trees_2_t_b' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'rocks_2_r_l' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass_ramp_tr_bl' }, { spriteKey: 'grass_ramp_diag_r_l' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'rocks_2_l_r' }, { spriteKey: 'path_tr_bl' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass_double_dirt' }, { spriteKey: 'grass_ramp_br_tl' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'trees_2_tr_tl' }, { spriteKey: 'path_tr_bl' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass', verticalOffset: -50 }, { spriteKey: 'crystal_b_t' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass_ramp_bl_tr' }, { spriteKey: 'path_curve_bl_br' }, { spriteKey: 'bridge_tl_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_curve_tl_tr' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'crystal_r_l' }, { spriteKey: 'grass' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'river_curve_tr_br' }, { spriteKey: 'river_tl_br' }, { spriteKey: 'river_tl_br' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'trees_3_tr_tl_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }], [{ spriteKey: 'grass', verticalOffset: -52 }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_curve_tr_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_curve_tl_tr' }, { spriteKey: 'grass' }, { spriteKey: 'rocks_1_tl' }, { spriteKey: 'grass' }]];
 
 /***/ }),
 /* 22 */
@@ -685,6 +685,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = [{
+  row: 0,
+  col: 9,
+  tiles: ['base_light-rect2x_dark_2brl', 'middle_light-corner_dark-base_win-left', 'middle_light-corner_win-left', 'top_green-tri_white-top']
+}, {
   row: 6,
   col: 2,
   tiles: ['base_ld_3br', 'top_block_ld']

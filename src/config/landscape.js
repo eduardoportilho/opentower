@@ -9,7 +9,7 @@ export default [
     {spriteKey: 'grass'},
     {spriteKey: 'river_tr_bl'},
     {spriteKey: 'grass'},
-    {spriteKey: 'path_tr_bl', verticalOffset: 16}
+    {spriteKey: 'grass'}
   ],
   [
     {spriteKey: 'trees_2_t_b'},
@@ -21,7 +21,7 @@ export default [
     {spriteKey: 'grass_ramp_diag_r_l'},
     {spriteKey: 'river_tr_bl'},
     {spriteKey: 'rocks_2_l_r'},
-    {spriteKey: 'path_tr_bl', verticalOffset: 50}
+    {spriteKey: 'path_tr_bl'}
   ],
   [
     {spriteKey: 'grass'},
