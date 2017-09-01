@@ -18,8 +18,8 @@ class IsoGrid {
       x: canvasSize.width / 2,
       y: CELL_HEIGHT
     }
-    this.landscapeSheet = new SpriteSheet(imageCache['landscape_sheet'], landscapeSheetMap, CELL_WIDTH, CELL_HEIGHT)
-    this.towersGreySheet = new SpriteSheet(imageCache['towers_grey_sheet'], towersGreySheetMap, CELL_WIDTH, CELL_HEIGHT)
+    this.landscapeSheet = new SpriteSheet(imageCache['landscape_sheet'], landscapeSheetMap, CELL_WIDTH)
+    this.towersGreySheet = new SpriteSheet(imageCache['towers_grey_sheet'], towersGreySheetMap, CELL_WIDTH)
   }
 
   draw (context) {

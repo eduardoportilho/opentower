@@ -319,8 +319,8 @@ var IsoGrid = function () {
       x: canvasSize.width / 2,
       y: CELL_HEIGHT
     };
-    this.landscapeSheet = new _spriteSheet2.default(_imageCache.imageCache['landscape_sheet'], _landscapeSheet2.default, CELL_WIDTH, CELL_HEIGHT);
-    this.towersGreySheet = new _spriteSheet2.default(_imageCache.imageCache['towers_grey_sheet'], _towersGreySheet2.default, CELL_WIDTH, CELL_HEIGHT);
+    this.landscapeSheet = new _spriteSheet2.default(_imageCache.imageCache['landscape_sheet'], _landscapeSheet2.default, CELL_WIDTH);
+    this.towersGreySheet = new _spriteSheet2.default(_imageCache.imageCache['towers_grey_sheet'], _towersGreySheet2.default, CELL_WIDTH);
   }
 
   _createClass(IsoGrid, [{
@@ -438,32 +438,32 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var SpriteSheet = function () {
-  function SpriteSheet(spriteSheetImage, spriteSheetMap, tileWidth, tileHeight) {
+  function SpriteSheet(spriteSheetImage, spriteSheetMap, tileWidth) {
     _classCallCheck(this, SpriteSheet);
 
     this.image = spriteSheetImage;
     this.spriteSheetMap = spriteSheetMap;
-    this.tileWidth = tileWidth;
-    this.tileHeight = tileHeight;
+
+    var meta = this.spriteSheetMap['meta'];
+    var maxWidth = meta.maxWidth;
+    this.scale = tileWidth / maxWidth;
   }
 
   _createClass(SpriteSheet, [{
-    key: "draw",
+    key: 'draw',
     value: function draw(context, bottomPoint, spriteKey) {
       var verticalOffset = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
 
       var sprite = this.spriteSheetMap[spriteKey];
-      var dimensions = this.scaleToFit(sprite, {
-        width: this.tileWidth,
-        height: this.tileHeight
-      });
+      var dimensions = this.scaleToFit(sprite);
+
       var x = bottomPoint.x - Math.round(dimensions.width / 2);
       var y = bottomPoint.y - dimensions.height + verticalOffset;
       context.drawImage(this.image, sprite.x, sprite.y, sprite.width, sprite.height, x, y, dimensions.width, dimensions.height);
       return dimensions;
     }
   }, {
-    key: "drawStacked",
+    key: 'drawStacked',
     value: function drawStacked(context, bottomPoint, spriteKeys) {
       var verticalOffset = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
 
@@ -495,19 +495,13 @@ var SpriteSheet = function () {
       }
     }
   }, {
-    key: "scaleToFit",
-    value: function scaleToFit(sprite, targetDimension) {
-      var spriteRatio = sprite.height / sprite.width;
-      var newHeight = Math.round(targetDimension.width * spriteRatio);
-      var scaleRatio = newHeight / sprite.height;
-      var newOffsetToTop = 0;
-      if (sprite.offsetToTop) {
-        newOffsetToTop = sprite.offsetToTop * scaleRatio;
-      }
+    key: 'scaleToFit',
+    value: function scaleToFit(sprite) {
+      var offsetToTop = sprite.offsetToTop || 0;
       return {
-        width: targetDimension.width,
-        height: newHeight,
-        offsetToTop: newOffsetToTop
+        width: Math.round(sprite.width * this.scale),
+        height: Math.round(sprite.height * this.scale),
+        offsetToTop: Math.round(offsetToTop * this.scale)
       };
     }
   }]);
@@ -528,70 +522,71 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = {
-  'crystal_l_r': { x: '1720', y: '198', width: '132', height: '112' },
-  'crystal_b_t': { x: '1852', y: '114', width: '132', height: '121' },
-  'crystal_t_b': { x: '0', y: '297', width: '133', height: '127' },
-  'crystal_r_l': { x: '1852', y: '0', width: '132', height: '114' },
-  'river_curve_tr_br': { x: '1192', y: '99', width: '132', height: '99' },
-  'landscape_01': { x: '1061', y: '0', width: '132', height: '99' },
-  'path_curve_tr_br': { x: '1060', y: '396', width: '132', height: '99' },
-  'path_curve_tl_bl': { x: '1060', y: '297', width: '132', height: '99' },
-  'bridge_tl_br': { x: '1060', y: '198', width: '132', height: '99' },
-  'landscape_05': { x: '1060', y: '99', width: '132', height: '99' },
-  'landscape_06': { x: '929', y: '0', width: '132', height: '99' },
-  'path_curve_tl_tr': { x: '928', y: '329', width: '132', height: '99' },
-  'landscape_08': { x: '1852', y: '235', width: '132', height: '115' },
-  'landscape_09': { x: '1720', y: '409', width: '132', height: '99' },
-  'landscape_10': { x: '1720', y: '310', width: '132', height: '99' },
-  'landscape_11': { x: '1456', y: '198', width: '132', height: '99' },
-  'landscape_12': { x: '796', y: '313', width: '132', height: '99' },
-  'grass_double': { x: '796', y: '214', width: '132', height: '99' },
-  'landscape_14': { x: '665', y: '115', width: '132', height: '99' },
-  'landscape_15': { x: '796', y: '412', width: '132', height: '99' },
-  'grass_ramp_tr_bl': { x: '664', y: '317', width: '132', height: '99' },
-  'dirt_single': { x: '664', y: '234', width: '132', height: '83' },
-  'landscape_18': { x: '665', y: '0', width: '132', height: '115' },
-  'landscape_19': { x: '532', y: '234', width: '132', height: '99' },
-  'grass_ramp_bl_tr': { x: '532', y: '333', width: '132', height: '115' },
-  'grass_single': { x: '0', y: '424', width: '132', height: '83' },
-  'grass_double_dirt': { x: '928', y: '115', width: '132', height: '115' },
-  'grass_ramp_br_tl': { x: '797', y: '0', width: '132', height: '115' },
-  'landscape_24': { x: '1192', y: '198', width: '132', height: '99' },
-  'landscape_25': { x: '1192', y: '297', width: '132', height: '99' },
-  'grass_ramp_diag_r_l': { x: '1192', y: '396', width: '132', height: '99' },
-  'landscape_27': { x: '1324', y: '225', width: '132', height: '115' },
-  'grass': { x: '1193', y: '0', width: '132', height: '99' },
-  'path_tr_bl': { x: '1325', y: '0', width: '132', height: '99' },
-  'landscape_30': { x: '1456', y: '99', width: '132', height: '99' },
-  'landscape_31': { x: '1324', y: '340', width: '132', height: '99' },
-  'path_tl_br': { x: '928', y: '230', width: '132', height: '99' },
-  'river_tr_bl': { x: '1588', y: '99', width: '132', height: '99' },
-  'landscape_34': { x: '1588', y: '297', width: '132', height: '99' },
-  'landscape_35': { x: '1588', y: '396', width: '132', height: '99' },
-  'landscape_36': { x: '1589', y: '0', width: '132', height: '99' },
-  'river_tl_br': { x: '0', y: '198', width: '133', height: '99' },
-  'path_curve_bl_br': { x: '1720', y: '99', width: '132', height: '99' },
-  'landscape_39': { x: '1457', y: '0', width: '132', height: '99' },
-  'rocks_2_r_l': { x: '0', y: '0', width: '133', height: '99' },
-  'rocks_1_tl': { x: '0', y: '99', width: '133', height: '99' },
-  'rocks_3': { x: '133', y: '0', width: '133', height: '102' },
-  'rocks_4': { x: '133', y: '102', width: '133', height: '102' },
-  'rocks_2_l_r': { x: '133', y: '204', width: '133', height: '99' },
-  'rocks_6': { x: '133', y: '303', width: '133', height: '99' },
-  'rocks_7': { x: '1588', y: '198', width: '132', height: '99' },
-  'rocks_8': { x: '133', y: '402', width: '133', height: '99' },
-  'trees_1': { x: '266', y: '241', width: '133', height: '111' },
-  'trees_10': { x: '1456', y: '297', width: '132', height: '130' },
-  'trees_11': { x: '266', y: '0', width: '133', height: '118' },
-  'trees_2_t_b': { x: '266', y: '118', width: '133', height: '123' },
-  'trees_3_tr_tl_bl': { x: '399', y: '127', width: '133', height: '121' },
-  'trees_3': { x: '266', y: '352', width: '133', height: '113' },
-  'trees_4': { x: '399', y: '0', width: '133', height: '127' },
-  'trees_5': { x: '1324', y: '99', width: '132', height: '126' },
-  'trees_6': { x: '399', y: '248', width: '133', height: '124' },
-  'trees_7': { x: '399', y: '372', width: '133', height: '121' },
-  'trees_2_tr_tl': { x: '532', y: '0', width: '133', height: '118' },
-  'trees_9': { x: '532', y: '118', width: '133', height: '116' }
+  'meta': { maxWidth: 133 },
+  'crystal_l_r': { x: 1720, y: 198, width: 132, height: 112 },
+  'crystal_b_t': { x: 1852, y: 114, width: 132, height: 121 },
+  'crystal_t_b': { x: 0, y: 297, width: 133, height: 127 },
+  'crystal_r_l': { x: 1852, y: 0, width: 132, height: 114 },
+  'river_curve_tr_br': { x: 1192, y: 99, width: 132, height: 99 },
+  'landscape_01': { x: 1061, y: 0, width: 132, height: 99 },
+  'path_curve_tr_br': { x: 1060, y: 396, width: 132, height: 99 },
+  'path_curve_tl_bl': { x: 1060, y: 297, width: 132, height: 99 },
+  'bridge_tl_br': { x: 1060, y: 198, width: 132, height: 99 },
+  'landscape_05': { x: 1060, y: 99, width: 132, height: 99 },
+  'landscape_06': { x: 929, y: 0, width: 132, height: 99 },
+  'path_curve_tl_tr': { x: 928, y: 329, width: 132, height: 99 },
+  'landscape_08': { x: 1852, y: 235, width: 132, height: 115 },
+  'landscape_09': { x: 1720, y: 409, width: 132, height: 99 },
+  'landscape_10': { x: 1720, y: 310, width: 132, height: 99 },
+  'landscape_11': { x: 1456, y: 198, width: 132, height: 99 },
+  'landscape_12': { x: 796, y: 313, width: 132, height: 99 },
+  'grass_double': { x: 796, y: 214, width: 132, height: 99 },
+  'landscape_14': { x: 665, y: 115, width: 132, height: 99 },
+  'landscape_15': { x: 796, y: 412, width: 132, height: 99 },
+  'grass_ramp_tr_bl': { x: 664, y: 317, width: 132, height: 99 },
+  'dirt_single': { x: 664, y: 234, width: 132, height: 83 },
+  'landscape_18': { x: 665, y: 0, width: 132, height: 115 },
+  'landscape_19': { x: 532, y: 234, width: 132, height: 99 },
+  'grass_ramp_bl_tr': { x: 532, y: 333, width: 132, height: 115 },
+  'grass_single': { x: 0, y: 424, width: 132, height: 83 },
+  'grass_double_dirt': { x: 928, y: 115, width: 132, height: 115 },
+  'grass_ramp_br_tl': { x: 797, y: 0, width: 132, height: 115 },
+  'landscape_24': { x: 1192, y: 198, width: 132, height: 99 },
+  'landscape_25': { x: 1192, y: 297, width: 132, height: 99 },
+  'grass_ramp_diag_r_l': { x: 1192, y: 396, width: 132, height: 99 },
+  'landscape_27': { x: 1324, y: 225, width: 132, height: 115 },
+  'grass': { x: 1193, y: 0, width: 132, height: 99 },
+  'path_tr_bl': { x: 1325, y: 0, width: 132, height: 99 },
+  'landscape_30': { x: 1456, y: 99, width: 132, height: 99 },
+  'landscape_31': { x: 1324, y: 340, width: 132, height: 99 },
+  'path_tl_br': { x: 928, y: 230, width: 132, height: 99 },
+  'river_tr_bl': { x: 1588, y: 99, width: 132, height: 99 },
+  'landscape_34': { x: 1588, y: 297, width: 132, height: 99 },
+  'landscape_35': { x: 1588, y: 396, width: 132, height: 99 },
+  'landscape_36': { x: 1589, y: 0, width: 132, height: 99 },
+  'river_tl_br': { x: 0, y: 198, width: 133, height: 99 },
+  'path_curve_bl_br': { x: 1720, y: 99, width: 132, height: 99 },
+  'landscape_39': { x: 1457, y: 0, width: 132, height: 99 },
+  'rocks_2_r_l': { x: 0, y: 0, width: 133, height: 99 },
+  'rocks_1_tl': { x: 0, y: 99, width: 133, height: 99 },
+  'rocks_3': { x: 133, y: 0, width: 133, height: 102 },
+  'rocks_4': { x: 133, y: 102, width: 133, height: 102 },
+  'rocks_2_l_r': { x: 133, y: 204, width: 133, height: 99 },
+  'rocks_6': { x: 133, y: 303, width: 133, height: 99 },
+  'rocks_7': { x: 1588, y: 198, width: 132, height: 99 },
+  'rocks_8': { x: 133, y: 402, width: 133, height: 99 },
+  'trees_1': { x: 266, y: 241, width: 133, height: 111 },
+  'trees_10': { x: 1456, y: 297, width: 132, height: 130 },
+  'trees_11': { x: 266, y: 0, width: 133, height: 118 },
+  'trees_2_t_b': { x: 266, y: 118, width: 133, height: 123 },
+  'trees_3_tr_tl_bl': { x: 399, y: 127, width: 133, height: 121 },
+  'trees_3': { x: 266, y: 352, width: 133, height: 113 },
+  'trees_4': { x: 399, y: 0, width: 133, height: 127 },
+  'trees_5': { x: 1324, y: 99, width: 132, height: 126 },
+  'trees_6': { x: 399, y: 248, width: 133, height: 124 },
+  'trees_7': { x: 399, y: 372, width: 133, height: 121 },
+  'trees_2_tr_tl': { x: 532, y: 0, width: 133, height: 118 },
+  'trees_9': { x: 532, y: 118, width: 133, height: 116 }
 };
 
 /***/ }),
@@ -605,6 +600,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = {
+  'meta': { maxWidth: 103 },
   'tower_00': { x: 187, y: 150, width: 89, height: 100 },
   'tower_01': { x: 447, y: 235, width: 79, height: 72 },
   'tower_02': { x: 684, y: 72, width: 79, height: 72 },
@@ -631,7 +627,7 @@ exports.default = {
   'tower_23': { x: 684, y: 144, width: 79, height: 70 },
   'base_lgrect_dk_2br': { x: 363, y: 302, width: 84, height: 73 },
   'middle_light-corner': { x: 610, y: 0, width: 79, height: 72, offsetToTop: 32 },
-  'base_light-rect2x_dark_2brl': { x: 363, y: 82, width: 86, height: 74, offsetToTop: 34 },
+  'base_light-rect2x_dark_2br-left': { x: 363, y: 82, width: 86, height: 74, offsetToTop: 34 },
   'tower_27': { x: 274, y: 350, width: 89, height: 74 },
   'tower_28': { x: 605, y: 228, width: 79, height: 79 },
   'tower_29': { x: 605, y: 149, width: 79, height: 79 },
@@ -643,17 +639,17 @@ exports.default = {
   'tower_35': { x: 185, y: 380, width: 89, height: 98 },
   'top_block_ld': { x: 282, y: 0, width: 87, height: 82 },
   'base_light-rect_dark_winl': { x: 369, y: 0, width: 83, height: 73, offsetToTop: 33 },
-  'middle_light-corner_win-left': { x: 449, y: 73, width: 79, height: 72, offsetToTop: 32 },
+  'middle_light-corner_win-left': { x: 449, y: 73, width: 79, height: 72, offsetToTop: 31 },
   'tower_39': { x: 448, y: 386, width: 79, height: 72 },
   'tower_40': { x: 764, y: 221, width: 78, height: 72 },
   'top_green-tri_white-top': { x: 193, y: 0, width: 89, height: 103 },
   'tower_42': { x: 763, y: 0, width: 79, height: 79 },
   'tower_43': { x: 526, y: 289, width: 79, height: 72 },
-  'middle_light-corner_dark-base_win-left': { x: 685, y: 430, width: 79, height: 72, offsetToTop: 32 },
+  'middle_light-corner_dark-base_win-left': { x: 685, y: 430, width: 79, height: 72, offsetToTop: 31 },
   'tower_45': { x: 685, y: 358, width: 79, height: 72 },
   'tower_46': { x: 0, y: 308, width: 93, height: 98 },
   'tower_47': { x: 531, y: 0, width: 79, height: 79 },
-  'tower_48': { x: 606, y: 377, width: 79, height: 72 },
+  'middle_light-corner_dark-base_win-right': { x: 606, y: 377, width: 79, height: 72, offsetToTop: 31 },
   'tower_49': { x: 526, y: 145, width: 79, height: 72 },
   'tower_50': { x: 0, y: 406, width: 93, height: 98 },
   'tower_51': { x: 274, y: 424, width: 88, height: 82 },
@@ -687,7 +683,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = [{
   row: 0,
   col: 9,
-  tiles: ['base_light-rect2x_dark_2brl', 'middle_light-corner_dark-base_win-left', 'middle_light-corner_win-left', 'top_green-tri_white-top']
+  tiles: ['base_light-rect2x_dark_2br-left', 'middle_light-corner_dark-base_win-right', 'middle_light-corner_win-left', 'top_green-tri_white-top']
 }, {
   row: 6,
   col: 2,
