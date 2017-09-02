@@ -6,8 +6,10 @@ import towersGreySheetMap from './spritesheets/towers-grey-sheet'
 import landscapeTiles from './config/landscape'
 import towersGreyTiles from './config/towers-grey'
 
-export const CELL_WIDTH = 128 // 132 =  2 + 128 + 2
-export const CELL_HEIGHT = 64 // 83 2 + 64 + 15 + 2
+// full: 128 x 64 x 32
+export const CELL_WIDTH = 64
+export const CELL_HEIGHT = 32
+export const FLOOR_HEIGHT = 16
 
 class IsoGrid {
   constructor (canvasSize) {
@@ -44,7 +46,7 @@ class IsoGrid {
     }
 
     // tower
-    const floorHeight = -32
+    const floorHeight = FLOOR_HEIGHT * -1
     for (let tower of towersGreyTiles) {
       this.towersGreySheet.drawStacked(context, this.getCellBottom(tower.row, tower.col), tower.tiles, floorHeight)
     }

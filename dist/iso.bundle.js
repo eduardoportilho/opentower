@@ -273,7 +273,7 @@ function polygon(ctx, corners, fill, stroke) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.CELL_HEIGHT = exports.CELL_WIDTH = undefined;
+exports.FLOOR_HEIGHT = exports.CELL_HEIGHT = exports.CELL_WIDTH = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -305,8 +305,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var CELL_WIDTH = exports.CELL_WIDTH = 128; // 132 =  2 + 128 + 2
-var CELL_HEIGHT = exports.CELL_HEIGHT = 64; // 83 2 + 64 + 15 + 2
+// full: 128 x 64 x 32
+var CELL_WIDTH = exports.CELL_WIDTH = 64;
+var CELL_HEIGHT = exports.CELL_HEIGHT = 32;
+var FLOOR_HEIGHT = exports.FLOOR_HEIGHT = 16;
 
 var IsoGrid = function () {
   function IsoGrid(canvasSize) {
@@ -347,7 +349,7 @@ var IsoGrid = function () {
       }
 
       // tower
-      var floorHeight = -32;
+      var floorHeight = FLOOR_HEIGHT * -1;
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
