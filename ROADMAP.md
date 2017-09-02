@@ -71,8 +71,10 @@
     - ✅ Describe landscape in config file
     - ✅ Draw a tower in the landscape
         - ✅ Fix origin
-    - 🆕 Scale grid
-    - 🆕 Draw a goon in the landscape
+        - ✅ Fix scaling
+    - ✅ Scale grid
+    - 🚶 Draw a iso goon in the landscape
+        - 🆕 Draw a rotated iso goon
     - ⚔ Move goon on the grid
 
 ---*---*---*---*---*---*---
