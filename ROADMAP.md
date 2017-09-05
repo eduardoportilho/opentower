@@ -61,8 +61,8 @@
 - ✅ Animate shot
 - ✅ Explore path finding variations
     - ✅ Diagonal move with 1,5 cost (BFS -> Dijkstra: http://www.redblobgames.com/pathfinding/a-star/introduction.html)
-- 🚶⚔ Convert to isometric
-    - ✅ Draw iso grid
+- ✅ Draw a isometric grid
+    - ✅ Draw iso grid lines
     - ✅ Draw tile image
         - ✅ Fix origin
         - ✅ Mantain aspect ratio
@@ -73,9 +73,16 @@
         - ✅ Fix origin
         - ✅ Fix scaling
     - ✅ Scale grid
-    - 🚶 Draw a iso goon in the landscape
-        - 🆕 Draw a rotated iso goon
-    - ⚔ Move goon on the grid
+- 🆕 Rebuild game in iso grid
+    + Represent map in a data struct
+        * Should be more abstract than src/config/landscape.js
+        * Mark roads as goon path, grass as tower location and other objects as blocked positions.
+        * Store way-points in road tiles
+        * Mark roads at the edge of the grid as spawn locations and castle as target.
+    + How to calculate goon path?
+        * A* in way-point graph?
+            - Wouldn't goons tak always the same path?
+        * Choose random path in bifurcations?
 
 ---*---*---*---*---*---*---
 
