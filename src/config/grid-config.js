@@ -1,9 +1,11 @@
+export const GRASS = 'GRASS'
 export const PATH_SN = 'PATH_SN'
 export const PATH_WE = 'PATH_WE'
 export const CURVE_SE = 'CURVE_SE'
 export const CURVE_WS = 'CURVE_WS'
 export const CURVE_NE = 'CURVE_NE'
 export const CURVE_WN = 'CURVE_WN'
+export const CASTLE = 'CASTLE'
 
 export const gridConfig = {
   '7,1': {
@@ -39,7 +41,8 @@ export const gridConfig = {
   '2,9': { tile: PATH_SN },
   '1,9': { tile: PATH_SN },
   '0,9': {
-    tile: PATH_SN,
+    tile: GRASS,
+    object: CASTLE,
     target: true
   }
 }
