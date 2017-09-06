@@ -54,5 +54,17 @@ export default {
   'tower_51': { x: 274, y: 424, width: 88, height: 82 },
   'tower_52': { x: 452, y: 0, width: 79, height: 72 },
   'tower_53': { x: 274, y: 250, width: 89, height: 100 },
-  'tower_54': { x: 447, y: 307, width: 79, height: 79 }
+  'tower_54': { x: 447, y: 307, width: 79, height: 79 },
+  'spriteGroups': {
+    'CASTLE': [
+      'base_light-rect2x_dark_2br-left',
+      'middle_light-corner_dark-base_win-right',
+      'middle_light-corner_win-left',
+      'top_green-tri_white-top'
+    ],
+    'TOWER': [
+      'base_ld_3br',
+      'top_block_ld'
+    ]
+  }
 }
