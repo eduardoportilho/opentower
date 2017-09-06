@@ -3,7 +3,7 @@ var path = require('path')
 module.exports = {
   entry: {
     game: './src/index.js',
-    iso: './src/iso-grid.js'
+    iso: './src/iso/iso-grid.js'
   },
   output: {
     filename: '[name].bundle.js',

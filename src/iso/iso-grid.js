@@ -1,10 +1,10 @@
-import {loadImageCache, imageCache} from './image-cache.js'
-import {polygon} from './drawing-utils'
+import {loadImageCache, imageCache} from '../image-cache.js'
+import {polygon} from '../drawing-utils'
+import landscapeSheetMap from '../spritesheets/landscape-sheet'
+import towersGreySheetMap from '../spritesheets/towers-grey-sheet'
+import landscapeTiles from '../config/landscape'
+import towersGreyTiles from '../config/towers-grey'
 import SpriteSheet from './sprite-sheet'
-import landscapeSheetMap from './spritesheets/landscape-sheet'
-import towersGreySheetMap from './spritesheets/towers-grey-sheet'
-import landscapeTiles from './config/landscape'
-import towersGreyTiles from './config/towers-grey'
 
 // full: 128 x 64 x 32
 export const CELL_WIDTH = 64
