@@ -5,7 +5,7 @@ export default [
     {spriteKey: 'path_tl_br'},
     {spriteKey: 'path_tl_br'},
     {spriteKey: 'path_curve_tl_bl'},
-    {spriteKey: 'trees_2_t_b'},
+    {spriteKey: 'trees_2_t_b', verticalOffset: -24},
     {spriteKey: 'grass'},
     {spriteKey: 'river_tr_bl'},
     {spriteKey: 'grass'},
@@ -38,7 +38,7 @@ export default [
   [
     {spriteKey: 'grass'},
     {spriteKey: 'path_tr_bl'},
-    {spriteKey: 'grass'},
+    {spriteKey: 'grass', verticalOffset: -50},
     {spriteKey: 'crystal_b_t'},
     {spriteKey: 'path_tr_bl'},
     {spriteKey: 'grass_ramp_bl_tr'},
@@ -84,7 +84,7 @@ export default [
     {spriteKey: 'grass'}
   ],
   [
-    {spriteKey: 'grass'},
+    {spriteKey: 'grass', verticalOffset: -52},
     {spriteKey: 'path_tr_bl'},
     {spriteKey: 'grass'},
     {spriteKey: 'grass'},
