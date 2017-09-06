@@ -2,8 +2,12 @@ import {loadImageCache, imageCache} from '../image-cache.js'
 import {polygon} from '../drawing-utils'
 import landscapeSheetMap from '../spritesheets/landscape-sheet'
 import towersGreySheetMap from '../spritesheets/towers-grey-sheet'
+
 import landscapeTiles from '../config/landscape'
 import towersGreyTiles from '../config/towers-grey'
+// OR
+import {gridConfig} from '../config/grid-config'
+
 import SpriteSheet from './sprite-sheet'
 
 // full: 128 x 64 x 32
@@ -24,7 +28,20 @@ class IsoGrid {
     this.towersGreySheet = new SpriteSheet(imageCache['towers_grey_sheet'], towersGreySheetMap, CELL_WIDTH)
   }
 
-  draw (context) {
+  drawGame (context) {
+    for (let row = 0; row < this.rowCount; row++) {
+      for (let col = 0; col < this.colCount; col++) {
+        let tile = 'GRASS'
+        let tileConfig = gridConfig[`${row},${col}`]
+        if (tileConfig) {
+          tile = tileConfig.tile
+        }
+        this.landscapeSheet.draw(context, this.getCellBottom(row, col), tile)
+      }
+    }
+  }
+
+  drawSampleGrid (context) {
     // grid
     context.strokeStyle = '#cccccc'
     for (var row = 0; row < this.rowCount; row++) {
@@ -96,5 +113,5 @@ function init () {
     width: 1400,
     height: 800
   })
-  isoGrid.draw(context)
+  isoGrid.drawSampleGrid(context)
 }

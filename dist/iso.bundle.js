@@ -276,6 +276,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.FLOOR_HEIGHT = exports.CELL_HEIGHT = exports.CELL_WIDTH = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+// OR
+
 
 var _imageCache = __webpack_require__(1);
 
@@ -297,7 +299,9 @@ var _towersGrey = __webpack_require__(21);
 
 var _towersGrey2 = _interopRequireDefault(_towersGrey);
 
-var _spriteSheet = __webpack_require__(22);
+var _gridConfig = __webpack_require__(22);
+
+var _spriteSheet = __webpack_require__(23);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
@@ -326,8 +330,22 @@ var IsoGrid = function () {
   }
 
   _createClass(IsoGrid, [{
-    key: 'draw',
-    value: function draw(context) {
+    key: 'drawGame',
+    value: function drawGame(context) {
+      for (var row = 0; row < this.rowCount; row++) {
+        for (var col = 0; col < this.colCount; col++) {
+          var tile = 'GRASS';
+          var tileConfig = _gridConfig.gridConfig[row + ',' + col];
+          if (tileConfig) {
+            tile = tileConfig.tile;
+          }
+          this.landscapeSheet.draw(context, this.getCellBottom(row, col), tile);
+        }
+      }
+    }
+  }, {
+    key: 'drawSampleGrid',
+    value: function drawSampleGrid(context) {
       // grid
       context.strokeStyle = '#cccccc';
       for (var row = 0; row < this.rowCount; row++) {
@@ -421,7 +439,7 @@ function init() {
     width: 1400,
     height: 800
   });
-  isoGrid.draw(context);
+  isoGrid.drawSampleGrid(context);
 }
 
 /***/ }),
@@ -442,12 +460,12 @@ exports.default = {
   'crystal_r_l': { x: 1852, y: 0, width: 132, height: 114 },
   'river_curve_tr_br': { x: 1192, y: 99, width: 132, height: 99 },
   'landscape_01': { x: 1061, y: 0, width: 132, height: 99 },
-  'path_curve_tr_br': { x: 1060, y: 396, width: 132, height: 99 },
-  'path_curve_tl_bl': { x: 1060, y: 297, width: 132, height: 99 },
+  'CURVE_NE': { x: 1060, y: 396, width: 132, height: 99 },
+  'CURVE_WS': { x: 1060, y: 297, width: 132, height: 99 },
   'bridge_tl_br': { x: 1060, y: 198, width: 132, height: 99 },
   'landscape_05': { x: 1060, y: 99, width: 132, height: 99 },
   'landscape_06': { x: 929, y: 0, width: 132, height: 99 },
-  'path_curve_tl_tr': { x: 928, y: 329, width: 132, height: 99 },
+  'CURVE_WN': { x: 928, y: 329, width: 132, height: 99 },
   'landscape_08': { x: 1852, y: 235, width: 132, height: 115 },
   'landscape_09': { x: 1720, y: 409, width: 132, height: 99 },
   'landscape_10': { x: 1720, y: 310, width: 132, height: 99 },
@@ -468,17 +486,17 @@ exports.default = {
   'landscape_25': { x: 1192, y: 297, width: 132, height: 99 },
   'grass_ramp_diag_r_l': { x: 1192, y: 396, width: 132, height: 99 },
   'landscape_27': { x: 1324, y: 225, width: 132, height: 115 },
-  'grass': { x: 1193, y: 0, width: 132, height: 99 },
-  'path_tr_bl': { x: 1325, y: 0, width: 132, height: 99 },
+  'GRASS': { x: 1193, y: 0, width: 132, height: 99 },
+  'PATH_SN': { x: 1325, y: 0, width: 132, height: 99 },
   'landscape_30': { x: 1456, y: 99, width: 132, height: 99 },
   'landscape_31': { x: 1324, y: 340, width: 132, height: 99 },
-  'path_tl_br': { x: 928, y: 230, width: 132, height: 99 },
+  'PATH_WE': { x: 928, y: 230, width: 132, height: 99 },
   'river_tr_bl': { x: 1588, y: 99, width: 132, height: 99 },
   'landscape_34': { x: 1588, y: 297, width: 132, height: 99 },
   'landscape_35': { x: 1588, y: 396, width: 132, height: 99 },
   'landscape_36': { x: 1589, y: 0, width: 132, height: 99 },
   'river_tl_br': { x: 0, y: 198, width: 133, height: 99 },
-  'path_curve_bl_br': { x: 1720, y: 99, width: 132, height: 99 },
+  'CURVE_SE': { x: 1720, y: 99, width: 132, height: 99 },
   'landscape_39': { x: 1457, y: 0, width: 132, height: 99 },
   'rocks_2_r_l': { x: 0, y: 0, width: 133, height: 99 },
   'rocks_1_tl': { x: 0, y: 99, width: 133, height: 99 },
@@ -581,7 +599,7 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = [[{ spriteKey: 'grass' }, { spriteKey: 'path_curve_bl_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_curve_tl_bl' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'grass' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }], [{ spriteKey: 'trees_2_t_b' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'rocks_2_r_l' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass_ramp_tr_bl' }, { spriteKey: 'grass_ramp_diag_r_l' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'rocks_2_l_r' }, { spriteKey: 'path_tr_bl' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass_double_dirt' }, { spriteKey: 'grass_ramp_br_tl' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'trees_2_tr_tl' }, { spriteKey: 'path_tr_bl' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'crystal_b_t' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass_ramp_bl_tr' }, { spriteKey: 'path_curve_bl_br' }, { spriteKey: 'bridge_tl_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_curve_tl_tr' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'crystal_r_l' }, { spriteKey: 'grass' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'river_curve_tr_br' }, { spriteKey: 'river_tl_br' }, { spriteKey: 'river_tl_br' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'trees_3_tr_tl_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }], [{ spriteKey: 'grass' }, { spriteKey: 'path_tr_bl' }, { spriteKey: 'grass' }, { spriteKey: 'grass' }, { spriteKey: 'path_curve_tr_br' }, { spriteKey: 'path_tl_br' }, { spriteKey: 'path_curve_tl_tr' }, { spriteKey: 'grass' }, { spriteKey: 'rocks_1_tl' }, { spriteKey: 'grass' }]];
+exports.default = [[{ spriteKey: 'GRASS' }, { spriteKey: 'CURVE_SE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WS' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'GRASS' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'trees_2_t_b' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'rocks_2_r_l' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_ramp_tr_bl' }, { spriteKey: 'grass_ramp_diag_r_l' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'rocks_2_l_r' }, { spriteKey: 'PATH_SN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_double_dirt' }, { spriteKey: 'grass_ramp_br_tl' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'trees_2_tr_tl' }, { spriteKey: 'PATH_SN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'crystal_b_t' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_ramp_bl_tr' }, { spriteKey: 'CURVE_SE' }, { spriteKey: 'bridge_tl_br' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'crystal_r_l' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'river_curve_tr_br' }, { spriteKey: 'river_tl_br' }, { spriteKey: 'river_tl_br' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'trees_3_tr_tl_bl' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'CURVE_NE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WN' }, { spriteKey: 'GRASS' }, { spriteKey: 'rocks_1_tl' }, { spriteKey: 'GRASS' }]];
 
 /***/ }),
 /* 21 */
@@ -605,6 +623,62 @@ exports.default = [{
 
 /***/ }),
 /* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var PATH_SN = exports.PATH_SN = 'PATH_SN';
+var PATH_WE = exports.PATH_WE = 'PATH_WE';
+var CURVE_SE = exports.CURVE_SE = 'CURVE_SE';
+var CURVE_WS = exports.CURVE_WS = 'CURVE_WS';
+var CURVE_NE = exports.CURVE_NE = 'CURVE_NE';
+var CURVE_WN = exports.CURVE_WN = 'CURVE_WN';
+
+var gridConfig = exports.gridConfig = {
+  '7,1': {
+    tile: PATH_SN,
+    spawn: true
+  },
+  '6,1': { tile: PATH_SN },
+  '5,1': { tile: PATH_SN },
+  '4,1': { tile: PATH_SN },
+  '3,1': { tile: PATH_SN },
+  '2,1': { tile: PATH_SN },
+  '1,1': { tile: PATH_SN },
+  '0,1': { tile: CURVE_SE },
+  '0,2': { tile: PATH_WE },
+  '0,3': { tile: PATH_WE },
+  '0,4': { tile: CURVE_WS },
+  '1,4': { tile: PATH_SN },
+  '2,4': { tile: PATH_SN },
+  '3,4': { tile: PATH_SN },
+  '4,4': { tile: PATH_SN },
+  '5,4': { tile: PATH_SN },
+  '6,4': { tile: PATH_SN },
+  '7,4': { tile: CURVE_NE },
+  '7,5': { tile: PATH_WE },
+  '7,6': { tile: CURVE_WN },
+  '6,6': { tile: PATH_SN },
+  '5,6': { tile: PATH_SN },
+  '4,6': { tile: PATH_SN },
+  '3,6': { tile: CURVE_SE },
+  '3,7': { tile: PATH_WE },
+  '3,8': { tile: PATH_WE },
+  '3,9': { tile: CURVE_WN },
+  '2,9': { tile: PATH_SN },
+  '1,9': { tile: PATH_SN },
+  '0,9': {
+    tile: PATH_SN,
+    target: true
+  }
+};
+
+/***/ }),
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
