@@ -73,12 +73,13 @@
         - ✅ Fix origin
         - ✅ Fix scaling
     - ✅ Scale grid
-- 🆕 Rebuild game in iso grid
-    + Represent map in a data struct
+- ⚔🛡 Rebuild game in iso grid
+    + 🚶 Represent map in a data struct
         * Should be more abstract than src/config/landscape.js
         * Mark roads as goon path, grass as tower location and other objects as blocked positions.
         * Store way-points in road tiles
         * Mark roads at the edge of the grid as spawn locations and castle as target.
+    + Draw a goon
     + How to calculate goon path?
         * A* in way-point graph?
             - Wouldn't goons tak always the same path?
@@ -102,4 +103,4 @@
 - 🆕 Merge drawables
 - 🆕 General code review
 
-
+🆕✅🚶⚔🛡
