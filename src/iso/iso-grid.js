@@ -2,6 +2,7 @@ import {loadImageCache, imageCache} from '../image-cache.js'
 import {polygon} from '../drawing-utils'
 import landscapeSheetMap from '../spritesheets/landscape-sheet'
 import towersGreySheetMap from '../spritesheets/towers-grey-sheet'
+import GameSheet from '../spritesheets/game-sheet'
 
 import landscapeTiles from '../config/landscape'
 import towersGreyTiles from '../config/towers-grey'
@@ -13,7 +14,7 @@ import SpriteSheet from './sprite-sheet'
 // full: 128 x 64 x 32
 export const CELL_WIDTH = 64
 export const CELL_HEIGHT = 32
-export const FLOOR_HEIGHT = 16
+export const FLOOR_HEIGHT = -16
 
 class IsoGrid {
   constructor (canvasSize) {
@@ -26,6 +27,7 @@ class IsoGrid {
     }
     this.landscapeSheet = new SpriteSheet(imageCache['landscape_sheet'], landscapeSheetMap, CELL_WIDTH)
     this.towersGreySheet = new SpriteSheet(imageCache['towers_grey_sheet'], towersGreySheetMap, CELL_WIDTH)
+    this.gameSheet = new GameSheet(CELL_WIDTH, FLOOR_HEIGHT)
   }
 
   drawGame (context) {
@@ -36,7 +38,10 @@ class IsoGrid {
         if (tileConfig) {
           tile = tileConfig.tile
         }
-        this.landscapeSheet.draw(context, this.getCellBottom(row, col), tile)
+        this.gameSheet.draw(context, this.getCellBottom(row, col), tile)
+        if (tileConfig && tileConfig.object) {
+          this.gameSheet.draw(context, this.getCellBottom(row, col), tileConfig.object)
+        }
       }
     }
   }
@@ -63,9 +68,8 @@ class IsoGrid {
     }
 
     // tower
-    const floorHeight = FLOOR_HEIGHT * -1
     for (let tower of towersGreyTiles) {
-      this.towersGreySheet.drawStacked(context, this.getCellBottom(tower.row, tower.col), tower.tiles, floorHeight)
+      this.towersGreySheet.drawStacked(context, this.getCellBottom(tower.row, tower.col), tower.tiles, FLOOR_HEIGHT)
     }
   }
 
@@ -113,5 +117,5 @@ function init () {
     width: 1400,
     height: 800
   })
-  isoGrid.drawSampleGrid(context)
+  isoGrid.drawGame(context)
 }

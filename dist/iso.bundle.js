@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 17);
+/******/ 	return __webpack_require__(__webpack_require__.s = 21);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -253,197 +253,7 @@ function polygon(ctx, corners, fill, stroke) {
 /* 3 */,
 /* 4 */,
 /* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.FLOOR_HEIGHT = exports.CELL_HEIGHT = exports.CELL_WIDTH = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-// OR
-
-
-var _imageCache = __webpack_require__(1);
-
-var _drawingUtils = __webpack_require__(2);
-
-var _landscapeSheet = __webpack_require__(18);
-
-var _landscapeSheet2 = _interopRequireDefault(_landscapeSheet);
-
-var _towersGreySheet = __webpack_require__(19);
-
-var _towersGreySheet2 = _interopRequireDefault(_towersGreySheet);
-
-var _landscape = __webpack_require__(20);
-
-var _landscape2 = _interopRequireDefault(_landscape);
-
-var _towersGrey = __webpack_require__(21);
-
-var _towersGrey2 = _interopRequireDefault(_towersGrey);
-
-var _gridConfig = __webpack_require__(22);
-
-var _spriteSheet = __webpack_require__(23);
-
-var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-// full: 128 x 64 x 32
-var CELL_WIDTH = exports.CELL_WIDTH = 64;
-var CELL_HEIGHT = exports.CELL_HEIGHT = 32;
-var FLOOR_HEIGHT = exports.FLOOR_HEIGHT = 16;
-
-var IsoGrid = function () {
-  function IsoGrid(canvasSize) {
-    _classCallCheck(this, IsoGrid);
-
-    this.canvasSize = canvasSize;
-    this.colCount = 10;
-    this.rowCount = 8;
-    this.origin = {
-      x: canvasSize.width / 2,
-      y: CELL_HEIGHT
-    };
-    this.landscapeSheet = new _spriteSheet2.default(_imageCache.imageCache['landscape_sheet'], _landscapeSheet2.default, CELL_WIDTH);
-    this.towersGreySheet = new _spriteSheet2.default(_imageCache.imageCache['towers_grey_sheet'], _towersGreySheet2.default, CELL_WIDTH);
-  }
-
-  _createClass(IsoGrid, [{
-    key: 'drawGame',
-    value: function drawGame(context) {
-      for (var row = 0; row < this.rowCount; row++) {
-        for (var col = 0; col < this.colCount; col++) {
-          var tile = 'GRASS';
-          var tileConfig = _gridConfig.gridConfig[row + ',' + col];
-          if (tileConfig) {
-            tile = tileConfig.tile;
-          }
-          this.landscapeSheet.draw(context, this.getCellBottom(row, col), tile);
-        }
-      }
-    }
-  }, {
-    key: 'drawSampleGrid',
-    value: function drawSampleGrid(context) {
-      // grid
-      context.strokeStyle = '#cccccc';
-      for (var row = 0; row < this.rowCount; row++) {
-        for (var col = 0; col < this.colCount; col++) {
-          var corners = this.getCellCorners(row, col);
-          (0, _drawingUtils.polygon)(context, corners, false, true);
-        }
-      }
-
-      // ladscape
-      for (var _row = 0; _row < _landscape2.default.length; _row++) {
-        var tileRow = _landscape2.default[_row];
-        for (var _col = 0; _col < tileRow.length; _col++) {
-          var tile = tileRow[_col];
-          if (tile) {
-            this.landscapeSheet.draw(context, this.getCellBottom(_row, _col), tile.spriteKey, tile.verticalOffset);
-          }
-        }
-      }
-
-      // tower
-      var floorHeight = FLOOR_HEIGHT * -1;
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = _towersGrey2.default[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var tower = _step.value;
-
-          this.towersGreySheet.drawStacked(context, this.getCellBottom(tower.row, tower.col), tower.tiles, floorHeight);
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-    }
-  }, {
-    key: 'getCellCorners',
-    value: function getCellCorners(row, col) {
-      var cellOrigin = this.getCellOrigin(row, col);
-      var halfHeigth = Math.round(CELL_HEIGHT / 2);
-      var halfWidth = Math.round(CELL_WIDTH / 2);
-      return [cellOrigin, { x: cellOrigin.x + halfWidth, y: cellOrigin.y + halfHeigth }, { x: cellOrigin.x, y: cellOrigin.y + CELL_HEIGHT }, { x: cellOrigin.x - halfWidth, y: cellOrigin.y + halfHeigth }];
-    }
-  }, {
-    key: 'getCellOrigin',
-    value: function getCellOrigin(row, col) {
-      // http://clintbellanger.net/articles/isometric_math/
-      var halfHeigth = Math.round(CELL_HEIGHT / 2);
-      var halfWidth = Math.round(CELL_WIDTH / 2);
-      return {
-        x: (col - row) * halfWidth + this.origin.x,
-        y: (col + row) * halfHeigth + this.origin.y
-      };
-    }
-  }, {
-    key: 'getCellBottom',
-    value: function getCellBottom(row, col) {
-      var origin = this.getCellOrigin(row, col);
-      return {
-        x: origin.x,
-        y: origin.y + CELL_HEIGHT
-      };
-    }
-  }]);
-
-  return IsoGrid;
-}();
-
-(0, _imageCache.loadImageCache)(init);
-
-function init() {
-  var canvas = document.getElementById('canvas');
-  canvas.width = 1400;
-  canvas.height = 800;
-
-  var context = canvas.getContext('2d');
-
-  var isoGrid = new IsoGrid({
-    width: 1400,
-    height: 800
-  });
-  isoGrid.drawSampleGrid(context);
-}
-
-/***/ }),
-/* 18 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -521,7 +331,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 19 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -586,99 +396,15 @@ exports.default = {
   'tower_51': { x: 274, y: 424, width: 88, height: 82 },
   'tower_52': { x: 452, y: 0, width: 79, height: 72 },
   'tower_53': { x: 274, y: 250, width: 89, height: 100 },
-  'tower_54': { x: 447, y: 307, width: 79, height: 79 }
-};
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = [[{ spriteKey: 'GRASS' }, { spriteKey: 'CURVE_SE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WS' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'GRASS' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'trees_2_t_b' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'rocks_2_r_l' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_ramp_tr_bl' }, { spriteKey: 'grass_ramp_diag_r_l' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'rocks_2_l_r' }, { spriteKey: 'PATH_SN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_double_dirt' }, { spriteKey: 'grass_ramp_br_tl' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'trees_2_tr_tl' }, { spriteKey: 'PATH_SN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'crystal_b_t' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_ramp_bl_tr' }, { spriteKey: 'CURVE_SE' }, { spriteKey: 'bridge_tl_br' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'crystal_r_l' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'river_curve_tr_br' }, { spriteKey: 'river_tl_br' }, { spriteKey: 'river_tl_br' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'trees_3_tr_tl_bl' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'CURVE_NE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WN' }, { spriteKey: 'GRASS' }, { spriteKey: 'rocks_1_tl' }, { spriteKey: 'GRASS' }]];
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = [{
-  row: 0,
-  col: 9,
-  tiles: ['base_light-rect2x_dark_2br-left', 'middle_light-corner_dark-base_win-right', 'middle_light-corner_win-left', 'top_green-tri_white-top']
-}, {
-  row: 6,
-  col: 2,
-  tiles: ['base_ld_3br', 'top_block_ld']
-}];
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var PATH_SN = exports.PATH_SN = 'PATH_SN';
-var PATH_WE = exports.PATH_WE = 'PATH_WE';
-var CURVE_SE = exports.CURVE_SE = 'CURVE_SE';
-var CURVE_WS = exports.CURVE_WS = 'CURVE_WS';
-var CURVE_NE = exports.CURVE_NE = 'CURVE_NE';
-var CURVE_WN = exports.CURVE_WN = 'CURVE_WN';
-
-var gridConfig = exports.gridConfig = {
-  '7,1': {
-    tile: PATH_SN,
-    spawn: true
-  },
-  '6,1': { tile: PATH_SN },
-  '5,1': { tile: PATH_SN },
-  '4,1': { tile: PATH_SN },
-  '3,1': { tile: PATH_SN },
-  '2,1': { tile: PATH_SN },
-  '1,1': { tile: PATH_SN },
-  '0,1': { tile: CURVE_SE },
-  '0,2': { tile: PATH_WE },
-  '0,3': { tile: PATH_WE },
-  '0,4': { tile: CURVE_WS },
-  '1,4': { tile: PATH_SN },
-  '2,4': { tile: PATH_SN },
-  '3,4': { tile: PATH_SN },
-  '4,4': { tile: PATH_SN },
-  '5,4': { tile: PATH_SN },
-  '6,4': { tile: PATH_SN },
-  '7,4': { tile: CURVE_NE },
-  '7,5': { tile: PATH_WE },
-  '7,6': { tile: CURVE_WN },
-  '6,6': { tile: PATH_SN },
-  '5,6': { tile: PATH_SN },
-  '4,6': { tile: PATH_SN },
-  '3,6': { tile: CURVE_SE },
-  '3,7': { tile: PATH_WE },
-  '3,8': { tile: PATH_WE },
-  '3,9': { tile: CURVE_WN },
-  '2,9': { tile: PATH_SN },
-  '1,9': { tile: PATH_SN },
-  '0,9': {
-    tile: PATH_SN,
-    target: true
+  'tower_54': { x: 447, y: 307, width: 79, height: 79 },
+  'spriteGroups': {
+    'CASTLE': ['base_light-rect2x_dark_2br-left', 'middle_light-corner_dark-base_win-right', 'middle_light-corner_win-left', 'top_green-tri_white-top'],
+    'TOWER': ['base_ld_3br', 'top_block_ld']
   }
 };
 
 /***/ }),
-/* 23 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -765,6 +491,391 @@ var SpriteSheet = function () {
 }();
 
 exports.default = SpriteSheet;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var GRASS = exports.GRASS = 'GRASS';
+var PATH_SN = exports.PATH_SN = 'PATH_SN';
+var PATH_WE = exports.PATH_WE = 'PATH_WE';
+var CURVE_SE = exports.CURVE_SE = 'CURVE_SE';
+var CURVE_WS = exports.CURVE_WS = 'CURVE_WS';
+var CURVE_NE = exports.CURVE_NE = 'CURVE_NE';
+var CURVE_WN = exports.CURVE_WN = 'CURVE_WN';
+var CASTLE = exports.CASTLE = 'CASTLE';
+
+var gridConfig = exports.gridConfig = {
+  '7,1': {
+    tile: PATH_SN,
+    spawn: true
+  },
+  '6,1': { tile: PATH_SN },
+  '5,1': { tile: PATH_SN },
+  '4,1': { tile: PATH_SN },
+  '3,1': { tile: PATH_SN },
+  '2,1': { tile: PATH_SN },
+  '1,1': { tile: PATH_SN },
+  '0,1': { tile: CURVE_SE },
+  '0,2': { tile: PATH_WE },
+  '0,3': { tile: PATH_WE },
+  '0,4': { tile: CURVE_WS },
+  '1,4': { tile: PATH_SN },
+  '2,4': { tile: PATH_SN },
+  '3,4': { tile: PATH_SN },
+  '4,4': { tile: PATH_SN },
+  '5,4': { tile: PATH_SN },
+  '6,4': { tile: PATH_SN },
+  '7,4': { tile: CURVE_NE },
+  '7,5': { tile: PATH_WE },
+  '7,6': { tile: CURVE_WN },
+  '6,6': { tile: PATH_SN },
+  '5,6': { tile: PATH_SN },
+  '4,6': { tile: PATH_SN },
+  '3,6': { tile: CURVE_SE },
+  '3,7': { tile: PATH_WE },
+  '3,8': { tile: PATH_WE },
+  '3,9': { tile: CURVE_WN },
+  '2,9': { tile: PATH_SN },
+  '1,9': { tile: PATH_SN },
+  '0,9': {
+    tile: GRASS,
+    object: CASTLE,
+    target: true
+  }
+};
+
+/***/ }),
+/* 10 */,
+/* 11 */,
+/* 12 */,
+/* 13 */,
+/* 14 */,
+/* 15 */,
+/* 16 */,
+/* 17 */,
+/* 18 */,
+/* 19 */,
+/* 20 */,
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FLOOR_HEIGHT = exports.CELL_HEIGHT = exports.CELL_WIDTH = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+// OR
+
+
+var _imageCache = __webpack_require__(1);
+
+var _drawingUtils = __webpack_require__(2);
+
+var _landscapeSheet = __webpack_require__(6);
+
+var _landscapeSheet2 = _interopRequireDefault(_landscapeSheet);
+
+var _towersGreySheet = __webpack_require__(7);
+
+var _towersGreySheet2 = _interopRequireDefault(_towersGreySheet);
+
+var _gameSheet = __webpack_require__(22);
+
+var _gameSheet2 = _interopRequireDefault(_gameSheet);
+
+var _landscape = __webpack_require__(23);
+
+var _landscape2 = _interopRequireDefault(_landscape);
+
+var _towersGrey = __webpack_require__(24);
+
+var _towersGrey2 = _interopRequireDefault(_towersGrey);
+
+var _gridConfig = __webpack_require__(9);
+
+var _spriteSheet = __webpack_require__(8);
+
+var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// full: 128 x 64 x 32
+var CELL_WIDTH = exports.CELL_WIDTH = 64;
+var CELL_HEIGHT = exports.CELL_HEIGHT = 32;
+var FLOOR_HEIGHT = exports.FLOOR_HEIGHT = -16;
+
+var IsoGrid = function () {
+  function IsoGrid(canvasSize) {
+    _classCallCheck(this, IsoGrid);
+
+    this.canvasSize = canvasSize;
+    this.colCount = 10;
+    this.rowCount = 8;
+    this.origin = {
+      x: canvasSize.width / 2,
+      y: CELL_HEIGHT
+    };
+    this.landscapeSheet = new _spriteSheet2.default(_imageCache.imageCache['landscape_sheet'], _landscapeSheet2.default, CELL_WIDTH);
+    this.towersGreySheet = new _spriteSheet2.default(_imageCache.imageCache['towers_grey_sheet'], _towersGreySheet2.default, CELL_WIDTH);
+    this.gameSheet = new _gameSheet2.default(CELL_WIDTH, FLOOR_HEIGHT);
+  }
+
+  _createClass(IsoGrid, [{
+    key: 'drawGame',
+    value: function drawGame(context) {
+      for (var row = 0; row < this.rowCount; row++) {
+        for (var col = 0; col < this.colCount; col++) {
+          var tile = 'GRASS';
+          var tileConfig = _gridConfig.gridConfig[row + ',' + col];
+          if (tileConfig) {
+            tile = tileConfig.tile;
+          }
+          this.gameSheet.draw(context, this.getCellBottom(row, col), tile);
+          if (tileConfig && tileConfig.object) {
+            this.gameSheet.draw(context, this.getCellBottom(row, col), tileConfig.object);
+          }
+        }
+      }
+    }
+  }, {
+    key: 'drawSampleGrid',
+    value: function drawSampleGrid(context) {
+      // grid
+      context.strokeStyle = '#cccccc';
+      for (var row = 0; row < this.rowCount; row++) {
+        for (var col = 0; col < this.colCount; col++) {
+          var corners = this.getCellCorners(row, col);
+          (0, _drawingUtils.polygon)(context, corners, false, true);
+        }
+      }
+
+      // ladscape
+      for (var _row = 0; _row < _landscape2.default.length; _row++) {
+        var tileRow = _landscape2.default[_row];
+        for (var _col = 0; _col < tileRow.length; _col++) {
+          var tile = tileRow[_col];
+          if (tile) {
+            this.landscapeSheet.draw(context, this.getCellBottom(_row, _col), tile.spriteKey, tile.verticalOffset);
+          }
+        }
+      }
+
+      // tower
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = _towersGrey2.default[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var tower = _step.value;
+
+          this.towersGreySheet.drawStacked(context, this.getCellBottom(tower.row, tower.col), tower.tiles, FLOOR_HEIGHT);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
+  }, {
+    key: 'getCellCorners',
+    value: function getCellCorners(row, col) {
+      var cellOrigin = this.getCellOrigin(row, col);
+      var halfHeigth = Math.round(CELL_HEIGHT / 2);
+      var halfWidth = Math.round(CELL_WIDTH / 2);
+      return [cellOrigin, { x: cellOrigin.x + halfWidth, y: cellOrigin.y + halfHeigth }, { x: cellOrigin.x, y: cellOrigin.y + CELL_HEIGHT }, { x: cellOrigin.x - halfWidth, y: cellOrigin.y + halfHeigth }];
+    }
+  }, {
+    key: 'getCellOrigin',
+    value: function getCellOrigin(row, col) {
+      // http://clintbellanger.net/articles/isometric_math/
+      var halfHeigth = Math.round(CELL_HEIGHT / 2);
+      var halfWidth = Math.round(CELL_WIDTH / 2);
+      return {
+        x: (col - row) * halfWidth + this.origin.x,
+        y: (col + row) * halfHeigth + this.origin.y
+      };
+    }
+  }, {
+    key: 'getCellBottom',
+    value: function getCellBottom(row, col) {
+      var origin = this.getCellOrigin(row, col);
+      return {
+        x: origin.x,
+        y: origin.y + CELL_HEIGHT
+      };
+    }
+  }]);
+
+  return IsoGrid;
+}();
+
+(0, _imageCache.loadImageCache)(init);
+
+function init() {
+  var canvas = document.getElementById('canvas');
+  canvas.width = 1400;
+  canvas.height = 800;
+
+  var context = canvas.getContext('2d');
+
+  var isoGrid = new IsoGrid({
+    width: 1400,
+    height: 800
+  });
+  isoGrid.drawGame(context);
+}
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _imageCache = __webpack_require__(1);
+
+var _landscapeSheet = __webpack_require__(6);
+
+var _landscapeSheet2 = _interopRequireDefault(_landscapeSheet);
+
+var _towersGreySheet = __webpack_require__(7);
+
+var _towersGreySheet2 = _interopRequireDefault(_towersGreySheet);
+
+var _spriteSheet = __webpack_require__(8);
+
+var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
+
+var _gridConfig = __webpack_require__(9);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var tilesConfig = {
+  GRASS: {
+    isLandscapeSheet: true,
+    spriteKey: _gridConfig.GRASS
+  },
+  PATH_SN: {
+    isLandscapeSheet: true,
+    spriteKey: _gridConfig.PATH_SN
+  },
+  PATH_WE: {
+    isLandscapeSheet: true,
+    spriteKey: _gridConfig.PATH_WE
+  },
+  CURVE_SE: {
+    isLandscapeSheet: true,
+    spriteKey: _gridConfig.CURVE_SE
+  },
+  CURVE_WS: {
+    isLandscapeSheet: true,
+    spriteKey: _gridConfig.CURVE_WS
+  },
+  CURVE_NE: {
+    isLandscapeSheet: true,
+    spriteKey: _gridConfig.CURVE_NE
+  },
+  CURVE_WN: {
+    isLandscapeSheet: true,
+    spriteKey: _gridConfig.CURVE_WN
+  },
+  CASTLE: {
+    isTowersSheet: true,
+    spriteGroupKey: _gridConfig.CASTLE
+  }
+};
+
+var GameSheet = function () {
+  function GameSheet(cellWidth, floorHeight) {
+    _classCallCheck(this, GameSheet);
+
+    this.cellWidth = cellWidth;
+    this.floorHeight = floorHeight;
+    this.landscapeSheet = new _spriteSheet2.default(_imageCache.imageCache['landscape_sheet'], _landscapeSheet2.default, cellWidth);
+    this.towersGreySheet = new _spriteSheet2.default(_imageCache.imageCache['towers_grey_sheet'], _towersGreySheet2.default, cellWidth);
+  }
+
+  _createClass(GameSheet, [{
+    key: 'draw',
+    value: function draw(context, bottomPoint, tileKey, verticalOffset) {
+      var tileConfig = tilesConfig[tileKey];
+
+      if (tileConfig.isLandscapeSheet) {
+        this.landscapeSheet.draw(context, bottomPoint, tileConfig.spriteKey, verticalOffset);
+      } else if (tileConfig.isTowersSheet) {
+        var spriteKeys = _towersGreySheet2.default.spriteGroups[tileConfig.spriteGroupKey];
+        this.towersGreySheet.drawStacked(context, bottomPoint, spriteKeys, this.floorHeight);
+      }
+    }
+  }]);
+
+  return GameSheet;
+}();
+
+exports.default = GameSheet;
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = [[{ spriteKey: 'GRASS' }, { spriteKey: 'CURVE_SE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WS' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'GRASS' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'trees_2_t_b' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'rocks_2_r_l' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_ramp_tr_bl' }, { spriteKey: 'grass_ramp_diag_r_l' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'rocks_2_l_r' }, { spriteKey: 'PATH_SN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_double_dirt' }, { spriteKey: 'grass_ramp_br_tl' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'trees_2_tr_tl' }, { spriteKey: 'PATH_SN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'crystal_b_t' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_ramp_bl_tr' }, { spriteKey: 'CURVE_SE' }, { spriteKey: 'bridge_tl_br' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'crystal_r_l' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'river_curve_tr_br' }, { spriteKey: 'river_tl_br' }, { spriteKey: 'river_tl_br' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'trees_3_tr_tl_bl' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'CURVE_NE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WN' }, { spriteKey: 'GRASS' }, { spriteKey: 'rocks_1_tl' }, { spriteKey: 'GRASS' }]];
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = [{
+  row: 0,
+  col: 9,
+  tiles: ['base_light-rect2x_dark_2br-left', 'middle_light-corner_dark-base_win-right', 'middle_light-corner_win-left', 'top_green-tri_white-top']
+}, {
+  row: 6,
+  col: 2,
+  tiles: ['base_ld_3br', 'top_block_ld']
+}];
 
 /***/ })
 /******/ ]);

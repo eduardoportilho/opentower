@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -83,23 +83,23 @@ var _createClass = function () { function defineProperties(target, props) { for 
 exports.initGame = initGame;
 exports.getGame = getGame;
 
-var _grid = __webpack_require__(7);
+var _grid = __webpack_require__(11);
 
 var _grid2 = _interopRequireDefault(_grid);
 
-var _tower = __webpack_require__(9);
+var _tower = __webpack_require__(13);
 
 var _tower2 = _interopRequireDefault(_tower);
 
-var _goonWave = __webpack_require__(11);
+var _goonWave = __webpack_require__(15);
 
 var _goonWave2 = _interopRequireDefault(_goonWave);
 
-var _pathFinder = __webpack_require__(13);
+var _pathFinder = __webpack_require__(17);
 
 var _pathFinder2 = _interopRequireDefault(_pathFinder);
 
-var _random = __webpack_require__(14);
+var _random = __webpack_require__(18);
 
 var _random2 = _interopRequireDefault(_random);
 
@@ -107,11 +107,11 @@ var _gameConfig = __webpack_require__(5);
 
 var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
-var _scoreBoard = __webpack_require__(15);
+var _scoreBoard = __webpack_require__(19);
 
 var _scoreBoard2 = _interopRequireDefault(_scoreBoard);
 
-var _renderer = __webpack_require__(16);
+var _renderer = __webpack_require__(20);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
@@ -662,7 +662,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _coord = __webpack_require__(8);
+var _coord = __webpack_require__(12);
 
 var _coord2 = _interopRequireDefault(_coord);
 
@@ -812,7 +812,11 @@ exports.default = {
 };
 
 /***/ }),
-/* 6 */
+/* 6 */,
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -868,7 +872,7 @@ function initDebugPanel() {
 }
 
 /***/ }),
-/* 7 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1132,7 +1136,7 @@ var Grid = function () {
 exports.default = Grid;
 
 /***/ }),
-/* 8 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1178,7 +1182,7 @@ var Coord = function () {
 exports.default = Coord;
 
 /***/ }),
-/* 9 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1196,7 +1200,7 @@ var _drawingUtils = __webpack_require__(2);
 
 var _game = __webpack_require__(0);
 
-var _bullet = __webpack_require__(10);
+var _bullet = __webpack_require__(14);
 
 var _bullet2 = _interopRequireDefault(_bullet);
 
@@ -1372,7 +1376,7 @@ Tower.sizeInCells = {
 };
 
 /***/ }),
-/* 10 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1429,7 +1433,7 @@ var Bullet = function () {
 exports.default = Bullet;
 
 /***/ }),
-/* 11 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1441,7 +1445,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _goon = __webpack_require__(12);
+var _goon = __webpack_require__(16);
 
 var _goon2 = _interopRequireDefault(_goon);
 
@@ -1532,7 +1536,7 @@ var GoonWave = function () {
 exports.default = GoonWave;
 
 /***/ }),
-/* 12 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1679,7 +1683,7 @@ var Goon = function () {
 exports.default = Goon;
 
 /***/ }),
-/* 13 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1855,7 +1859,7 @@ var PriorityQueue = function () {
 }();
 
 /***/ }),
-/* 14 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1929,7 +1933,7 @@ var Random = function () {
 exports.default = new Random();
 
 /***/ }),
-/* 15 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2001,7 +2005,7 @@ var ScoreBoard = function () {
 exports.default = ScoreBoard;
 
 /***/ }),
-/* 16 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
