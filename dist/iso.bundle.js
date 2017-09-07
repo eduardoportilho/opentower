@@ -569,10 +569,37 @@ var gridConfig = exports.gridConfig = {
 "use strict";
 
 
+var _imageCache = __webpack_require__(1);
+
+var _isoGrid = __webpack_require__(22);
+
+(0, _imageCache.loadImageCache)(init);
+
+function init() {
+  var canvas = document.getElementById('canvas');
+  canvas.width = 1400;
+  canvas.height = 800;
+
+  var context = canvas.getContext('2d');
+
+  var isoGrid = new _isoGrid.IsoGrid({
+    width: 1400,
+    height: 800
+  });
+  isoGrid.drawGame(context);
+}
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.FLOOR_HEIGHT = exports.CELL_HEIGHT = exports.CELL_WIDTH = undefined;
+exports.IsoGrid = exports.FLOOR_HEIGHT = exports.CELL_HEIGHT = exports.CELL_WIDTH = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 // OR
@@ -590,15 +617,15 @@ var _towersGreySheet = __webpack_require__(7);
 
 var _towersGreySheet2 = _interopRequireDefault(_towersGreySheet);
 
-var _gameSheet = __webpack_require__(22);
+var _gameSheet = __webpack_require__(23);
 
 var _gameSheet2 = _interopRequireDefault(_gameSheet);
 
-var _landscape = __webpack_require__(23);
+var _landscape = __webpack_require__(24);
 
 var _landscape2 = _interopRequireDefault(_landscape);
 
-var _towersGrey = __webpack_require__(24);
+var _towersGrey = __webpack_require__(25);
 
 var _towersGrey2 = _interopRequireDefault(_towersGrey);
 
@@ -617,7 +644,7 @@ var CELL_WIDTH = exports.CELL_WIDTH = 64;
 var CELL_HEIGHT = exports.CELL_HEIGHT = 32;
 var FLOOR_HEIGHT = exports.FLOOR_HEIGHT = -16;
 
-var IsoGrid = function () {
+var IsoGrid = exports.IsoGrid = function () {
   function IsoGrid(canvasSize) {
     _classCallCheck(this, IsoGrid);
 
@@ -732,24 +759,8 @@ var IsoGrid = function () {
   return IsoGrid;
 }();
 
-(0, _imageCache.loadImageCache)(init);
-
-function init() {
-  var canvas = document.getElementById('canvas');
-  canvas.width = 1400;
-  canvas.height = 800;
-
-  var context = canvas.getContext('2d');
-
-  var isoGrid = new IsoGrid({
-    width: 1400,
-    height: 800
-  });
-  isoGrid.drawGame(context);
-}
-
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -846,7 +857,7 @@ var GameSheet = function () {
 exports.default = GameSheet;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -858,7 +869,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = [[{ spriteKey: 'GRASS' }, { spriteKey: 'CURVE_SE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WS' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'GRASS' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'trees_2_t_b' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'rocks_2_r_l' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_ramp_tr_bl' }, { spriteKey: 'grass_ramp_diag_r_l' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'rocks_2_l_r' }, { spriteKey: 'PATH_SN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_double_dirt' }, { spriteKey: 'grass_ramp_br_tl' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'trees_2_tr_tl' }, { spriteKey: 'PATH_SN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'crystal_b_t' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_ramp_bl_tr' }, { spriteKey: 'CURVE_SE' }, { spriteKey: 'bridge_tl_br' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'crystal_r_l' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'river_curve_tr_br' }, { spriteKey: 'river_tl_br' }, { spriteKey: 'river_tl_br' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'trees_3_tr_tl_bl' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'CURVE_NE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WN' }, { spriteKey: 'GRASS' }, { spriteKey: 'rocks_1_tl' }, { spriteKey: 'GRASS' }]];
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

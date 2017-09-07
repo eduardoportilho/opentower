@@ -1,4 +1,4 @@
-import {loadImageCache, imageCache} from '../image-cache.js'
+import {imageCache} from '../image-cache.js'
 import {polygon} from '../drawing-utils'
 import landscapeSheetMap from '../spritesheets/landscape-sheet'
 import towersGreySheetMap from '../spritesheets/towers-grey-sheet'
@@ -16,7 +16,7 @@ export const CELL_WIDTH = 64
 export const CELL_HEIGHT = 32
 export const FLOOR_HEIGHT = -16
 
-class IsoGrid {
+export class IsoGrid {
   constructor (canvasSize) {
     this.canvasSize = canvasSize
     this.colCount = 10
@@ -102,20 +102,4 @@ class IsoGrid {
       y: origin.y + CELL_HEIGHT
     }
   }
-}
-
-loadImageCache(init)
-
-function init () {
-  const canvas = document.getElementById('canvas')
-  canvas.width = 1400
-  canvas.height = 800
-
-  const context = canvas.getContext('2d')
-
-  const isoGrid = new IsoGrid({
-    width: 1400,
-    height: 800
-  })
-  isoGrid.drawGame(context)
 }
