@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -83,27 +83,27 @@ var _createClass = function () { function defineProperties(target, props) { for 
 exports.initGame = initGame;
 exports.getGame = getGame;
 
-var _grid = __webpack_require__(11);
+var _grid = __webpack_require__(12);
 
 var _grid2 = _interopRequireDefault(_grid);
 
-var _tower = __webpack_require__(13);
+var _tower = __webpack_require__(14);
 
 var _tower2 = _interopRequireDefault(_tower);
 
-var _goonWave = __webpack_require__(15);
+var _goonWave = __webpack_require__(16);
 
 var _goonWave2 = _interopRequireDefault(_goonWave);
 
-var _pathFinder = __webpack_require__(17);
+var _pathFinder = __webpack_require__(18);
 
 var _pathFinder2 = _interopRequireDefault(_pathFinder);
 
-var _random = __webpack_require__(18);
+var _random = __webpack_require__(4);
 
 var _random2 = _interopRequireDefault(_random);
 
-var _gameConfig = __webpack_require__(5);
+var _gameConfig = __webpack_require__(6);
 
 var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
@@ -654,6 +654,80 @@ var isEqualPoints = exports.isEqualPoints = function isEqualPoints(pointA, point
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Random = function () {
+  function Random() {
+    _classCallCheck(this, Random);
+  }
+
+  _createClass(Random, [{
+    key: "yesOrNo",
+    value: function yesOrNo(yesChance) {
+      yesChance = yesChance || 0.5;
+      return Math.random() < yesChance;
+    }
+  }, {
+    key: "getRandomIntExclusive",
+    value: function getRandomIntExclusive(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      // The maximum is exclusive and the minimum is inclusive
+      return Math.floor(Math.random() * (max - min)) + min;
+    }
+  }, {
+    key: "getRandomIntInclusive",
+    value: function getRandomIntInclusive(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      // The maximum is inclusive and the minimum is inclusive
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+  }, {
+    key: "getRandomElementFromArray",
+    value: function getRandomElementFromArray(array) {
+      var index = this.getRandomIntExclusive(0, array.length);
+      return array[index];
+    }
+  }, {
+    key: "shuffle",
+    value: function shuffle(array) {
+      var currentIndex = array.length;
+      var temporaryValue = void 0,
+          randomIndex = void 0;
+
+      // While there remain elements to shuffle...
+      while (currentIndex !== 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+      }
+    }
+  }]);
+
+  return Random;
+}();
+
+exports.default = new Random();
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.Cell = exports.CELL_EDGE_SIZE = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
@@ -662,7 +736,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _coord = __webpack_require__(12);
+var _coord = __webpack_require__(13);
 
 var _coord2 = _interopRequireDefault(_coord);
 
@@ -769,7 +843,7 @@ var Cell = exports.Cell = function () {
 }();
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -812,11 +886,11 @@ exports.default = {
 };
 
 /***/ }),
-/* 6 */,
 /* 7 */,
 /* 8 */,
 /* 9 */,
-/* 10 */
+/* 10 */,
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -872,7 +946,7 @@ function initDebugPanel() {
 }
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -890,7 +964,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} nextStep - Next cell on the path to target.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _cell = __webpack_require__(4);
+var _cell = __webpack_require__(5);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1136,7 +1210,7 @@ var Grid = function () {
 exports.default = Grid;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1182,7 +1256,7 @@ var Coord = function () {
 exports.default = Coord;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1200,7 +1274,7 @@ var _drawingUtils = __webpack_require__(2);
 
 var _game = __webpack_require__(0);
 
-var _bullet = __webpack_require__(14);
+var _bullet = __webpack_require__(15);
 
 var _bullet2 = _interopRequireDefault(_bullet);
 
@@ -1376,7 +1450,7 @@ Tower.sizeInCells = {
 };
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1433,7 +1507,7 @@ var Bullet = function () {
 exports.default = Bullet;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1445,11 +1519,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _goon = __webpack_require__(16);
+var _goon = __webpack_require__(17);
 
 var _goon2 = _interopRequireDefault(_goon);
 
-var _gameConfig = __webpack_require__(5);
+var _gameConfig = __webpack_require__(6);
 
 var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
@@ -1536,7 +1610,7 @@ var GoonWave = function () {
 exports.default = GoonWave;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1683,7 +1757,7 @@ var Goon = function () {
 exports.default = Goon;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1859,80 +1933,6 @@ var PriorityQueue = function () {
 }();
 
 /***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Random = function () {
-  function Random() {
-    _classCallCheck(this, Random);
-  }
-
-  _createClass(Random, [{
-    key: "yesOrNo",
-    value: function yesOrNo(yesChance) {
-      yesChance = yesChance || 0.5;
-      return Math.random() < yesChance;
-    }
-  }, {
-    key: "getRandomIntExclusive",
-    value: function getRandomIntExclusive(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      // The maximum is exclusive and the minimum is inclusive
-      return Math.floor(Math.random() * (max - min)) + min;
-    }
-  }, {
-    key: "getRandomIntInclusive",
-    value: function getRandomIntInclusive(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      // The maximum is inclusive and the minimum is inclusive
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-  }, {
-    key: "getRandomElementFromArray",
-    value: function getRandomElementFromArray(array) {
-      var index = this.getRandomIntExclusive(0, array.length);
-      return array[index];
-    }
-  }, {
-    key: "shuffle",
-    value: function shuffle(array) {
-      var currentIndex = array.length;
-      var temporaryValue = void 0,
-          randomIndex = void 0;
-
-      // While there remain elements to shuffle...
-      while (currentIndex !== 0) {
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-      }
-    }
-  }]);
-
-  return Random;
-}();
-
-exports.default = new Random();
-
-/***/ }),
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2026,7 +2026,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _game = __webpack_require__(0);
 
-var _cell = __webpack_require__(4);
+var _cell = __webpack_require__(5);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
