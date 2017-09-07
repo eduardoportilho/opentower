@@ -1,6 +1,9 @@
 import {loadImageCache} from '../image-cache.js'
 import {IsoGrid} from './iso-grid.js'
 
+const CANVAS_WIDTH = 1400
+const CANVAS_HEIGHT = 800
+
 loadImageCache(init)
 
 function init () {
@@ -8,11 +11,20 @@ function init () {
   canvas.width = 1400
   canvas.height = 800
 
-  const context = canvas.getContext('2d')
+  const game = new Game(canvas)
+  game.init()
+}
 
-  const isoGrid = new IsoGrid({
-    width: 1400,
-    height: 800
-  })
-  isoGrid.drawGame(context)
+class Game {
+  constructor (canvas) {
+    this.context = canvas.getContext('2d')
+    this.isoGrid = new IsoGrid({
+      width: 1400,
+      height: 800
+    })
+  }
+
+  init () {
+    this.isoGrid.drawGame(this.context)
+  }
 }

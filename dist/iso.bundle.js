@@ -569,9 +569,16 @@ var gridConfig = exports.gridConfig = {
 "use strict";
 
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _imageCache = __webpack_require__(1);
 
 var _isoGrid = __webpack_require__(22);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CANVAS_WIDTH = 1400;
+var CANVAS_HEIGHT = 800;
 
 (0, _imageCache.loadImageCache)(init);
 
@@ -580,14 +587,30 @@ function init() {
   canvas.width = 1400;
   canvas.height = 800;
 
-  var context = canvas.getContext('2d');
-
-  var isoGrid = new _isoGrid.IsoGrid({
-    width: 1400,
-    height: 800
-  });
-  isoGrid.drawGame(context);
+  var game = new Game(canvas);
+  game.init();
 }
+
+var Game = function () {
+  function Game(canvas) {
+    _classCallCheck(this, Game);
+
+    this.context = canvas.getContext('2d');
+    this.isoGrid = new _isoGrid.IsoGrid({
+      width: 1400,
+      height: 800
+    });
+  }
+
+  _createClass(Game, [{
+    key: 'init',
+    value: function init() {
+      this.isoGrid.drawGame(this.context);
+    }
+  }]);
+
+  return Game;
+}();
 
 /***/ }),
 /* 22 */
