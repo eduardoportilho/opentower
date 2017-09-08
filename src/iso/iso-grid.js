@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import {imageCache} from '../image-cache.js'
 import {polygon} from '../drawing-utils'
+import IsoGridUtils from '../utils/iso-grid-utils'
 import landscapeSheetMap from '../spritesheets/landscape-sheet'
 import towersGreySheetMap from '../spritesheets/towers-grey-sheet'
 import GameSheet from '../spritesheets/game-sheet'
@@ -18,7 +19,8 @@ export const CELL_HEIGHT = 32
 export const FLOOR_HEIGHT = -16
 
 export class IsoGrid {
-  constructor (canvasSize) {
+  constructor (game, canvasSize) {
+    this.game = game
     this.canvasSize = canvasSize
     this.colCount = 10
     this.rowCount = 8
@@ -35,16 +37,25 @@ export class IsoGrid {
   drawGame (context) {
     for (let row = 0; row < this.rowCount; row++) {
       for (let col = 0; col < this.colCount; col++) {
+        // tile
         let tile = 'GRASS'
         let tileConfig = gridConfig[`${row},${col}`]
         if (tileConfig) {
           tile = tileConfig.tile
         }
         this.gameSheet.draw(context, this.isoGridUtils.getCellBottom(row, col), tile)
+
+        // tile objects
         if (tileConfig && tileConfig.object) {
           this.gameSheet.draw(context, this.isoGridUtils.getCellBottom(row, col), tileConfig.object)
         }
       }
+    }
+
+    // drawables
+    const drawables = this.game.getDrawables()
+    for (let drawable of drawables) {
+      drawable.draw(context)
     }
   }
 
@@ -76,9 +87,9 @@ export class IsoGrid {
   }
 
   /**
-   * @return {Location[]} Array of spawn locations ({x,y})
+   * @return {Coordinate[]} Array of spawn cell coordinates
    */
-  getSpawnLocations () {
+  getSpawnCellCoordinates () {
     return _.toPairs(gridConfig)
       .filter(kvArray => kvArray[1].spawn)
       .map(kvArray => {
