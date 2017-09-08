@@ -60,11 +60,62 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 20);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.loadImageCache = loadImageCache;
+/* global Image */
+
+/**
+ * List of images to load.
+ * @type {Object}
+ */
+var imageUrls = {
+  'tower-1': '../images/tower-1.png',
+  'goon-1': '../images/goon-1.png',
+  'landscape_sheet': '../images/landscape_sheet.png',
+  'towers_grey_sheet': '../images/towers_grey_sheet.png'
+
+  /**
+   * Global image cache.
+   * @type {Object}
+   */
+};var imageCache = exports.imageCache = {};
+
+/**
+ * Load the images on the cache and call the callback when ready.
+ * @param  {function} onLoadComplete
+ */
+function loadImageCache(onLoadComplete) {
+  var _loop = function _loop(key) {
+    var url = imageUrls[key];
+    var img = new Image();
+    img.onload = function () {
+      imageCache[key] = img;
+      if (Object.keys(imageCache).length === Object.keys(imageUrls).length) {
+        onLoadComplete();
+      }
+    };
+    img.src = url;
+  };
+
+  for (var key in imageUrls) {
+    _loop(key);
+  }
+}
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83,35 +134,35 @@ var _createClass = function () { function defineProperties(target, props) { for 
 exports.initGame = initGame;
 exports.getGame = getGame;
 
-var _grid = __webpack_require__(8);
+var _grid = __webpack_require__(12);
 
 var _grid2 = _interopRequireDefault(_grid);
 
-var _tower = __webpack_require__(10);
+var _tower = __webpack_require__(14);
 
 var _tower2 = _interopRequireDefault(_tower);
 
-var _goonWave = __webpack_require__(12);
+var _goonWave = __webpack_require__(16);
 
 var _goonWave2 = _interopRequireDefault(_goonWave);
 
-var _pathFinder = __webpack_require__(13);
+var _pathFinder = __webpack_require__(18);
 
 var _pathFinder2 = _interopRequireDefault(_pathFinder);
 
-var _random = __webpack_require__(7);
+var _random = __webpack_require__(4);
 
 var _random2 = _interopRequireDefault(_random);
 
-var _gameConfig = __webpack_require__(5);
+var _gameConfig = __webpack_require__(6);
 
 var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
-var _scoreBoard = __webpack_require__(14);
+var _scoreBoard = __webpack_require__(19);
 
 var _scoreBoard2 = _interopRequireDefault(_scoreBoard);
 
-var _renderer = __webpack_require__(15);
+var _renderer = __webpack_require__(20);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
@@ -370,148 +421,7 @@ var Game = function () {
 }();
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.loadImageCache = loadImageCache;
-/* global Image */
-
-/**
- * List of images to load.
- * @type {Object}
- */
-var imageUrls = {
-  'tower-1': '../images/tower-1.png',
-  'goon-1': '../images/goon-1.png',
-  'landscape_sheet': '../images/landscape_sheet.png',
-  'towers_grey_sheet': '../images/towers_grey_sheet.png'
-
-  /**
-   * Global image cache.
-   * @type {Object}
-   */
-};var imageCache = exports.imageCache = {};
-
-/**
- * Load the images on the cache and call the callback when ready.
- * @param  {function} onLoadComplete
- */
-function loadImageCache(onLoadComplete) {
-  var _loop = function _loop(key) {
-    var url = imageUrls[key];
-    var img = new Image();
-    img.onload = function () {
-      imageCache[key] = img;
-      if (Object.keys(imageCache).length === Object.keys(imageUrls).length) {
-        onLoadComplete();
-      }
-    };
-    img.src = url;
-  };
-
-  for (var key in imageUrls) {
-    _loop(key);
-  }
-}
-
-/***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-/**
- * Calculate the distance between 2 points.
- * @param  {Point} pointA
- * @param  {Point} pointB
- * @return {number} distance
- */
-var calculateDistance = exports.calculateDistance = function calculateDistance(pointA, pointB) {
-  var dx = pointB.x - pointA.x;
-  var dy = pointB.y - pointA.y;
-  return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-};
-
-/**
- * Let L be the line formed by the 2 given points `origin` and `anyPointInLine`.
- * Return the point in L with the given distance to `origin`.
- * @param  {Point} origin - Origin point.
- * @param  {Point} secondPointInLine - Another point in the desired line (define direction).
- * @param  {number} distance - Distance from origin to the returned point in pixels.
- * @param  {boolean} maxOnSecondPoint - If true, returns the second point if the result is beyond it in the line..
- * @return {Point} Point in L with the given distance to `origin`.
- */
-var getPointInLine = exports.getPointInLine = function getPointInLine(origin, secondPointInLine, distance) {
-  var maxOnSecondPoint = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-
-  var hyp = calculateDistance(origin, secondPointInLine);
-  var dx = secondPointInLine.x - origin.x;
-  var dy = secondPointInLine.y - origin.y;
-  var sin = dy / hyp;
-  var cos = dx / hyp;
-
-  var dyStep = sin * distance;
-  var dxStep = cos * distance;
-
-  if (maxOnSecondPoint) {
-    if (Math.abs(dxStep) > Math.abs(dx)) {
-      dxStep = dx;
-    }
-    if (Math.abs(dyStep) > Math.abs(dy)) {
-      dyStep = dy;
-    }
-  }
-  var nextX = origin.x + dxStep;
-  var nextY = origin.y + dyStep;
-  return { x: nextX, y: nextY };
-};
-
-/**
- * Return the angle between the line conecting 2 points and the horizontal axis.
- *
- * Angle signal:
- *  B     |     B
- *    (-) | (-)
- * -------A-------
- *    (+) | (+)
- *  B     |     B
- *
- * @param  {Point} pointA
- * @param  {Point} pointB
- * @return {number} Angle in radians.
- */
-var getAngleRadians = exports.getAngleRadians = function getAngleRadians(pointA, pointB) {
-  var dy = pointB.y - pointA.y;
-  var hyp = calculateDistance(pointA, pointB);
-  var sin = dy / hyp;
-  return Math.asin(sin);
-};
-
-/**
- * Check is two points are in the same position given th tolerance.
- * @param  {Point} pointA
- * @param  {Point} pointB
- * @param  {number} tolerance
- * @return {boolean}
- */
-var isEqualPoints = exports.isEqualPoints = function isEqualPoints(pointA, pointB) {
-  var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
-
-  return Math.abs(pointA.x - pointB.x) <= tolerance && Math.abs(pointA.y - pointB.y) <= tolerance;
-};
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -645,7 +555,171 @@ function polygon(ctx, corners, fill, stroke) {
 }
 
 /***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**
+ * Calculate the distance between 2 points.
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @return {number} distance
+ */
+var calculateDistance = exports.calculateDistance = function calculateDistance(pointA, pointB) {
+  var dx = pointB.x - pointA.x;
+  var dy = pointB.y - pointA.y;
+  return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+};
+
+/**
+ * Let L be the line formed by the 2 given points `origin` and `anyPointInLine`.
+ * Return the point in L with the given distance to `origin`.
+ * @param  {Point} origin - Origin point.
+ * @param  {Point} secondPointInLine - Another point in the desired line (define direction).
+ * @param  {number} distance - Distance from origin to the returned point in pixels.
+ * @param  {boolean} maxOnSecondPoint - If true, returns the second point if the result is beyond it in the line..
+ * @return {Point} Point in L with the given distance to `origin`.
+ */
+var getPointInLine = exports.getPointInLine = function getPointInLine(origin, secondPointInLine, distance) {
+  var maxOnSecondPoint = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+  var hyp = calculateDistance(origin, secondPointInLine);
+  var dx = secondPointInLine.x - origin.x;
+  var dy = secondPointInLine.y - origin.y;
+  var sin = dy / hyp;
+  var cos = dx / hyp;
+
+  var dyStep = sin * distance;
+  var dxStep = cos * distance;
+
+  if (maxOnSecondPoint) {
+    if (Math.abs(dxStep) > Math.abs(dx)) {
+      dxStep = dx;
+    }
+    if (Math.abs(dyStep) > Math.abs(dy)) {
+      dyStep = dy;
+    }
+  }
+  var nextX = origin.x + dxStep;
+  var nextY = origin.y + dyStep;
+  return { x: nextX, y: nextY };
+};
+
+/**
+ * Return the angle between the line conecting 2 points and the horizontal axis.
+ *
+ * Angle signal:
+ *  B     |     B
+ *    (-) | (-)
+ * -------A-------
+ *    (+) | (+)
+ *  B     |     B
+ *
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @return {number} Angle in radians.
+ */
+var getAngleRadians = exports.getAngleRadians = function getAngleRadians(pointA, pointB) {
+  var dy = pointB.y - pointA.y;
+  var hyp = calculateDistance(pointA, pointB);
+  var sin = dy / hyp;
+  return Math.asin(sin);
+};
+
+/**
+ * Check is two points are in the same position given th tolerance.
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @param  {number} tolerance
+ * @return {boolean}
+ */
+var isEqualPoints = exports.isEqualPoints = function isEqualPoints(pointA, pointB) {
+  var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+
+  return Math.abs(pointA.x - pointB.x) <= tolerance && Math.abs(pointA.y - pointB.y) <= tolerance;
+};
+
+/***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Random = function () {
+  function Random() {
+    _classCallCheck(this, Random);
+  }
+
+  _createClass(Random, [{
+    key: "yesOrNo",
+    value: function yesOrNo(yesChance) {
+      yesChance = yesChance || 0.5;
+      return Math.random() < yesChance;
+    }
+  }, {
+    key: "getRandomIntExclusive",
+    value: function getRandomIntExclusive(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      // The maximum is exclusive and the minimum is inclusive
+      return Math.floor(Math.random() * (max - min)) + min;
+    }
+  }, {
+    key: "getRandomIntInclusive",
+    value: function getRandomIntInclusive(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      // The maximum is inclusive and the minimum is inclusive
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+  }, {
+    key: "getRandomElementFromArray",
+    value: function getRandomElementFromArray(array) {
+      var index = this.getRandomIntExclusive(0, array.length);
+      return array[index];
+    }
+  }, {
+    key: "shuffle",
+    value: function shuffle(array) {
+      var currentIndex = array.length;
+      var temporaryValue = void 0,
+          randomIndex = void 0;
+
+      // While there remain elements to shuffle...
+      while (currentIndex !== 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+      }
+    }
+  }]);
+
+  return Random;
+}();
+
+exports.default = new Random();
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -662,7 +736,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _coord = __webpack_require__(9);
+var _coord = __webpack_require__(13);
 
 var _coord2 = _interopRequireDefault(_coord);
 
@@ -769,7 +843,7 @@ var Cell = exports.Cell = function () {
 }();
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -812,228 +886,67 @@ exports.default = {
 };
 
 /***/ }),
-/* 6 */
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */,
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+var _imageCache = __webpack_require__(0);
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _game = __webpack_require__(1);
 
-var _imageCache = __webpack_require__(1);
+(0, _imageCache.loadImageCache)(init);
 
-var _geometryUtils = __webpack_require__(2);
+function init() {
+  var canvas = document.getElementById('canvas');
+  var scoreBoard = document.getElementById('scoreBoard');
 
-var _game = __webpack_require__(0);
+  var game = (0, _game.initGame)(canvas, scoreBoard);
+  game.start();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+  initDebugPanel();
+}
 
-var GOON_IMAGE_SIZE = {
-  width: 14,
-  height: 20
-};
+function initDebugPanel() {
+  document.getElementById('spawn').onclick = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
 
-var Goon = function () {
-  function Goon(id, speed, life, bounty) {
-    _classCallCheck(this, Goon);
+    var x = parseInt(document.getElementById('x').value);
+    var y = parseInt(document.getElementById('y').value);
+    (0, _game.getGame)().spawnGoon(x, y);
+  };
 
-    this.id = id;
-    this.game = (0, _game.getGame)();
-    this.pathFinder = this.game.pathFinder;
-    this.speed = speed; // px/sec
-    this.fullLife = life;
-    this.life = life;
-    this.bounty = bounty;
+  document.getElementById('speedUpdate').onclick = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
 
-    // store the decimals lost in the last step to maintain constant speed
-    this._residualStep = 0;
-  }
+    var speed = parseInt(document.getElementById('speed').value);
+    (0, _game.getGame)().goons.forEach(function (goon) {
+      goon.speed = speed;
+    });
+  };
 
-  _createClass(Goon, [{
-    key: 'setInitialCell',
-    value: function setInitialCell(cell) {
-      this.cell = cell;
-      this.cell.hasGoon = true;
-      this.position = this.cell.getTopLeftPosition();
-    }
+  document.getElementById('pause').onclick = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    (0, _game.getGame)().pauseResume();
+  };
 
-    /**
-     * Draw the goon on position.
-     * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
-     */
-
-  }, {
-    key: 'draw',
-    value: function draw(context) {
-      // _Paint cell base:
-      // context.fillStyle = 'gold'
-      // const cellOrigin = this.cell.getTopLeftPosition()
-      // context.fillRect(cellOrigin.x, cellOrigin.y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
-
-      var img = _imageCache.imageCache['goon-1'];
-      context.drawImage(img, this.position.x, this.position.y - Math.round(GOON_IMAGE_SIZE.height / 2));
-      this.drawLifeBar(context);
-    }
-  }, {
-    key: 'drawLifeBar',
-    value: function drawLifeBar(context) {
-      var height = 4;
-      var width = 20;
-      var greenWidth = Math.max(0, Math.round(width * this.life / this.fullLife));
-      var redWidth = width - greenWidth;
-
-      var y = this.position.y - width;
-      var greenX = this.position.x;
-      var redX = this.position.x + greenWidth;
-
-      context.fillStyle = 'green';
-      context.fillRect(greenX, y, greenWidth, height);
-      context.fillStyle = 'red';
-      context.fillRect(redX, y, redWidth, height);
-    }
-
-    /**
-     * Update goon state.
-     * @param  {number} delta - ms since last update.
-     */
-
-  }, {
-    key: 'update',
-    value: function update(delta) {
-      this.updatePosition(delta);
-      this.updateLife(delta);
-    }
-  }, {
-    key: 'updateLife',
-    value: function updateLife(delta) {
-      if (this.life <= 0) {
-        this.game.killGoon(this);
-      }
-    }
-  }, {
-    key: 'updatePosition',
-    value: function updatePosition(delta) {
-      this.cell.hasGoon = false;
-      var nextCell = this.pathFinder.nextCell(this.cell, 1);
-      if (!nextCell) {
-        throw new Error('Goon traped!');
-      }
-
-      // TODO: this logic is obscure, rewrite it
-      var offset = this.cell.getOffset(this.position);
-      var targetPosition = {
-        x: nextCell.getTopLeftPosition().x + offset.x,
-        y: nextCell.getTopLeftPosition().y + offset.y
-      };
-
-      var step = this.speed * delta / 1000.0 + this._residualStep;
-      var intStep = Math.floor(step);
-      this._residualStep = step - intStep;
-
-      var nextPosition = (0, _geometryUtils.getPointInLine)(this.position, targetPosition, intStep);
-      // Might happen that step is not enought to change cell
-      var nextPositionCell = this.game.grid.getCellAtPosition(nextPosition);
-
-      // TODO: this is a hack to fix diagonal moves that passes through blocked cells. Rewrite it in a sane way.
-      if (nextPositionCell.blocked) {
-        nextPositionCell = this.cell;
-      }
-
-      if (nextPositionCell.isTarget) {
-        this.game.goonArrived(this);
-      } else {
-        this.cell = nextPositionCell;
-        this.cell.hasGoon = true;
-        this.position = nextPosition;
-      }
-    }
-  }]);
-
-  return Goon;
-}();
-
-exports.default = Goon;
+  document.getElementById('drawGrid').onclick = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    (0, _game.getGame)().drawGrid = !(0, _game.getGame)().drawGrid;
+  };
+}
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Random = function () {
-  function Random() {
-    _classCallCheck(this, Random);
-  }
-
-  _createClass(Random, [{
-    key: "yesOrNo",
-    value: function yesOrNo(yesChance) {
-      yesChance = yesChance || 0.5;
-      return Math.random() < yesChance;
-    }
-  }, {
-    key: "getRandomIntExclusive",
-    value: function getRandomIntExclusive(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      // The maximum is exclusive and the minimum is inclusive
-      return Math.floor(Math.random() * (max - min)) + min;
-    }
-  }, {
-    key: "getRandomIntInclusive",
-    value: function getRandomIntInclusive(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      // The maximum is inclusive and the minimum is inclusive
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-  }, {
-    key: "getRandomElementFromArray",
-    value: function getRandomElementFromArray(array) {
-      var index = this.getRandomIntExclusive(0, array.length);
-      return array[index];
-    }
-  }, {
-    key: "shuffle",
-    value: function shuffle(array) {
-      var currentIndex = array.length;
-      var temporaryValue = void 0,
-          randomIndex = void 0;
-
-      // While there remain elements to shuffle...
-      while (currentIndex !== 0) {
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-      }
-    }
-  }]);
-
-  return Random;
-}();
-
-exports.default = new Random();
-
-/***/ }),
-/* 8 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1051,7 +964,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} nextStep - Next cell on the path to target.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _cell = __webpack_require__(4);
+var _cell = __webpack_require__(5);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1297,7 +1210,7 @@ var Grid = function () {
 exports.default = Grid;
 
 /***/ }),
-/* 9 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1343,7 +1256,7 @@ var Coord = function () {
 exports.default = Coord;
 
 /***/ }),
-/* 10 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1355,13 +1268,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _geometryUtils = __webpack_require__(2);
+var _geometryUtils = __webpack_require__(3);
 
-var _drawingUtils = __webpack_require__(3);
+var _drawingUtils = __webpack_require__(2);
 
-var _game = __webpack_require__(0);
+var _game = __webpack_require__(1);
 
-var _bullet = __webpack_require__(11);
+var _bullet = __webpack_require__(15);
 
 var _bullet2 = _interopRequireDefault(_bullet);
 
@@ -1537,7 +1450,7 @@ Tower.sizeInCells = {
 };
 
 /***/ }),
-/* 11 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1549,11 +1462,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _geometryUtils = __webpack_require__(2);
+var _geometryUtils = __webpack_require__(3);
 
-var _drawingUtils = __webpack_require__(3);
+var _drawingUtils = __webpack_require__(2);
 
-var _game = __webpack_require__(0);
+var _game = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1594,7 +1507,7 @@ var Bullet = function () {
 exports.default = Bullet;
 
 /***/ }),
-/* 12 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1606,15 +1519,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _goon = __webpack_require__(6);
+var _goon = __webpack_require__(17);
 
 var _goon2 = _interopRequireDefault(_goon);
 
-var _gameConfig = __webpack_require__(5);
+var _gameConfig = __webpack_require__(6);
 
 var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
-var _game = __webpack_require__(0);
+var _game = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1697,7 +1610,154 @@ var GoonWave = function () {
 exports.default = GoonWave;
 
 /***/ }),
-/* 13 */
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _imageCache = __webpack_require__(0);
+
+var _geometryUtils = __webpack_require__(3);
+
+var _game = __webpack_require__(1);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var GOON_IMAGE_SIZE = {
+  width: 14,
+  height: 20
+};
+
+var Goon = function () {
+  function Goon(id, speed, life, bounty) {
+    _classCallCheck(this, Goon);
+
+    this.id = id;
+    this.game = (0, _game.getGame)();
+    this.pathFinder = this.game.pathFinder;
+    this.speed = speed; // px/sec
+    this.fullLife = life;
+    this.life = life;
+    this.bounty = bounty;
+
+    // store the decimals lost in the last step to maintain constant speed
+    this._residualStep = 0;
+  }
+
+  _createClass(Goon, [{
+    key: 'setInitialCell',
+    value: function setInitialCell(cell) {
+      this.cell = cell;
+      this.cell.hasGoon = true;
+      this.position = this.cell.getTopLeftPosition();
+    }
+
+    /**
+     * Draw the goon on position.
+     * @param  {CanvasRenderingContext2D} context - Canvas renderering context.
+     */
+
+  }, {
+    key: 'draw',
+    value: function draw(context) {
+      // _Paint cell base:
+      // context.fillStyle = 'gold'
+      // const cellOrigin = this.cell.getTopLeftPosition()
+      // context.fillRect(cellOrigin.x, cellOrigin.y, CELL_EDGE_SIZE, CELL_EDGE_SIZE)
+
+      var img = _imageCache.imageCache['goon-1'];
+      context.drawImage(img, this.position.x, this.position.y - Math.round(GOON_IMAGE_SIZE.height / 2));
+      this.drawLifeBar(context);
+    }
+  }, {
+    key: 'drawLifeBar',
+    value: function drawLifeBar(context) {
+      var height = 4;
+      var width = 20;
+      var greenWidth = Math.max(0, Math.round(width * this.life / this.fullLife));
+      var redWidth = width - greenWidth;
+
+      var y = this.position.y - width;
+      var greenX = this.position.x;
+      var redX = this.position.x + greenWidth;
+
+      context.fillStyle = 'green';
+      context.fillRect(greenX, y, greenWidth, height);
+      context.fillStyle = 'red';
+      context.fillRect(redX, y, redWidth, height);
+    }
+
+    /**
+     * Update goon state.
+     * @param  {number} delta - ms since last update.
+     */
+
+  }, {
+    key: 'update',
+    value: function update(delta) {
+      this.updatePosition(delta);
+      this.updateLife(delta);
+    }
+  }, {
+    key: 'updateLife',
+    value: function updateLife(delta) {
+      if (this.life <= 0) {
+        this.game.killGoon(this);
+      }
+    }
+  }, {
+    key: 'updatePosition',
+    value: function updatePosition(delta) {
+      this.cell.hasGoon = false;
+      var nextCell = this.pathFinder.nextCell(this.cell, 1);
+      if (!nextCell) {
+        throw new Error('Goon traped!');
+      }
+
+      // TODO: this logic is obscure, rewrite it
+      var offset = this.cell.getOffset(this.position);
+      var targetPosition = {
+        x: nextCell.getTopLeftPosition().x + offset.x,
+        y: nextCell.getTopLeftPosition().y + offset.y
+      };
+
+      var step = this.speed * delta / 1000.0 + this._residualStep;
+      var intStep = Math.floor(step);
+      this._residualStep = step - intStep;
+
+      var nextPosition = (0, _geometryUtils.getPointInLine)(this.position, targetPosition, intStep);
+      // Might happen that step is not enought to change cell
+      var nextPositionCell = this.game.grid.getCellAtPosition(nextPosition);
+
+      // TODO: this is a hack to fix diagonal moves that passes through blocked cells. Rewrite it in a sane way.
+      if (nextPositionCell.blocked) {
+        nextPositionCell = this.cell;
+      }
+
+      if (nextPositionCell.isTarget) {
+        this.game.goonArrived(this);
+      } else {
+        this.cell = nextPositionCell;
+        this.cell.hasGoon = true;
+        this.position = nextPosition;
+      }
+    }
+  }]);
+
+  return Goon;
+}();
+
+exports.default = Goon;
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1873,7 +1933,7 @@ var PriorityQueue = function () {
 }();
 
 /***/ }),
-/* 14 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1885,7 +1945,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _game = __webpack_require__(0);
+var _game = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1945,7 +2005,7 @@ var ScoreBoard = function () {
 exports.default = ScoreBoard;
 
 /***/ }),
-/* 15 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1964,9 +2024,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
  * @property {number} y - The Y Coordinate.
  */
 
-var _game = __webpack_require__(0);
+var _game = __webpack_require__(1);
 
-var _cell = __webpack_require__(4);
+var _cell = __webpack_require__(5);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2151,66 +2211,6 @@ var Renderer = function () {
 }();
 
 exports.default = Renderer;
-
-/***/ }),
-/* 16 */,
-/* 17 */,
-/* 18 */,
-/* 19 */,
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _imageCache = __webpack_require__(1);
-
-var _game = __webpack_require__(0);
-
-(0, _imageCache.loadImageCache)(init);
-
-function init() {
-  var canvas = document.getElementById('canvas');
-  var scoreBoard = document.getElementById('scoreBoard');
-
-  var game = (0, _game.initGame)(canvas, scoreBoard);
-  game.start();
-
-  initDebugPanel();
-}
-
-function initDebugPanel() {
-  document.getElementById('spawn').onclick = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-
-    var x = parseInt(document.getElementById('x').value);
-    var y = parseInt(document.getElementById('y').value);
-    (0, _game.getGame)().spawnGoon(x, y);
-  };
-
-  document.getElementById('speedUpdate').onclick = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-
-    var speed = parseInt(document.getElementById('speed').value);
-    (0, _game.getGame)().goons.forEach(function (goon) {
-      goon.speed = speed;
-    });
-  };
-
-  document.getElementById('pause').onclick = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-    (0, _game.getGame)().pauseResume();
-  };
-
-  document.getElementById('drawGrid').onclick = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-    (0, _game.getGame)().drawGrid = !(0, _game.getGame)().drawGrid;
-  };
-}
 
 /***/ })
 /******/ ]);

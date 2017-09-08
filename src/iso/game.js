@@ -7,7 +7,7 @@
  */
 
 import {loadImageCache} from '../image-cache.js'
-import {IsoGrid} from './iso-grid.js'
+import {IsoGrid, FLOOR_HEIGHT} from './iso-grid.js'
 import Goon from './goon.js'
 import random from '../utils/random'
 
@@ -44,8 +44,13 @@ class Game {
     const spawnCellCoordinates = random.getRandomElementFromArray(
       this.grid.getSpawnCellCoordinates()
     )
-    const spawnPosition = this.grid.isoGridUtils.getCellOrigin(spawnCellCoordinates.row, spawnCellCoordinates.col)
-    const goon = new Goon(1, 20, 100, 20)
+    const spawnPosition = this.grid.isoGridUtils.getCellSideCenter(
+      spawnCellCoordinates.row,
+      spawnCellCoordinates.col,
+      FLOOR_HEIGHT,
+      'south' // TODO: tiles can have different entry points
+    )
+    const goon = new Goon()
     goon.position = spawnPosition
     this.goons.push(goon)
   }

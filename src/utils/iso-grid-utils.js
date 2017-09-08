@@ -48,7 +48,7 @@ export default class IsoGridUtils {
    * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
    * @return {Position} {x, y}
    */
-  getCellLeft (row, col, verticalOffset = 0) {
+  getCellRight (row, col, verticalOffset = 0) {
     return this.getCellCorners(row, col, verticalOffset)[1]
   }
 

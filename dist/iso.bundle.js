@@ -64,8 +64,7 @@
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */,
-/* 1 */
+/* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -116,8 +115,8 @@ function loadImageCache(onLoadComplete) {
 }
 
 /***/ }),
-/* 2 */,
-/* 3 */
+/* 1 */,
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -251,10 +250,8 @@ function polygon(ctx, corners, fill, stroke) {
 }
 
 /***/ }),
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */
+/* 3 */,
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -328,15 +325,9 @@ var Random = function () {
 exports.default = new Random();
 
 /***/ }),
-/* 8 */,
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */
+/* 5 */,
+/* 6 */,
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -414,7 +405,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 17 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -487,7 +478,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 18 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -576,7 +567,7 @@ var SpriteSheet = function () {
 exports.default = SpriteSheet;
 
 /***/ }),
-/* 19 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -635,6 +626,15 @@ var gridConfig = exports.gridConfig = {
 };
 
 /***/ }),
+/* 11 */,
+/* 12 */,
+/* 13 */,
+/* 14 */,
+/* 15 */,
+/* 16 */,
+/* 17 */,
+/* 18 */,
+/* 19 */,
 /* 20 */,
 /* 21 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -650,7 +650,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {function} draw
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _imageCache = __webpack_require__(1);
+var _imageCache = __webpack_require__(0);
 
 var _isoGrid = __webpack_require__(22);
 
@@ -658,7 +658,7 @@ var _goon = __webpack_require__(30);
 
 var _goon2 = _interopRequireDefault(_goon);
 
-var _random = __webpack_require__(7);
+var _random = __webpack_require__(4);
 
 var _random2 = _interopRequireDefault(_random);
 
@@ -702,8 +702,9 @@ var Game = function () {
     key: 'spanGoonOnRandomPosition',
     value: function spanGoonOnRandomPosition() {
       var spawnCellCoordinates = _random2.default.getRandomElementFromArray(this.grid.getSpawnCellCoordinates());
-      var spawnPosition = this.grid.isoGridUtils.getCellOrigin(spawnCellCoordinates.row, spawnCellCoordinates.col);
-      var goon = new _goon2.default(1, 20, 100, 20);
+      var spawnPosition = this.grid.isoGridUtils.getCellSideCenter(spawnCellCoordinates.row, spawnCellCoordinates.col, _isoGrid.FLOOR_HEIGHT, 'south' // TODO: tiles can have different entry points
+      );
+      var goon = new _goon2.default();
       goon.position = spawnPosition;
       this.goons.push(goon);
     }
@@ -737,19 +738,19 @@ var _lodash = __webpack_require__(23);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _imageCache = __webpack_require__(1);
+var _imageCache = __webpack_require__(0);
 
-var _drawingUtils = __webpack_require__(3);
+var _drawingUtils = __webpack_require__(2);
 
 var _isoGridUtils = __webpack_require__(26);
 
 var _isoGridUtils2 = _interopRequireDefault(_isoGridUtils);
 
-var _landscapeSheet = __webpack_require__(16);
+var _landscapeSheet = __webpack_require__(7);
 
 var _landscapeSheet2 = _interopRequireDefault(_landscapeSheet);
 
-var _towersGreySheet = __webpack_require__(17);
+var _towersGreySheet = __webpack_require__(8);
 
 var _towersGreySheet2 = _interopRequireDefault(_towersGreySheet);
 
@@ -765,9 +766,9 @@ var _towersGrey = __webpack_require__(29);
 
 var _towersGrey2 = _interopRequireDefault(_towersGrey);
 
-var _gridConfig = __webpack_require__(19);
+var _gridConfig = __webpack_require__(10);
 
-var _spriteSheet = __webpack_require__(18);
+var _spriteSheet = __webpack_require__(9);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
@@ -18085,33 +18086,152 @@ var IsoGridUtils = function () {
     this.gridOrigin = gridOrigin;
   }
 
+  /**
+   * Top (top-left) corner position for the cell.
+   * @param  {number} row
+   * @param  {number} col
+   * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
+   * @return {Position} {x, y}
+   */
+
+
   _createClass(IsoGridUtils, [{
-    key: "getCellOrigin",
+    key: 'getCellOrigin',
     value: function getCellOrigin(row, col) {
+      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
       // http://clintbellanger.net/articles/isometric_math/
       var halfHeigth = Math.round(this.cellHeight / 2);
       var halfWidth = Math.round(this.cellWidth / 2);
       return {
         x: (col - row) * halfWidth + this.gridOrigin.x,
-        y: (col + row) * halfHeigth + this.gridOrigin.y
+        y: (col + row) * halfHeigth + this.gridOrigin.y + verticalOffset
       };
     }
+
+    /**
+     * Top, right, bottom and left corner positions for the cell.
+     * @param  {number} row
+     * @param  {number} col
+     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
+     * @return {Position[]} [{x, y}]
+     */
+
   }, {
-    key: "getCellCorners",
+    key: 'getCellCorners',
     value: function getCellCorners(row, col) {
-      var cellOrigin = this.getCellOrigin(row, col);
+      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+      var cellOrigin = this.getCellOrigin(row, col, verticalOffset);
       var halfHeigth = Math.round(this.cellHeight / 2);
       var halfWidth = Math.round(this.cellWidth / 2);
       return [cellOrigin, { x: cellOrigin.x + halfWidth, y: cellOrigin.y + halfHeigth }, { x: cellOrigin.x, y: cellOrigin.y + this.cellHeight }, { x: cellOrigin.x - halfWidth, y: cellOrigin.y + halfHeigth }];
     }
+
+    /**
+     * Right (top-right) corner position for the cell.
+     * @param  {number} row
+     * @param  {number} col
+     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
+     * @return {Position} {x, y}
+     */
+
   }, {
-    key: "getCellBottom",
+    key: 'getCellRight',
+    value: function getCellRight(row, col) {
+      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+      return this.getCellCorners(row, col, verticalOffset)[1];
+    }
+
+    /**
+     * Bottom (bottom-right) corner position for the cell.
+     * @param  {number} row
+     * @param  {number} col
+     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
+     * @return {Position} {x, y}
+     */
+
+  }, {
+    key: 'getCellBottom',
     value: function getCellBottom(row, col) {
-      var origin = this.getCellOrigin(row, col);
+      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+      return this.getCellCorners(row, col, verticalOffset)[2];
+    }
+
+    /**
+     * Left (bottom-left) corner position for the cell.
+     * @param  {number} row
+     * @param  {number} col
+     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
+     * @return {Position} {x, y}
+     */
+
+  }, {
+    key: 'getCellLeft',
+    value: function getCellLeft(row, col) {
+      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+      return this.getCellCorners(row, col, verticalOffset)[3];
+    }
+
+    /**
+     * Center position for the cell.
+     * @param  {number} row
+     * @param  {number} col
+     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
+     * @return {Position} {x, y}
+     */
+
+  }, {
+    key: 'getCellCenter',
+    value: function getCellCenter(row, col) {
+      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+      var origin = this.getCellOrigin(row, col, verticalOffset);
       return {
         x: origin.x,
-        y: origin.y + this.cellHeight
+        y: origin.y + Math.round(this.cellHeight / 2)
       };
+    }
+
+    /**
+     * Get the position in the center of the cell side in the provided direction.
+     * @param  {number} row
+     * @param  {number} col
+     * @param  {String} side - 'north', 'south', 'east' or 'west'
+     * @return {Position} {x, y}
+     */
+
+  }, {
+    key: 'getCellSideCenter',
+    value: function getCellSideCenter(row, col) {
+      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+      var side = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'west';
+
+      var origin = this.getCellOrigin(row, col, verticalOffset);
+      if (side === 'north') {
+        return {
+          x: origin.x + Math.round(this.cellWidth / 4),
+          y: origin.y + Math.round(this.cellHeight / 4)
+        };
+      } else if (side === 'east') {
+        return {
+          x: origin.x + Math.round(this.cellWidth / 4),
+          y: origin.y + Math.round(3 * this.cellHeight / 4)
+        };
+      } else if (side === 'south') {
+        return {
+          x: origin.x - Math.round(this.cellWidth / 4),
+          y: origin.y + Math.round(3 * this.cellHeight / 4)
+        };
+      } else if (side === 'west') {
+        return {
+          x: origin.x - Math.round(this.cellWidth / 4),
+          y: origin.y - Math.round(this.cellHeight / 4)
+        };
+      }
     }
   }]);
 
@@ -18133,21 +18253,21 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _imageCache = __webpack_require__(1);
+var _imageCache = __webpack_require__(0);
 
-var _landscapeSheet = __webpack_require__(16);
+var _landscapeSheet = __webpack_require__(7);
 
 var _landscapeSheet2 = _interopRequireDefault(_landscapeSheet);
 
-var _towersGreySheet = __webpack_require__(17);
+var _towersGreySheet = __webpack_require__(8);
 
 var _towersGreySheet2 = _interopRequireDefault(_towersGreySheet);
 
-var _spriteSheet = __webpack_require__(18);
+var _spriteSheet = __webpack_require__(9);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
-var _gridConfig = __webpack_require__(19);
+var _gridConfig = __webpack_require__(10);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18262,7 +18382,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _imageCache = __webpack_require__(1);
+var _imageCache = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -18274,13 +18394,16 @@ var GOON_IMAGE_SIZE = {
 var Goon = function () {
   function Goon() {
     _classCallCheck(this, Goon);
+
+    // position of the bottom-left corner of the image
+    this.position = null;
   }
 
   _createClass(Goon, [{
     key: 'draw',
     value: function draw(context) {
       var img = _imageCache.imageCache['goon-1'];
-      context.drawImage(img, this.position.x, this.position.y - Math.round(GOON_IMAGE_SIZE.height / 2));
+      context.drawImage(img, this.position.x, this.position.y - GOON_IMAGE_SIZE.height);
     }
   }]);
 

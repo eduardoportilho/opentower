@@ -6,8 +6,13 @@ const GOON_IMAGE_SIZE = {
 }
 
 export default class Goon {
+  constructor () {
+    // position of the bottom-left corner of the image
+    this.position = null
+  }
+
   draw (context) {
     const img = imageCache['goon-1']
-    context.drawImage(img, this.position.x, this.position.y - Math.round(GOON_IMAGE_SIZE.height / 2))
+    context.drawImage(img, this.position.x, this.position.y - GOON_IMAGE_SIZE.height)
   }
 }
