@@ -54,6 +54,21 @@ export default class IsoGridUtils {
   }
 
   /**
+   * Center position for the cell.
+   * @param  {number} row
+   * @param  {number} col
+   * @return {Position} {x, y}
+   */
+  getCellCenter (row, col) {
+    const cellOrigin = this.getCellOrigin(row, col)
+    return {
+      x: origin.x + Math.round(this.cellWidth / 2),
+      y: origin.y + Math.round(this.cellHeight / 2)
+    }
+
+  }
+
+  /**
    * Get the position in the center of the cell side in the provided direction.
    * @param  {number} row
    * @param  {number} col
