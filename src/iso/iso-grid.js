@@ -26,6 +26,7 @@ export class IsoGrid {
       x: canvasSize.width / 2,
       y: CELL_HEIGHT
     }
+    this.isoGridUtils = new IsoGridUtils(CELL_WIDTH, CELL_HEIGHT, this.origin)
     this.landscapeSheet = new SpriteSheet(imageCache['landscape_sheet'], landscapeSheetMap, CELL_WIDTH)
     this.towersGreySheet = new SpriteSheet(imageCache['towers_grey_sheet'], towersGreySheetMap, CELL_WIDTH)
     this.gameSheet = new GameSheet(CELL_WIDTH, FLOOR_HEIGHT)
@@ -39,9 +40,9 @@ export class IsoGrid {
         if (tileConfig) {
           tile = tileConfig.tile
         }
-        this.gameSheet.draw(context, this._getCellBottom(row, col), tile)
+        this.gameSheet.draw(context, this.isoGridUtils.getCellBottom(row, col), tile)
         if (tileConfig && tileConfig.object) {
-          this.gameSheet.draw(context, this._getCellBottom(row, col), tileConfig.object)
+          this.gameSheet.draw(context, this.isoGridUtils.getCellBottom(row, col), tileConfig.object)
         }
       }
     }
@@ -52,7 +53,7 @@ export class IsoGrid {
     context.strokeStyle = '#cccccc'
     for (var row = 0; row < this.rowCount; row++) {
       for (var col = 0; col < this.colCount; col++) {
-        const corners = this._getCellCorners(row, col)
+        const corners = this.isoGridUtils.getCellCorners(row, col)
         polygon(context, corners, false, true)
       }
     }
@@ -63,14 +64,14 @@ export class IsoGrid {
       for (let col = 0; col < tileRow.length; col++) {
         let tile = tileRow[col]
         if (tile) {
-          this.landscapeSheet.draw(context, this._getCellBottom(row, col), tile.spriteKey, tile.verticalOffset)
+          this.landscapeSheet.draw(context, this.isoGridUtils.getCellBottom(row, col), tile.spriteKey, tile.verticalOffset)
         }
       }
     }
 
     // tower
     for (let tower of towersGreyTiles) {
-      this.towersGreySheet.drawStacked(context, this._getCellBottom(tower.row, tower.col), tower.tiles, FLOOR_HEIGHT)
+      this.towersGreySheet.drawStacked(context, this.isoGridUtils.getCellBottom(tower.row, tower.col), tower.tiles, FLOOR_HEIGHT)
     }
   }
 
@@ -84,35 +85,5 @@ export class IsoGrid {
         const location = kvArray[0].split(',')
         return {row: parseInt(location[0]), col: parseInt(location[1])}
       })
-  }
-
-  _getCellCorners (row, col) {
-    const cellOrigin = this._getCellOrigin(row, col)
-    const halfHeigth = Math.round(CELL_HEIGHT / 2)
-    const halfWidth = Math.round(CELL_WIDTH / 2)
-    return [
-      cellOrigin,
-      {x: cellOrigin.x + halfWidth, y: cellOrigin.y + halfHeigth},
-      {x: cellOrigin.x, y: cellOrigin.y + CELL_HEIGHT},
-      {x: cellOrigin.x - halfWidth, y: cellOrigin.y + halfHeigth}
-    ]
-  }
-
-  _getCellOrigin (row, col) {
-    // http://clintbellanger.net/articles/isometric_math/
-    const halfHeigth = Math.round(CELL_HEIGHT / 2)
-    const halfWidth = Math.round(CELL_WIDTH / 2)
-    return {
-      x: (col - row) * halfWidth + this.origin.x,
-      y: (col + row) * halfHeigth + this.origin.y
-    }
-  }
-
-  _getCellBottom (row, col) {
-    const origin = this._getCellOrigin(row, col)
-    return {
-      x: origin.x,
-      y: origin.y + CELL_HEIGHT
-    }
   }
 }
