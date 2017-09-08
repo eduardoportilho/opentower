@@ -52,4 +52,36 @@ export default class IsoGridUtils {
       y: origin.y + this.cellHeight
     }
   }
+
+  /**
+   * Get the position in the center of the cell side in the provided direction.
+   * @param  {number} row
+   * @param  {number} col
+   * @param  {String} side - 'north', 'south', 'east' or 'west'
+   * @return {Position} {x, y}
+   */
+  getCellSideCenter (row, col, side = 'west') {
+    const cellOrigin = this.getCellOrigin(row, col)
+    if (side === 'north') {
+      return {
+        x: origin.x + Math.round(this.cellWidth / 4),
+        y: origin.y + Math.round(this.cellHeight / 4)
+      }
+    } else if (side === 'east') {
+      return {
+        x: origin.x + Math.round(this.cellWidth / 4),
+        y: origin.y + Math.round(3 * this.cellHeight / 4)
+      }
+    } else if (side === 'south') {
+      return {
+        x: origin.x - Math.round(this.cellWidth / 4),
+        y: origin.y + Math.round(3 * this.cellHeight / 4)
+      }
+    } else if (side === 'west') {
+      return {
+        x: origin.x - Math.round(this.cellWidth / 4),
+        y: origin.y - Math.round(this.cellHeight / 4)
+      }
+    }
+  }
 }
