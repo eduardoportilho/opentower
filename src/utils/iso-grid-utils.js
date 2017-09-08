@@ -5,6 +5,12 @@ export default class IsoGridUtils {
     this.gridOrigin = gridOrigin
   }
 
+  /**
+   * Top (top-left) corner position for the cell.
+   * @param  {number} row
+   * @param  {number} col
+   * @return {Position} {x, y}
+   */
   getCellOrigin (row, col) {
     // http://clintbellanger.net/articles/isometric_math/
     const halfHeigth = Math.round(this.cellHeight / 2)
@@ -15,6 +21,12 @@ export default class IsoGridUtils {
     }
   }
 
+  /**
+   * Top, right, bottom and left corner positions for the cell.
+   * @param  {number} row
+   * @param  {number} col
+   * @return {Position[]} [{x, y}]
+   */
   getCellCorners (row, col) {
     const cellOrigin = this.getCellOrigin(row, col)
     const halfHeigth = Math.round(this.cellHeight / 2)
@@ -27,6 +39,12 @@ export default class IsoGridUtils {
     ]
   }
 
+  /**
+   * Bottom (bottom-right) corner position for the cell.
+   * @param  {number} row
+   * @param  {number} col
+   * @return {Position} {x, y}
+   */
   getCellBottom (row, col) {
     const origin = this.getCellOrigin(row, col)
     return {
