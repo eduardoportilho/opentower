@@ -1,5 +1,14 @@
+/**
+ * @typedef {Object} Drawable
+ * @property {Object} position
+ * @property {number} position.x
+ * @property {number} position.y
+ * @property {function} draw
+ */
+
 import {loadImageCache} from '../image-cache.js'
 import {IsoGrid} from './iso-grid.js'
+import Goon from './goon.js'
 import random from '../utils/random'
 
 const CANVAS_WIDTH = 1400
@@ -20,23 +29,28 @@ class Game {
   constructor (canvas) {
     this.goons = []
     this.context = canvas.getContext('2d')
-    this.isoGrid = new IsoGrid({
+    this.grid = new IsoGrid(this, {
       width: canvas.width,
       height: canvas.height
     })
   }
 
   init () {
-    this.isoGrid.drawGame(this.context)
+    this.spanGoonOnRandomPosition()
+    this.grid.drawGame(this.context)
   }
 
-  spanGoonOnRandomLocation () {
-    const spawnLocation = random.getRandomElementFromArray(
-      this.isoGrid.getSpawnLocations()
+  spanGoonOnRandomPosition () {
+    const spawnCellCoordinates = random.getRandomElementFromArray(
+      this.grid.getSpawnCellCoordinates()
     )
-    const goon = {
-      loction: spawnLocation
-    }
+    const spawnPosition = this.grid.isoGridUtils.getCellOrigin(spawnCellCoordinates.row, spawnCellCoordinates.col)
+    const goon = new Goon(1, 20, 100, 20)
+    goon.position = spawnPosition
     this.goons.push(goon)
+  }
+
+  getDrawables () {
+    return this.goons
   }
 }
