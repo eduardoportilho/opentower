@@ -338,18 +338,28 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = {
   'meta': { maxWidth: 133 },
+  'GRASS': { x: 1193, y: 0, width: 132, height: 99 },
+  'PATH_SN': {
+    x: 1325,
+    y: 0,
+    width: 132,
+    height: 99,
+    pathPoints: [{ x: 99, y: 20 }, { x: 34, y: 52 }]
+  },
+  'PATH_WE': { x: 928, y: 230, width: 132, height: 99 },
+  'CURVE_SE': { x: 1720, y: 99, width: 132, height: 99 },
+  'CURVE_NE': { x: 1060, y: 396, width: 132, height: 99 },
+  'CURVE_WS': { x: 1060, y: 297, width: 132, height: 99 },
+  'CURVE_WN': { x: 928, y: 329, width: 132, height: 99 },
   'crystal_l_r': { x: 1720, y: 198, width: 132, height: 112 },
   'crystal_b_t': { x: 1852, y: 114, width: 132, height: 121 },
   'crystal_t_b': { x: 0, y: 297, width: 133, height: 127 },
   'crystal_r_l': { x: 1852, y: 0, width: 132, height: 114 },
   'river_curve_tr_br': { x: 1192, y: 99, width: 132, height: 99 },
   'landscape_01': { x: 1061, y: 0, width: 132, height: 99 },
-  'CURVE_NE': { x: 1060, y: 396, width: 132, height: 99 },
-  'CURVE_WS': { x: 1060, y: 297, width: 132, height: 99 },
   'bridge_tl_br': { x: 1060, y: 198, width: 132, height: 99 },
   'landscape_05': { x: 1060, y: 99, width: 132, height: 99 },
   'landscape_06': { x: 929, y: 0, width: 132, height: 99 },
-  'CURVE_WN': { x: 928, y: 329, width: 132, height: 99 },
   'landscape_08': { x: 1852, y: 235, width: 132, height: 115 },
   'landscape_09': { x: 1720, y: 409, width: 132, height: 99 },
   'landscape_10': { x: 1720, y: 310, width: 132, height: 99 },
@@ -370,17 +380,13 @@ exports.default = {
   'landscape_25': { x: 1192, y: 297, width: 132, height: 99 },
   'grass_ramp_diag_r_l': { x: 1192, y: 396, width: 132, height: 99 },
   'landscape_27': { x: 1324, y: 225, width: 132, height: 115 },
-  'GRASS': { x: 1193, y: 0, width: 132, height: 99 },
-  'PATH_SN': { x: 1325, y: 0, width: 132, height: 99 },
   'landscape_30': { x: 1456, y: 99, width: 132, height: 99 },
   'landscape_31': { x: 1324, y: 340, width: 132, height: 99 },
-  'PATH_WE': { x: 928, y: 230, width: 132, height: 99 },
   'river_tr_bl': { x: 1588, y: 99, width: 132, height: 99 },
   'landscape_34': { x: 1588, y: 297, width: 132, height: 99 },
   'landscape_35': { x: 1588, y: 396, width: 132, height: 99 },
   'landscape_36': { x: 1589, y: 0, width: 132, height: 99 },
   'river_tl_br': { x: 0, y: 198, width: 133, height: 99 },
-  'CURVE_SE': { x: 1720, y: 99, width: 132, height: 99 },
   'landscape_39': { x: 1457, y: 0, width: 132, height: 99 },
   'rocks_2_r_l': { x: 0, y: 0, width: 133, height: 99 },
   'rocks_1_tl': { x: 0, y: 99, width: 133, height: 99 },
@@ -656,7 +662,7 @@ var _imageCache = __webpack_require__(0);
 
 var _isoGrid = __webpack_require__(22);
 
-var _goon = __webpack_require__(30);
+var _goon = __webpack_require__(31);
 
 var _goon2 = _interopRequireDefault(_goon);
 
@@ -717,7 +723,6 @@ var Game = function () {
       if (!this.animationId) {
         return;
       }
-
       var now = Date.now();
       var delta = now - this.lastTick;
 
@@ -727,17 +732,15 @@ var Game = function () {
         return;
       }
       this.lastTick = now;
-
-      this.render();
+      this.grid.drawGame(this.context);
       this.animationId = requestAnimationFrame(this.tick.bind(this));
     }
   }, {
     key: 'update',
-    value: function update(delta) {}
-  }, {
-    key: 'render',
-    value: function render() {
-      this.grid.drawGame(this.context);
+    value: function update(delta) {
+      this.goons.forEach(function (goon) {
+        return goon.update(delta);
+      });
     }
   }, {
     key: 'spanGoonOnRandomPosition',
@@ -813,6 +816,10 @@ var _spriteSheet = __webpack_require__(9);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
+var _cell = __webpack_require__(30);
+
+var _cell2 = _interopRequireDefault(_cell);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -838,27 +845,49 @@ var IsoGrid = exports.IsoGrid = function () {
     this.landscapeSheet = new _spriteSheet2.default(_imageCache.imageCache['landscape_sheet'], _landscapeSheet2.default, CELL_WIDTH);
     this.towersGreySheet = new _spriteSheet2.default(_imageCache.imageCache['towers_grey_sheet'], _towersGreySheet2.default, CELL_WIDTH);
     this.gameSheet = new _gameSheet2.default(CELL_WIDTH, FLOOR_HEIGHT);
+    this._buildGrid();
   }
 
   _createClass(IsoGrid, [{
-    key: 'drawGame',
-    value: function drawGame(context) {
+    key: '_buildGrid',
+    value: function _buildGrid() {
+      this.cells = [];
       for (var row = 0; row < this.rowCount; row++) {
         for (var col = 0; col < this.colCount; col++) {
-          // tile
-          var tile = 'GRASS';
           var tileConfig = _gridConfig.gridConfig[row + ',' + col];
-          if (tileConfig) {
-            tile = tileConfig.tile;
+          if (!tileConfig) {
+            tileConfig = {
+              tile: 'GRASS'
+            };
           }
-          this.gameSheet.draw(context, this.isoGridUtils.getCellBottom(row, col), tile);
-
-          // tile objects
-          if (tileConfig && tileConfig.object) {
-            this.gameSheet.draw(context, this.isoGridUtils.getCellBottom(row, col), tileConfig.object);
-          }
+          this.cells.push(new _cell2.default({
+            row: row,
+            col: col,
+            tile: tileConfig.tile,
+            tileConfig: tileConfig
+          }));
         }
       }
+    }
+  }, {
+    key: 'drawGame',
+    value: function drawGame(context) {
+      var _this = this;
+
+      this.cells.forEach(function (cell) {
+        var row = cell.row,
+            col = cell.col,
+            tile = cell.tile,
+            tileConfig = cell.tileConfig;
+        // tile
+
+        _this.gameSheet.draw(context, _this.isoGridUtils.getCellBottom(row, col), tile);
+
+        // tile objects
+        if (tileConfig && tileConfig.object) {
+          _this.gameSheet.draw(context, _this.isoGridUtils.getCellBottom(row, col), tileConfig.object);
+        }
+      });
 
       // drawables
       var drawables = this.game.getDrawables();
@@ -18421,6 +18450,35 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Cell = function Cell(_ref) {
+  var row = _ref.row,
+      col = _ref.col,
+      tile = _ref.tile,
+      tileConfig = _ref.tileConfig;
+
+  _classCallCheck(this, Cell);
+
+  this.row = row;
+  this.col = col;
+  this.tile = tile;
+  this.tileConfig = tileConfig;
+};
+
+exports.default = Cell;
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _imageCache = __webpack_require__(0);
@@ -18446,6 +18504,9 @@ var Goon = function () {
       var img = _imageCache.imageCache['goon-1'];
       context.drawImage(img, this.position.x, this.position.y - GOON_IMAGE_SIZE.height);
     }
+  }, {
+    key: 'update',
+    value: function update(delta) {}
   }]);
 
   return Goon;

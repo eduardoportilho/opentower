@@ -12,6 +12,7 @@ import towersGreyTiles from '../config/towers-grey'
 import {gridConfig} from '../config/grid-config'
 
 import SpriteSheet from './sprite-sheet'
+import Cell from './cell'
 
 // full: 128 x 64 x 32
 export const CELL_WIDTH = 64
@@ -32,25 +33,40 @@ export class IsoGrid {
     this.landscapeSheet = new SpriteSheet(imageCache['landscape_sheet'], landscapeSheetMap, CELL_WIDTH)
     this.towersGreySheet = new SpriteSheet(imageCache['towers_grey_sheet'], towersGreySheetMap, CELL_WIDTH)
     this.gameSheet = new GameSheet(CELL_WIDTH, FLOOR_HEIGHT)
+    this._buildGrid()
+  }
+
+  _buildGrid () {
+    this.cells = []
+    for (let row = 0; row < this.rowCount; row++) {
+      for (let col = 0; col < this.colCount; col++) {
+        let tileConfig = gridConfig[`${row},${col}`]
+        if (!tileConfig) {
+          tileConfig = {
+            tile: 'GRASS'
+          }
+        }
+        this.cells.push(new Cell({
+          row: row,
+          col: col,
+          tile: tileConfig.tile,
+          tileConfig: tileConfig
+        }))
+      }
+    }
   }
 
   drawGame (context) {
-    for (let row = 0; row < this.rowCount; row++) {
-      for (let col = 0; col < this.colCount; col++) {
-        // tile
-        let tile = 'GRASS'
-        let tileConfig = gridConfig[`${row},${col}`]
-        if (tileConfig) {
-          tile = tileConfig.tile
-        }
-        this.gameSheet.draw(context, this.isoGridUtils.getCellBottom(row, col), tile)
+    this.cells.forEach(cell => {
+      const {row, col, tile, tileConfig} = cell
+      // tile
+      this.gameSheet.draw(context, this.isoGridUtils.getCellBottom(row, col), tile)
 
-        // tile objects
-        if (tileConfig && tileConfig.object) {
-          this.gameSheet.draw(context, this.isoGridUtils.getCellBottom(row, col), tileConfig.object)
-        }
+      // tile objects
+      if (tileConfig && tileConfig.object) {
+        this.gameSheet.draw(context, this.isoGridUtils.getCellBottom(row, col), tileConfig.object)
       }
-    }
+    })
 
     // drawables
     const drawables = this.game.getDrawables()
