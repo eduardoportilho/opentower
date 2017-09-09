@@ -72,17 +72,18 @@ class Game {
   }
 
   spanGoonOnRandomPosition () {
-    const spawnCellCoordinates = random.getRandomElementFromArray(
-      this.grid.getSpawnCellCoordinates()
+    const spawnCell = random.getRandomElementFromArray(
+      this.grid.getSpawnCells()
     )
     const spawnPosition = this.grid.isoGridUtils.getCellSideCenter(
-      spawnCellCoordinates.row,
-      spawnCellCoordinates.col,
+      spawnCell.row,
+      spawnCell.col,
       FLOOR_HEIGHT,
       'south' // TODO: tiles can have different entry points
     )
     const goon = new Goon()
     goon.position = spawnPosition
+    goon.cell = spawnCell
     this.goons.push(goon)
   }
 

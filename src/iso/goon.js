@@ -9,6 +9,7 @@ export default class Goon {
   constructor () {
     // position of the bottom-left corner of the image
     this.position = null
+    this.cell = null
   }
 
   draw (context) {

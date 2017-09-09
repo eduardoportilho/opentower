@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import {imageCache} from '../image-cache.js'
 import {polygon} from '../drawing-utils'
 import IsoGridUtils from '../utils/iso-grid-utils'
@@ -50,7 +49,9 @@ export class IsoGrid {
           row: row,
           col: col,
           tile: tileConfig.tile,
-          tileConfig: tileConfig
+          object: tileConfig.object,
+          spawn: !!tileConfig.spawn,
+          target: !!tileConfig.target
         }))
       }
     }
@@ -103,14 +104,9 @@ export class IsoGrid {
   }
 
   /**
-   * @return {Coordinate[]} Array of spawn cell coordinates
+   * @return {Cell[]} Array of spawn cell
    */
-  getSpawnCellCoordinates () {
-    return _.toPairs(gridConfig)
-      .filter(kvArray => kvArray[1].spawn)
-      .map(kvArray => {
-        const location = kvArray[0].split(',')
-        return {row: parseInt(location[0]), col: parseInt(location[1])}
-      })
+  getSpawnCells () {
+    return this.cells.filter(cell => cell.spawn)
   }
 }
