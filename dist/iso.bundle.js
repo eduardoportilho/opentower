@@ -642,13 +642,15 @@ var gridConfig = exports.gridConfig = {
 "use strict";
 
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @typedef {Object} Drawable
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {Object} position
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} position.x
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {number} position.y
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * @property {function} draw
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* global requestAnimationFrame */
+
+/**
+ * @typedef {Object} Drawable
+ * @property {Object} position
+ * @property {number} position.x
+ * @property {number} position.y
+ * @property {function} draw
+ */
 
 var _imageCache = __webpack_require__(0);
 
@@ -696,6 +698,45 @@ var Game = function () {
     key: 'init',
     value: function init() {
       this.spanGoonOnRandomPosition();
+      this.startLoop();
+    }
+  }, {
+    key: 'startLoop',
+    value: function startLoop() {
+      this.lastTick = Date.now();
+      this.animationId = requestAnimationFrame(this.tick.bind(this));
+    }
+
+    /**
+     * Update state, render and restart the game loop every X ms.
+     */
+
+  }, {
+    key: 'tick',
+    value: function tick() {
+      if (!this.animationId) {
+        return;
+      }
+
+      var now = Date.now();
+      var delta = now - this.lastTick;
+
+      this.update(delta);
+
+      if (!this.animationId) {
+        return;
+      }
+      this.lastTick = now;
+
+      this.render();
+      this.animationId = requestAnimationFrame(this.tick.bind(this));
+    }
+  }, {
+    key: 'update',
+    value: function update(delta) {}
+  }, {
+    key: 'render',
+    value: function render() {
       this.grid.drawGame(this.context);
     }
   }, {

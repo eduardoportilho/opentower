@@ -1,3 +1,5 @@
+/* global requestAnimationFrame */
+
 /**
  * @typedef {Object} Drawable
  * @property {Object} position
@@ -37,6 +39,39 @@ class Game {
 
   init () {
     this.spanGoonOnRandomPosition()
+    this.startLoop()
+  }
+
+  startLoop () {
+    this.lastTick = Date.now()
+    this.animationId = requestAnimationFrame(this.tick.bind(this))
+  }
+
+  /**
+   * Update state, render and restart the game loop every X ms.
+   */
+  tick () {
+    if (!this.animationId) {
+      return
+    }
+
+    const now = Date.now()
+    const delta = (now - this.lastTick)
+
+    this.update(delta)
+
+    if (!this.animationId) {
+      return
+    }
+    this.lastTick = now
+
+    this.render()
+    this.animationId = requestAnimationFrame(this.tick.bind(this))
+  }
+
+  update (delta) {}
+
+  render () {
     this.grid.drawGame(this.context)
   }
 
