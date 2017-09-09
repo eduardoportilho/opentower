@@ -54,7 +54,6 @@ class Game {
     if (!this.animationId) {
       return
     }
-
     const now = Date.now()
     const delta = (now - this.lastTick)
 
@@ -64,15 +63,12 @@ class Game {
       return
     }
     this.lastTick = now
-
-    this.render()
+    this.grid.drawGame(this.context)
     this.animationId = requestAnimationFrame(this.tick.bind(this))
   }
 
-  update (delta) {}
-
-  render () {
-    this.grid.drawGame(this.context)
+  update (delta) {
+    this.goons.forEach(goon => goon.update(delta))
   }
 
   spanGoonOnRandomPosition () {

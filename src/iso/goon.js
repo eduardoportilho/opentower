@@ -15,4 +15,7 @@ export default class Goon {
     const img = imageCache['goon-1']
     context.drawImage(img, this.position.x, this.position.y - GOON_IMAGE_SIZE.height)
   }
+
+  update (delta) {
+  }
 }
