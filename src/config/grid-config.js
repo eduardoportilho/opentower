@@ -41,7 +41,7 @@ export const gridConfig = {
   '2,9': { tile: PATH_SN },
   '1,9': { tile: PATH_SN },
   '0,9': {
-    tile: GRASS,
+    tile: PATH_SN,
     object: CASTLE,
     target: true
   }
