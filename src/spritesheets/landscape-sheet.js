@@ -12,7 +12,17 @@ export default {
     ]
   },
   'PATH_WE': { x: 928, y: 230, width: 132, height: 99 },
-  'CURVE_SE': { x: 1720, y: 99, width: 132, height: 99 },
+  'CURVE_SE': {
+    x: 1720,
+    y: 99,
+    width: 132,
+    height: 99,
+    pathPoints: [
+      {x: 34, y: 51},
+      {x: 66, y: 43},
+      {x: 98, y: 52}
+    ]
+  },
   'CURVE_NE': { x: 1060, y: 396, width: 132, height: 99 },
   'CURVE_WS': { x: 1060, y: 297, width: 132, height: 99 },
   'CURVE_WN': { x: 928, y: 329, width: 132, height: 99 },
