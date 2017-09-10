@@ -1,3 +1,5 @@
+import {getTileConnections} from '../config/grid-config'
+
 export default class Cell {
   constructor ({row, col, tile, object, spawn, target, pathPoints}) {
     this.row = row
@@ -9,13 +11,15 @@ export default class Cell {
     this.pathPoints = pathPoints
   }
 
-  getSidesWithConnection () {}
+  getSidesWithConnection () {
+    return getTileConnections(this.tile)
+  }
 
   getCellConnectedAt (side) {}
 
   getEntryPointAt (side) {}
 
   getMiddlePathPoint () {}
-  
+
   isSpawn () {}
 }
