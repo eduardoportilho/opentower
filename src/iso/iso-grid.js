@@ -48,6 +48,7 @@ export class IsoGrid {
 
         let spriteConfig = this.gameSheet.getSpriteConfig(gridTileConfig.tile)
         this.cells.push(new Cell({
+          grid: this,
           row: row,
           col: col,
           tile: gridTileConfig.tile,
@@ -111,5 +112,10 @@ export class IsoGrid {
    */
   getSpawnCells () {
     return this.cells.filter(cell => cell.spawn)
+  }
+
+  getCell (row, col) {
+    let index = row * this.colCount + col
+    return this.cells[index]
   }
 }
