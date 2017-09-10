@@ -90,4 +90,46 @@ class Game {
   getDrawables () {
     return this.goons
   }
+
+  // TODO Move to another place
+  buildPath () {
+    const targetCell = this.grid.getTargetCell()
+    const sidesWithConnection = targetCell.getSidesWithConnection()
+    let allPaths = []
+    for (let side of sidesWithConnection) {
+      let connectedCell = targetCell.getCellConnectedAt(side)
+      let entryPoint = targetCell.getEntryPointAt(side)
+      let paths = this.buildPaths(connectedCell, side, [entryPoint])
+      allPaths = allPaths.concat(paths)
+    }
+    return allPaths
+  }
+
+  buildPaths (cell, targetSide, pathSoFar) {
+    const newPath = _.clone(pathSoFar)
+    newPath.push(cell.getEntryPointAt(targetSide))
+    const middlePathPoint = cell.getMiddlePathPoint()
+    if (middlePathPoint) {
+      newPath.push(middlePathPoint)
+    }
+    if (cell.isSpawn) {
+      const spawnSide = getSpawnSide()
+      const spawnPoint = cell.getEntryPointAt(spawnSide)
+      newPath.push(spawnPoint)
+      return [newPath]
+    }
+    const allPaths = []
+    const sidesWithConnection = cell.getSidesWithConnection()
+      .filter(side => side !== targetSide)
+    for (let side of sidesWithConnection) {
+      let connectedCell = cell.getCellConnectedAt(side)
+      let entryPoint = cell.getEntryPointAt(side)
+      let sidePath = _.clone(newPath)
+      sidePath.push(entryPoint)
+
+      let paths = this.buildPaths(connectedCell, side, sidePath)
+      allPaths = allPaths.concat(paths)
+    }
+    return allPaths
+  }
 }
