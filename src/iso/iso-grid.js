@@ -39,19 +39,22 @@ export class IsoGrid {
     this.cells = []
     for (let row = 0; row < this.rowCount; row++) {
       for (let col = 0; col < this.colCount; col++) {
-        let tileConfig = gridConfig[`${row},${col}`]
-        if (!tileConfig) {
-          tileConfig = {
+        let gridTileConfig = gridConfig[`${row},${col}`]
+        if (!gridTileConfig) {
+          gridTileConfig = {
             tile: 'GRASS'
           }
         }
+
+        let spriteConfig = this.gameSheet.getSpriteConfig(gridTileConfig.tile)
         this.cells.push(new Cell({
           row: row,
           col: col,
-          tile: tileConfig.tile,
-          object: tileConfig.object,
-          spawn: !!tileConfig.spawn,
-          target: !!tileConfig.target
+          tile: gridTileConfig.tile,
+          object: gridTileConfig.object,
+          spawn: !!gridTileConfig.spawn,
+          target: !!gridTileConfig.target,
+          pathPoints: spriteConfig.pathPoints || []
         }))
       }
     }
