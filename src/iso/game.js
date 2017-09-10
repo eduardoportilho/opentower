@@ -112,7 +112,7 @@ class Game {
     if (middlePathPoint) {
       newPath.push(middlePathPoint)
     }
-    if (cell.isSpawn) {
+    if (cell.isSpawn()) {
       const spawnSide = getSpawnSide()
       const spawnPoint = cell.getEntryPointAt(spawnSide)
       newPath.push(spawnPoint)

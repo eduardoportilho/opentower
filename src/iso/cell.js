@@ -8,4 +8,14 @@ export default class Cell {
     this.target = target
     this.pathPoints = pathPoints
   }
+
+  getSidesWithConnection () {}
+
+  getCellConnectedAt (side) {}
+
+  getEntryPointAt (side) {}
+
+  getMiddlePathPoint () {}
+  
+  isSpawn () {}
 }
