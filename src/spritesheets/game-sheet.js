@@ -76,4 +76,13 @@ export default class GameSheet {
       )
     }
   }
+
+  getSpriteConfig (tileKey) {
+    const tileConfig = tilesConfig[tileKey]
+    if (tileConfig.isLandscapeSheet) {
+      return landscapeSheetMap[tileConfig.spriteKey]
+    } else if (tileConfig.isTowersSheet) {
+      return towersGreySheetMap[tileConfig.spriteKey]
+    }
+  }
 }
