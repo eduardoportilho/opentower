@@ -46,3 +46,20 @@ export const gridConfig = {
     target: true
   }
 }
+
+export function getTileConnections(tileKey) {
+  switch (tileKey) {
+    case PATH_SN:
+      return ['south', 'north']
+    case PATH_WE:
+      return ['west', 'east']
+    case CURVE_SE:
+      return ['south', 'east']
+    case CURVE_WS:
+      return ['west', 'south']
+    case CURVE_NE:
+      return ['north', 'east']
+    case CURVE_WN:
+      return ['west', 'north']
+  }
+}
