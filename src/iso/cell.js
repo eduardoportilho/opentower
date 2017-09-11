@@ -1,7 +1,8 @@
 import {getTileConnections} from '../config/grid-config'
 
 export default class Cell {
-  constructor ({row, col, tile, object, spawn, target, pathPoints}) {
+  constructor ({grid, row, col, tile, object, spawn, target, pathPoints}) {
+    this.grid = grid
     this.row = row
     this.col = col
     this.tile = tile
