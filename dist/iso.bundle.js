@@ -701,6 +701,8 @@ var _random = __webpack_require__(4);
 
 var _random2 = _interopRequireDefault(_random);
 
+var _drawingUtils = __webpack_require__(2);
+
 var _lodash = __webpack_require__(29);
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -740,6 +742,7 @@ var Game = function () {
     value: function init() {
       this.spanGoonOnRandomPosition();
       this.startLoop();
+      this.drawGoonPath();
     }
   }, {
     key: 'startLoop',
@@ -794,11 +797,20 @@ var Game = function () {
       return this.goons;
     }
 
+    // Debug
+
+  }, {
+    key: 'drawGoonPath',
+    value: function drawGoonPath() {
+      var paths = this.getPaths();
+      (0, _drawingUtils.polygon)(this.context, paths[0], false, true);
+    }
+
     // TODO Move to another place
 
   }, {
-    key: 'buildPath',
-    value: function buildPath() {
+    key: 'getPaths',
+    value: function getPaths() {
       var targetCell = this.grid.getTargetCell();
       var sidesWithConnection = targetCell.getSidesWithConnection();
       var allPaths = [];
@@ -811,6 +823,9 @@ var Game = function () {
           var side = _step.value;
 
           var connectedCell = targetCell.getCellConnectedAt(side);
+          if (!connectedCell) {
+            continue;
+          }
           var entryPoint = targetCell.getEntryPointAt(side);
           var paths = this.buildPaths(connectedCell, side, [entryPoint]);
           allPaths = allPaths.concat(paths);
@@ -860,6 +875,9 @@ var Game = function () {
           var side = _step2.value;
 
           var connectedCell = cell.getCellConnectedAt(side);
+          if (!connectedCell) {
+            continue;
+          }
           var entryPoint = cell.getEntryPointAt(side);
           var sidePath = _lodash2.default.clone(newPath);
           sidePath.push(entryPoint);
@@ -1104,6 +1122,18 @@ var IsoGrid = exports.IsoGrid = function () {
     value: function getSpawnCells() {
       return this.cells.filter(function (cell) {
         return cell.isSpawn();
+      });
+    }
+
+    /**
+     * @return {Cell}
+     */
+
+  }, {
+    key: 'getTargetCell',
+    value: function getTargetCell() {
+      return this.cells.find(function (cell) {
+        return cell.isTarget();
       });
     }
   }, {
@@ -1480,6 +1510,11 @@ var Cell = function () {
       return this.spawnSide !== undefined;
     }
   }, {
+    key: 'isTarget',
+    value: function isTarget() {
+      return this.target === true;
+    }
+  }, {
     key: 'getSpawnSide',
     value: function getSpawnSide() {
       return this.spawnSide;
@@ -1502,6 +1537,9 @@ var Cell = function () {
         col += 1;
       } else if (side === 'west') {
         col -= 1;
+      }
+      if (row < 0 || row >= this.grid.rowCount || col < 0 || col >= this.grid.colCount) {
+        return undefined;
       }
       return this.grid.getCell(row, col);
     }

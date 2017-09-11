@@ -12,6 +12,7 @@ import {loadImageCache} from '../image-cache.js'
 import {IsoGrid, FLOOR_HEIGHT} from './iso-grid.js'
 import Goon from './goon.js'
 import random from '../utils/random'
+import {polygon} from '../utils/drawing-utils'
 import _ from 'lodash'
 
 const CANVAS_WIDTH = 1400
@@ -41,6 +42,7 @@ class Game {
   init () {
     this.spanGoonOnRandomPosition()
     this.startLoop()
+    this.drawGoonPath()
   }
 
   startLoop () {
@@ -92,13 +94,22 @@ class Game {
     return this.goons
   }
 
+  // Debug
+  drawGoonPath () {
+    const paths = this.getPaths()
+    polygon(this.context, paths[0], false, true)
+  }
+
   // TODO Move to another place
-  buildPath () {
+  getPaths () {
     const targetCell = this.grid.getTargetCell()
     const sidesWithConnection = targetCell.getSidesWithConnection()
     let allPaths = []
     for (let side of sidesWithConnection) {
       let connectedCell = targetCell.getCellConnectedAt(side)
+      if (!connectedCell) {
+        continue
+      }
       let entryPoint = targetCell.getEntryPointAt(side)
       let paths = this.buildPaths(connectedCell, side, [entryPoint])
       allPaths = allPaths.concat(paths)
@@ -124,6 +135,9 @@ class Game {
       .filter(side => side !== targetSide)
     for (let side of sidesWithConnection) {
       let connectedCell = cell.getCellConnectedAt(side)
+      if (!connectedCell) {
+        continue
+      }
       let entryPoint = cell.getEntryPointAt(side)
       let sidePath = _.clone(newPath)
       sidePath.push(entryPoint)
