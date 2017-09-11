@@ -20,7 +20,20 @@ export default class Cell {
     return getTileConnections(this.tile)
   }
 
-  getCellConnectedAt (side) {}
+  getCellConnectedAt (side) {
+    let row = this.row
+    let col = this.col
+    if (side === 'north') {
+      row -= 1
+    } else if (side === 'south') {
+      row += 1
+    } else if (side === 'east') {
+      col += 1
+    } else if (side === 'west') {
+      col -= 1
+    }
+    return this.grid.getCell(row, col)
+  }
 
   getEntryPointAt (side) {}
 
