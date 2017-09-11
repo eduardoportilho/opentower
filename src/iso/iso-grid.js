@@ -1,5 +1,5 @@
 import {imageCache} from '../image-cache.js'
-import {polygon} from '../drawing-utils'
+import {polygon} from '../utils/drawing-utils'
 import IsoGridUtils from '../utils/iso-grid-utils'
 import landscapeSheetMap from '../spritesheets/landscape-sheet'
 import towersGreySheetMap from '../spritesheets/towers-grey-sheet'
@@ -112,6 +112,13 @@ export class IsoGrid {
    */
   getSpawnCells () {
     return this.cells.filter(cell => cell.isSpawn())
+  }
+
+  /**
+   * @return {Cell}
+   */
+  getTargetCell () {
+    return this.cells.find(cell => cell.isTarget())
   }
 
   getCell (row, col) {
