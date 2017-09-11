@@ -16,6 +16,10 @@ export default class Cell {
     return this.spawnSide !== undefined
   }
 
+  isTarget () {
+    return this.target === true
+  }
+
   getSpawnSide () {
     return this.spawnSide
   }
