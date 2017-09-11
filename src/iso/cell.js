@@ -1,19 +1,23 @@
 import {getTileConnections} from '../config/grid-config'
 
 export default class Cell {
-  constructor ({grid, row, col, tile, object, spawn, target, pathPoints}) {
+  constructor ({grid, row, col, tile, object, spawnSide, target, pathPoints}) {
     this.grid = grid
     this.row = row
     this.col = col
     this.tile = tile
     this.object = object
-    this.spawn = spawn
+    this.spawnSide = spawnSide
     this.target = target
     this.pathPoints = pathPoints
   }
 
   isSpawn () {
-    return this.spawn
+    return this.spawnSide !== undefined
+  }
+
+  getSpawnSide () {
+    return this.spawnSide
   }
 
   getSidesWithConnection () {
@@ -35,7 +39,11 @@ export default class Cell {
     return this.grid.getCell(row, col)
   }
 
-  getEntryPointAt (side) {}
+  getEntryPointAt (side) {
+    return this.pathPoints[side]
+  }
 
-  getMiddlePathPoint () {}
+  getMiddlePathPoint () {
+    return this.pathPoints['middle']
+  }
 }
