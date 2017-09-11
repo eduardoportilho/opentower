@@ -40,6 +40,14 @@ export default class Cell {
     } else if (side === 'west') {
       col -= 1
     }
+    if (
+      row < 0 ||
+      row >= this.grid.rowCount ||
+      col < 0 ||
+      col >= this.grid.colCount
+      ) {
+      return undefined
+    }
     return this.grid.getCell(row, col)
   }
 
