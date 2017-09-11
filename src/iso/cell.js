@@ -12,6 +12,10 @@ export default class Cell {
     this.pathPoints = pathPoints
   }
 
+  isSpawn () {
+    return this.spawn
+  }
+
   getSidesWithConnection () {
     return getTileConnections(this.tile)
   }
@@ -21,6 +25,4 @@ export default class Cell {
   getEntryPointAt (side) {}
 
   getMiddlePathPoint () {}
-
-  isSpawn () {}
 }
