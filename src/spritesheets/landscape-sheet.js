@@ -6,10 +6,10 @@ export default {
     y: 0,
     width: 132,
     height: 99,
-    pathPoints: [
-      {x: 99, y: 20},
-      {x: 34, y: 52}
-    ]
+    pathPoints: {
+      north: {x: 99, y: 20},
+      south: {x: 34, y: 52}
+    }
   },
   'PATH_WE': { x: 928, y: 230, width: 132, height: 99 },
   'CURVE_SE': {
@@ -17,10 +17,10 @@ export default {
     y: 99,
     width: 132,
     height: 99,
-    pathPoints: [
-      {x: 34, y: 51},
-      {x: 66, y: 43},
-      {x: 98, y: 52}
+    pathPoints: {
+      south: {x: 34, y: 51},
+      middle: {x: 66, y: 43},
+      east: {x: 98, y: 52}
     ]
   },
   'CURVE_NE': { x: 1060, y: 396, width: 132, height: 99 },
