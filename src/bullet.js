@@ -1,5 +1,5 @@
 import {getPointInLine, isEqualPoints} from './geometry-utils'
-import {circle} from './drawing-utils'
+import {circle} from './utils/drawing-utils'
 import {getGame} from './game.js'
 
 const SPEED = 200
