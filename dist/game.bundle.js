@@ -154,7 +154,7 @@ var _random = __webpack_require__(4);
 
 var _random2 = _interopRequireDefault(_random);
 
-var _gameConfig = __webpack_require__(6);
+var _gameConfig = __webpack_require__(7);
 
 var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
@@ -719,7 +719,8 @@ var Random = function () {
 exports.default = new Random();
 
 /***/ }),
-/* 5 */
+/* 5 */,
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -843,7 +844,7 @@ var Cell = exports.Cell = function () {
 }();
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -886,7 +887,6 @@ exports.default = {
 };
 
 /***/ }),
-/* 7 */,
 /* 8 */,
 /* 9 */,
 /* 10 */,
@@ -964,7 +964,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} nextStep - Next cell on the path to target.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _cell = __webpack_require__(5);
+var _cell = __webpack_require__(6);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1523,7 +1523,7 @@ var _goon = __webpack_require__(17);
 
 var _goon2 = _interopRequireDefault(_goon);
 
-var _gameConfig = __webpack_require__(6);
+var _gameConfig = __webpack_require__(7);
 
 var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
@@ -2026,7 +2026,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _game = __webpack_require__(1);
 
-var _cell = __webpack_require__(5);
+var _cell = __webpack_require__(6);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 

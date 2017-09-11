@@ -21,7 +21,7 @@ export default {
       south: {x: 34, y: 51},
       middle: {x: 66, y: 43},
       east: {x: 98, y: 52}
-    ]
+    }
   },
   'CURVE_NE': { x: 1060, y: 396, width: 132, height: 99 },
   'CURVE_WS': { x: 1060, y: 297, width: 132, height: 99 },

@@ -53,7 +53,7 @@ export class IsoGrid {
           col: col,
           tile: gridTileConfig.tile,
           object: gridTileConfig.object,
-          spawn: !!gridTileConfig.spawn,
+          spawnSide: gridTileConfig.spawnSide,
           target: !!gridTileConfig.target,
           pathPoints: spriteConfig.pathPoints || []
         }))
@@ -111,7 +111,7 @@ export class IsoGrid {
    * @return {Cell[]} Array of spawn cell
    */
   getSpawnCells () {
-    return this.cells.filter(cell => cell.spawn)
+    return this.cells.filter(cell => cell.isSpawn())
   }
 
   getCell (row, col) {

@@ -10,7 +10,7 @@ export const CASTLE = 'CASTLE'
 export const gridConfig = {
   '7,1': {
     tile: PATH_SN,
-    spawn: true
+    spawnSide: 'south'
   },
   '6,1': { tile: PATH_SN },
   '5,1': { tile: PATH_SN },
@@ -47,7 +47,7 @@ export const gridConfig = {
   }
 }
 
-export function getTileConnections(tileKey) {
+export function getTileConnections (tileKey) {
   switch (tileKey) {
     case PATH_SN:
       return ['south', 'north']

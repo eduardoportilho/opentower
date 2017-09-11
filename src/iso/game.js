@@ -12,6 +12,7 @@ import {loadImageCache} from '../image-cache.js'
 import {IsoGrid, FLOOR_HEIGHT} from './iso-grid.js'
 import Goon from './goon.js'
 import random from '../utils/random'
+import _ from 'lodash'
 
 const CANVAS_WIDTH = 1400
 const CANVAS_HEIGHT = 800
@@ -113,12 +114,12 @@ class Game {
       newPath.push(middlePathPoint)
     }
     if (cell.isSpawn()) {
-      const spawnSide = getSpawnSide()
+      const spawnSide = cell.getSpawnSide()
       const spawnPoint = cell.getEntryPointAt(spawnSide)
       newPath.push(spawnPoint)
       return [newPath]
     }
-    const allPaths = []
+    let allPaths = []
     const sidesWithConnection = cell.getSidesWithConnection()
       .filter(side => side !== targetSide)
     for (let side of sidesWithConnection) {
