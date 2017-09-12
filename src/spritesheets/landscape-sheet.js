@@ -11,7 +11,16 @@ export default {
       south: {x: 34, y: 52}
     }
   },
-  'PATH_WE': { x: 928, y: 230, width: 132, height: 99 },
+  'PATH_WE': {
+    x: 928,
+    y: 230,
+    width: 132,
+    height: 99,
+    pathPoints: {
+      west: {x: 37, y: 22},
+      east: {x: 100, y: 53}
+    }
+  },
   'CURVE_SE': {
     x: 1720,
     y: 99,
