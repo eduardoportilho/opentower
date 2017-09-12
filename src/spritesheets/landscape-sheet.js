@@ -43,7 +43,17 @@ export default {
       east: {x: 101, y: 54}
     }
   },
-  'CURVE_WS': { x: 1060, y: 297, width: 132, height: 99 },
+  'CURVE_WS': {
+    x: 1060,
+    y: 297,
+    width: 132,
+    height: 99,
+    pathPoints: {
+      west: {x: 35, y: 22},
+      middle: {x: 50, y: 36},
+      south: {x: 36, y: 53}
+    }
+  },
   'CURVE_WN': { x: 928, y: 329, width: 132, height: 99 },
   'crystal_l_r': { x: 1720, y: 198, width: 132, height: 112 },
   'crystal_b_t': { x: 1852, y: 114, width: 132, height: 121 },
