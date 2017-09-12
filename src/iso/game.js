@@ -13,6 +13,7 @@ import {IsoGrid, FLOOR_HEIGHT} from './iso-grid.js'
 import Goon from './goon.js'
 import random from '../utils/random'
 import {polygon} from '../utils/drawing-utils'
+import {getOppositeSide} from '../utils/tile-utils'
 import _ from 'lodash'
 
 const CANVAS_WIDTH = 1400
@@ -118,6 +119,7 @@ class Game {
   }
 
   buildPaths (cell, targetSide, pathSoFar) {
+    const entrySide = getOppositeSide(targetSide)
     const newPath = _.clone(pathSoFar)
     newPath.push(cell.getEntryPointAt(targetSide))
     const middlePathPoint = cell.getMiddlePathPoint()
@@ -132,7 +134,7 @@ class Game {
     }
     let allPaths = []
     const sidesWithConnection = cell.getSidesWithConnection()
-      .filter(side => side !== targetSide)
+      .filter(side => side !== entrySide)
     for (let side of sidesWithConnection) {
       let connectedCell = cell.getCellConnectedAt(side)
       if (!connectedCell) {
