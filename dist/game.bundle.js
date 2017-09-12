@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 12);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -134,19 +134,19 @@ var _createClass = function () { function defineProperties(target, props) { for 
 exports.initGame = initGame;
 exports.getGame = getGame;
 
-var _grid = __webpack_require__(12);
+var _grid = __webpack_require__(13);
 
 var _grid2 = _interopRequireDefault(_grid);
 
-var _tower = __webpack_require__(14);
+var _tower = __webpack_require__(15);
 
 var _tower2 = _interopRequireDefault(_tower);
 
-var _goonWave = __webpack_require__(16);
+var _goonWave = __webpack_require__(17);
 
 var _goonWave2 = _interopRequireDefault(_goonWave);
 
-var _pathFinder = __webpack_require__(18);
+var _pathFinder = __webpack_require__(19);
 
 var _pathFinder2 = _interopRequireDefault(_pathFinder);
 
@@ -154,15 +154,15 @@ var _random = __webpack_require__(4);
 
 var _random2 = _interopRequireDefault(_random);
 
-var _gameConfig = __webpack_require__(7);
+var _gameConfig = __webpack_require__(6);
 
 var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
-var _scoreBoard = __webpack_require__(19);
+var _scoreBoard = __webpack_require__(20);
 
 var _scoreBoard2 = _interopRequireDefault(_scoreBoard);
 
-var _renderer = __webpack_require__(20);
+var _renderer = __webpack_require__(21);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
@@ -719,8 +719,7 @@ var Random = function () {
 exports.default = new Random();
 
 /***/ }),
-/* 5 */,
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -737,7 +736,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} y - The Y Coordinate.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _coord = __webpack_require__(13);
+var _coord = __webpack_require__(14);
 
 var _coord2 = _interopRequireDefault(_coord);
 
@@ -844,7 +843,7 @@ var Cell = exports.Cell = function () {
 }();
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -887,10 +886,12 @@ exports.default = {
 };
 
 /***/ }),
+/* 7 */,
 /* 8 */,
 /* 9 */,
 /* 10 */,
-/* 11 */
+/* 11 */,
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -946,7 +947,7 @@ function initDebugPanel() {
 }
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -964,7 +965,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * @property {number} nextStep - Next cell on the path to target.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _cell = __webpack_require__(6);
+var _cell = __webpack_require__(5);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1210,7 +1211,7 @@ var Grid = function () {
 exports.default = Grid;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1256,7 +1257,7 @@ var Coord = function () {
 exports.default = Coord;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1274,7 +1275,7 @@ var _drawingUtils = __webpack_require__(2);
 
 var _game = __webpack_require__(1);
 
-var _bullet = __webpack_require__(15);
+var _bullet = __webpack_require__(16);
 
 var _bullet2 = _interopRequireDefault(_bullet);
 
@@ -1450,7 +1451,7 @@ Tower.sizeInCells = {
 };
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1507,7 +1508,7 @@ var Bullet = function () {
 exports.default = Bullet;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1519,11 +1520,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _goon = __webpack_require__(17);
+var _goon = __webpack_require__(18);
 
 var _goon2 = _interopRequireDefault(_goon);
 
-var _gameConfig = __webpack_require__(7);
+var _gameConfig = __webpack_require__(6);
 
 var _gameConfig2 = _interopRequireDefault(_gameConfig);
 
@@ -1610,7 +1611,7 @@ var GoonWave = function () {
 exports.default = GoonWave;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1757,7 +1758,7 @@ var Goon = function () {
 exports.default = Goon;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1933,7 +1934,7 @@ var PriorityQueue = function () {
 }();
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2005,7 +2006,7 @@ var ScoreBoard = function () {
 exports.default = ScoreBoard;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2026,7 +2027,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _game = __webpack_require__(1);
 
-var _cell = __webpack_require__(6);
+var _cell = __webpack_require__(5);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
