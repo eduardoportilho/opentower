@@ -62,7 +62,7 @@ export default {
     pathPoints: {
       west: {x: 36, y: 22},
       middle: {x: 70, y: 27},
-      south: {x: 101, y: 22}
+      north: {x: 101, y: 22}
     }
   },
   'crystal_l_r': { x: 1720, y: 198, width: 132, height: 112 },
