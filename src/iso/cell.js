@@ -56,7 +56,7 @@ export default class Cell {
   getEntryPointAt (side) {
     const entryPoint = this.pathPoints[side]
     return {
-      x: entryPoint.x + this.origin.x - Math.round(CELL_WIDTH/2),
+      x: entryPoint.x + this.origin.x - Math.round(CELL_WIDTH / 2),
       y: entryPoint.y + this.origin.y
     }
   }
