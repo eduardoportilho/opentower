@@ -121,7 +121,7 @@ class Game {
   buildPaths (cell, targetSide, pathSoFar) {
     const entrySide = getOppositeSide(targetSide)
     const newPath = _.clone(pathSoFar)
-    newPath.push(cell.getEntryPointAt(targetSide))
+    newPath.push(cell.getEntryPointAt(entrySide))
     const middlePathPoint = cell.getMiddlePathPoint()
     if (middlePathPoint) {
       newPath.push(middlePathPoint)
