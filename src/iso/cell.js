@@ -1,5 +1,5 @@
 import {getTileConnections} from '../utils/tile-utils'
-import {FLOOR_HEIGHT} from  './iso-grid'
+import {FLOOR_HEIGHT, CELL_WIDTH} from './iso-grid'
 
 export default class Cell {
   constructor ({grid, row, col, tile, object, spawnSide, target, pathPoints}) {
@@ -56,12 +56,15 @@ export default class Cell {
   getEntryPointAt (side) {
     const entryPoint = this.pathPoints[side]
     return {
-      x: entryPoint.x + this.origin.x,
+      x: entryPoint.x + this.origin.x - Math.round(CELL_WIDTH/2),
       y: entryPoint.y + this.origin.y
     }
   }
 
   getMiddlePathPoint () {
-    return this.pathPoints['middle']
+    if (!this.pathPoints['middle']) {
+      return undefined
+    }
+    return this.getEntryPointAt('middle')
   }
 }
