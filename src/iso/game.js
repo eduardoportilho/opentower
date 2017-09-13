@@ -43,7 +43,6 @@ class Game {
   init () {
     this.spanGoonOnRandomPosition()
     this.startLoop()
-    this.drawGoonPath()
   }
 
   startLoop () {
@@ -68,6 +67,7 @@ class Game {
     }
     this.lastTick = now
     this.grid.drawGame(this.context)
+    this.drawGoonPath()
     this.animationId = requestAnimationFrame(this.tick.bind(this))
   }
 
