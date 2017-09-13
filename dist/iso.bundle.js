@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 22);
+/******/ 	return __webpack_require__(__webpack_require__.s = 23);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -325,268 +325,7 @@ var Random = function () {
 exports.default = new Random();
 
 /***/ }),
-/* 5 */,
-/* 6 */,
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = {
-  'meta': { maxWidth: 133 },
-  'GRASS': { x: 1193, y: 0, width: 132, height: 99 },
-  'PATH_SN': {
-    x: 1325,
-    y: 0,
-    width: 132,
-    height: 99,
-    pathPoints: {
-      north: { x: 99, y: 20 },
-      south: { x: 34, y: 52 }
-    }
-  },
-  'PATH_WE': { x: 928, y: 230, width: 132, height: 99 },
-  'CURVE_SE': {
-    x: 1720,
-    y: 99,
-    width: 132,
-    height: 99,
-    pathPoints: {
-      south: { x: 34, y: 51 },
-      middle: { x: 66, y: 43 },
-      east: { x: 98, y: 52 }
-    }
-  },
-  'CURVE_NE': { x: 1060, y: 396, width: 132, height: 99 },
-  'CURVE_WS': { x: 1060, y: 297, width: 132, height: 99 },
-  'CURVE_WN': { x: 928, y: 329, width: 132, height: 99 },
-  'crystal_l_r': { x: 1720, y: 198, width: 132, height: 112 },
-  'crystal_b_t': { x: 1852, y: 114, width: 132, height: 121 },
-  'crystal_t_b': { x: 0, y: 297, width: 133, height: 127 },
-  'crystal_r_l': { x: 1852, y: 0, width: 132, height: 114 },
-  'river_curve_tr_br': { x: 1192, y: 99, width: 132, height: 99 },
-  'landscape_01': { x: 1061, y: 0, width: 132, height: 99 },
-  'bridge_tl_br': { x: 1060, y: 198, width: 132, height: 99 },
-  'landscape_05': { x: 1060, y: 99, width: 132, height: 99 },
-  'landscape_06': { x: 929, y: 0, width: 132, height: 99 },
-  'landscape_08': { x: 1852, y: 235, width: 132, height: 115 },
-  'landscape_09': { x: 1720, y: 409, width: 132, height: 99 },
-  'landscape_10': { x: 1720, y: 310, width: 132, height: 99 },
-  'landscape_11': { x: 1456, y: 198, width: 132, height: 99 },
-  'landscape_12': { x: 796, y: 313, width: 132, height: 99 },
-  'grass_double': { x: 796, y: 214, width: 132, height: 99 },
-  'landscape_14': { x: 665, y: 115, width: 132, height: 99 },
-  'landscape_15': { x: 796, y: 412, width: 132, height: 99 },
-  'grass_ramp_tr_bl': { x: 664, y: 317, width: 132, height: 99 },
-  'dirt_single': { x: 664, y: 234, width: 132, height: 83 },
-  'landscape_18': { x: 665, y: 0, width: 132, height: 115 },
-  'landscape_19': { x: 532, y: 234, width: 132, height: 99 },
-  'grass_ramp_bl_tr': { x: 532, y: 333, width: 132, height: 115 },
-  'grass_single': { x: 0, y: 424, width: 132, height: 83 },
-  'grass_double_dirt': { x: 928, y: 115, width: 132, height: 115 },
-  'grass_ramp_br_tl': { x: 797, y: 0, width: 132, height: 115 },
-  'landscape_24': { x: 1192, y: 198, width: 132, height: 99 },
-  'landscape_25': { x: 1192, y: 297, width: 132, height: 99 },
-  'grass_ramp_diag_r_l': { x: 1192, y: 396, width: 132, height: 99 },
-  'landscape_27': { x: 1324, y: 225, width: 132, height: 115 },
-  'landscape_30': { x: 1456, y: 99, width: 132, height: 99 },
-  'landscape_31': { x: 1324, y: 340, width: 132, height: 99 },
-  'river_tr_bl': { x: 1588, y: 99, width: 132, height: 99 },
-  'landscape_34': { x: 1588, y: 297, width: 132, height: 99 },
-  'landscape_35': { x: 1588, y: 396, width: 132, height: 99 },
-  'landscape_36': { x: 1589, y: 0, width: 132, height: 99 },
-  'river_tl_br': { x: 0, y: 198, width: 133, height: 99 },
-  'landscape_39': { x: 1457, y: 0, width: 132, height: 99 },
-  'rocks_2_r_l': { x: 0, y: 0, width: 133, height: 99 },
-  'rocks_1_tl': { x: 0, y: 99, width: 133, height: 99 },
-  'rocks_3': { x: 133, y: 0, width: 133, height: 102 },
-  'rocks_4': { x: 133, y: 102, width: 133, height: 102 },
-  'rocks_2_l_r': { x: 133, y: 204, width: 133, height: 99 },
-  'rocks_6': { x: 133, y: 303, width: 133, height: 99 },
-  'rocks_7': { x: 1588, y: 198, width: 132, height: 99 },
-  'rocks_8': { x: 133, y: 402, width: 133, height: 99 },
-  'trees_1': { x: 266, y: 241, width: 133, height: 111 },
-  'trees_10': { x: 1456, y: 297, width: 132, height: 130 },
-  'trees_11': { x: 266, y: 0, width: 133, height: 118 },
-  'trees_2_t_b': { x: 266, y: 118, width: 133, height: 123 },
-  'trees_3_tr_tl_bl': { x: 399, y: 127, width: 133, height: 121 },
-  'trees_3': { x: 266, y: 352, width: 133, height: 113 },
-  'trees_4': { x: 399, y: 0, width: 133, height: 127 },
-  'trees_5': { x: 1324, y: 99, width: 132, height: 126 },
-  'trees_6': { x: 399, y: 248, width: 133, height: 124 },
-  'trees_7': { x: 399, y: 372, width: 133, height: 121 },
-  'trees_2_tr_tl': { x: 532, y: 0, width: 133, height: 118 },
-  'trees_9': { x: 532, y: 118, width: 133, height: 116 }
-};
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = {
-  'meta': { maxWidth: 103 },
-  'tower_00': { x: 187, y: 150, width: 89, height: 100 },
-  'tower_01': { x: 447, y: 235, width: 79, height: 72 },
-  'tower_02': { x: 684, y: 72, width: 79, height: 72 },
-  'tower_03': { x: 0, y: 232, width: 95, height: 76 },
-  'tower_04': { x: 0, y: 156, width: 95, height: 76 },
-  'tower_05': { x: 103, y: 75, width: 90, height: 75 },
-  'base_ld_3br': { x: 103, y: 0, width: 90, height: 75, offsetToTop: 35 },
-  'tower_07': { x: 0, y: 0, width: 103, height: 78 },
-  'tower_08': { x: 526, y: 217, width: 79, height: 72 },
-  'tower_09': { x: 0, y: 78, width: 103, height: 78 },
-  'tower_10': { x: 93, y: 308, width: 92, height: 75 },
-  'tower_11': { x: 685, y: 286, width: 79, height: 72 },
-  'tower_12': { x: 606, y: 307, width: 79, height: 70 },
-  'tower_13': { x: 93, y: 383, width: 92, height: 75 },
-  'tower_14': { x: 95, y: 156, width: 92, height: 75 },
-  'tower_15': { x: 447, y: 156, width: 79, height: 79 },
-  'tower_16': { x: 763, y: 149, width: 79, height: 72 },
-  'tower_17': { x: 763, y: 79, width: 79, height: 70 },
-  'tower_18': { x: 363, y: 229, width: 84, height: 73 },
-  'tower_19': { x: 95, y: 231, width: 92, height: 75 },
-  'tower_20': { x: 362, y: 424, width: 86, height: 74 },
-  'tower_21': { x: 276, y: 103, width: 87, height: 82 },
-  'tower_22': { x: 684, y: 214, width: 79, height: 72 },
-  'tower_23': { x: 684, y: 144, width: 79, height: 70 },
-  'base_lgrect_dk_2br': { x: 363, y: 302, width: 84, height: 73 },
-  'middle_light-corner': { x: 610, y: 0, width: 79, height: 72, offsetToTop: 32 },
-  'base_light-rect2x_dark_2br-left': { x: 363, y: 82, width: 86, height: 74, offsetToTop: 34 },
-  'tower_27': { x: 274, y: 350, width: 89, height: 74 },
-  'tower_28': { x: 605, y: 228, width: 79, height: 79 },
-  'tower_29': { x: 605, y: 149, width: 79, height: 79 },
-  'tower_30': { x: 605, y: 79, width: 79, height: 70 },
-  'tower_31': { x: 363, y: 156, width: 84, height: 73 },
-  'tower_32': { x: 527, y: 433, width: 79, height: 72 },
-  'tower_33': { x: 527, y: 361, width: 79, height: 72 },
-  'tower_34': { x: 185, y: 306, width: 89, height: 74 },
-  'tower_35': { x: 185, y: 380, width: 89, height: 98 },
-  'top_block_ld': { x: 282, y: 0, width: 87, height: 82 },
-  'base_light-rect_dark_winl': { x: 369, y: 0, width: 83, height: 73, offsetToTop: 33 },
-  'middle_light-corner_win-left': { x: 449, y: 73, width: 79, height: 72, offsetToTop: 31 },
-  'tower_39': { x: 448, y: 386, width: 79, height: 72 },
-  'tower_40': { x: 764, y: 221, width: 78, height: 72 },
-  'top_green-tri_white-top': { x: 193, y: 0, width: 89, height: 103 },
-  'tower_42': { x: 763, y: 0, width: 79, height: 79 },
-  'tower_43': { x: 526, y: 289, width: 79, height: 72 },
-  'middle_light-corner_dark-base_win-left': { x: 685, y: 430, width: 79, height: 72, offsetToTop: 31 },
-  'tower_45': { x: 685, y: 358, width: 79, height: 72 },
-  'tower_46': { x: 0, y: 308, width: 93, height: 98 },
-  'tower_47': { x: 531, y: 0, width: 79, height: 79 },
-  'middle_light-corner_dark-base_win-right': { x: 606, y: 377, width: 79, height: 72, offsetToTop: 31 },
-  'tower_49': { x: 526, y: 145, width: 79, height: 72 },
-  'tower_50': { x: 0, y: 406, width: 93, height: 98 },
-  'tower_51': { x: 274, y: 424, width: 88, height: 82 },
-  'tower_52': { x: 452, y: 0, width: 79, height: 72 },
-  'tower_53': { x: 274, y: 250, width: 89, height: 100 },
-  'tower_54': { x: 447, y: 307, width: 79, height: 79 },
-  'spriteGroups': {
-    'CASTLE': ['base_light-rect2x_dark_2br-left', 'middle_light-corner_dark-base_win-right', 'middle_light-corner_win-left', 'top_green-tri_white-top'],
-    'TOWER': ['base_ld_3br', 'top_block_ld']
-  }
-};
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var SpriteSheet = function () {
-  function SpriteSheet(spriteSheetImage, spriteSheetMap, tileWidth) {
-    _classCallCheck(this, SpriteSheet);
-
-    this.image = spriteSheetImage;
-    this.spriteSheetMap = spriteSheetMap;
-
-    var meta = this.spriteSheetMap['meta'];
-    var maxWidth = meta.maxWidth;
-    this.scale = tileWidth / maxWidth;
-  }
-
-  _createClass(SpriteSheet, [{
-    key: 'draw',
-    value: function draw(context, bottomPoint, spriteKey) {
-      var verticalOffset = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-
-      var sprite = this.spriteSheetMap[spriteKey];
-      var dimensions = this.scaleToFit(sprite);
-
-      var x = bottomPoint.x - Math.round(dimensions.width / 2);
-      var y = bottomPoint.y - dimensions.height + verticalOffset;
-      context.drawImage(this.image, sprite.x, sprite.y, sprite.width, sprite.height, x, y, dimensions.width, dimensions.height);
-      return dimensions;
-    }
-  }, {
-    key: 'drawStacked',
-    value: function drawStacked(context, bottomPoint, spriteKeys) {
-      var verticalOffset = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-
-      var stackHeight = verticalOffset;
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = spriteKeys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var spriteKey = _step.value;
-
-          var dimensions = this.draw(context, bottomPoint, spriteKey, stackHeight);
-          stackHeight -= dimensions.offsetToTop;
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-    }
-  }, {
-    key: 'scaleToFit',
-    value: function scaleToFit(sprite) {
-      var offsetToTop = sprite.offsetToTop || 0;
-      return {
-        width: Math.round(sprite.width * this.scale),
-        height: Math.round(sprite.height * this.scale),
-        offsetToTop: Math.round(offsetToTop * this.scale)
-      };
-    }
-  }]);
-
-  return SpriteSheet;
-}();
-
-exports.default = SpriteSheet;
-
-/***/ }),
-/* 10 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -645,300 +384,9 @@ var gridConfig = exports.gridConfig = {
 };
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getTileConnections = getTileConnections;
-exports.getOppositeSide = getOppositeSide;
-
-var _gridConfig = __webpack_require__(10);
-
-function getTileConnections(tileKey) {
-  switch (tileKey) {
-    case _gridConfig.PATH_SN:
-      return ['south', 'north'];
-    case _gridConfig.PATH_WE:
-      return ['west', 'east'];
-    case _gridConfig.CURVE_SE:
-      return ['south', 'east'];
-    case _gridConfig.CURVE_WS:
-      return ['west', 'south'];
-    case _gridConfig.CURVE_NE:
-      return ['north', 'east'];
-    case _gridConfig.CURVE_WN:
-      return ['west', 'north'];
-  }
-}
-
-function getOppositeSide(side) {
-  switch (side) {
-    case 'north':
-      return 'south';
-    case 'south':
-      return 'north';
-    case 'east':
-      return 'west';
-    case 'west':
-      return 'east';
-  }
-}
-
-/***/ }),
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */,
-/* 18 */,
-/* 19 */,
-/* 20 */,
-/* 21 */,
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* global requestAnimationFrame */
-
-/**
- * @typedef {Object} Drawable
- * @property {Object} position
- * @property {number} position.x
- * @property {number} position.y
- * @property {function} draw
- */
-
-var _imageCache = __webpack_require__(0);
-
-var _isoGrid = __webpack_require__(23);
-
-var _goon = __webpack_require__(29);
-
-var _goon2 = _interopRequireDefault(_goon);
-
-var _random = __webpack_require__(4);
-
-var _random2 = _interopRequireDefault(_random);
-
-var _drawingUtils = __webpack_require__(2);
-
-var _tileUtils = __webpack_require__(11);
-
-var _lodash = __webpack_require__(30);
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var CANVAS_WIDTH = 1400;
-var CANVAS_HEIGHT = 800;
-
-(0, _imageCache.loadImageCache)(init);
-
-function init() {
-  var canvas = document.getElementById('canvas');
-  canvas.width = CANVAS_WIDTH;
-  canvas.height = CANVAS_HEIGHT;
-
-  var game = new Game(canvas);
-  game.init();
-}
-
-var Game = function () {
-  function Game(canvas) {
-    _classCallCheck(this, Game);
-
-    this.goons = [];
-    this.context = canvas.getContext('2d');
-    this.grid = new _isoGrid.IsoGrid(this, {
-      width: canvas.width,
-      height: canvas.height
-    });
-  }
-
-  _createClass(Game, [{
-    key: 'init',
-    value: function init() {
-      this.spanGoonOnRandomPosition();
-      this.startLoop();
-      this.drawGoonPath();
-    }
-  }, {
-    key: 'startLoop',
-    value: function startLoop() {
-      this.lastTick = Date.now();
-      this.animationId = requestAnimationFrame(this.tick.bind(this));
-    }
-
-    /**
-     * Update state, render and restart the game loop every X ms.
-     */
-
-  }, {
-    key: 'tick',
-    value: function tick() {
-      if (!this.animationId) {
-        return;
-      }
-      var now = Date.now();
-      var delta = now - this.lastTick;
-
-      this.update(delta);
-
-      if (!this.animationId) {
-        return;
-      }
-      this.lastTick = now;
-      this.grid.drawGame(this.context);
-      this.animationId = requestAnimationFrame(this.tick.bind(this));
-    }
-  }, {
-    key: 'update',
-    value: function update(delta) {
-      this.goons.forEach(function (goon) {
-        return goon.update(delta);
-      });
-    }
-  }, {
-    key: 'spanGoonOnRandomPosition',
-    value: function spanGoonOnRandomPosition() {
-      var spawnCell = _random2.default.getRandomElementFromArray(this.grid.getSpawnCells());
-      var spawnPosition = this.grid.isoGridUtils.getCellSideCenter(spawnCell.row, spawnCell.col, _isoGrid.FLOOR_HEIGHT, 'south' // TODO: tiles can have different entry points
-      );
-      var goon = new _goon2.default();
-      goon.position = spawnPosition;
-      goon.cell = spawnCell;
-      this.goons.push(goon);
-    }
-  }, {
-    key: 'getDrawables',
-    value: function getDrawables() {
-      return this.goons;
-    }
-
-    // Debug
-
-  }, {
-    key: 'drawGoonPath',
-    value: function drawGoonPath() {
-      var paths = this.getPaths();
-      (0, _drawingUtils.polygon)(this.context, paths[0], false, true);
-    }
-
-    // TODO Move to another place
-
-  }, {
-    key: 'getPaths',
-    value: function getPaths() {
-      var targetCell = this.grid.getTargetCell();
-      var sidesWithConnection = targetCell.getSidesWithConnection();
-      var allPaths = [];
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = sidesWithConnection[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var side = _step.value;
-
-          var connectedCell = targetCell.getCellConnectedAt(side);
-          if (!connectedCell) {
-            continue;
-          }
-          var entryPoint = targetCell.getEntryPointAt(side);
-          var paths = this.buildPaths(connectedCell, side, [entryPoint]);
-          allPaths = allPaths.concat(paths);
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-
-      return allPaths;
-    }
-  }, {
-    key: 'buildPaths',
-    value: function buildPaths(cell, targetSide, pathSoFar) {
-      var entrySide = (0, _tileUtils.getOppositeSide)(targetSide);
-      var newPath = _lodash2.default.clone(pathSoFar);
-      newPath.push(cell.getEntryPointAt(targetSide));
-      var middlePathPoint = cell.getMiddlePathPoint();
-      if (middlePathPoint) {
-        newPath.push(middlePathPoint);
-      }
-      if (cell.isSpawn()) {
-        var spawnSide = cell.getSpawnSide();
-        var spawnPoint = cell.getEntryPointAt(spawnSide);
-        newPath.push(spawnPoint);
-        return [newPath];
-      }
-      var allPaths = [];
-      var sidesWithConnection = cell.getSidesWithConnection().filter(function (side) {
-        return side !== entrySide;
-      });
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = sidesWithConnection[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var side = _step2.value;
-
-          var connectedCell = cell.getCellConnectedAt(side);
-          if (!connectedCell) {
-            continue;
-          }
-          var entryPoint = cell.getEntryPointAt(side);
-          var sidePath = _lodash2.default.clone(newPath);
-          sidePath.push(entryPoint);
-
-          var paths = this.buildPaths(connectedCell, side, sidePath);
-          allPaths = allPaths.concat(paths);
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-
-      return allPaths;
-    }
-  }]);
-
-  return Game;
-}();
-
-/***/ }),
-/* 23 */
+/* 6 */,
+/* 7 */,
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -961,11 +409,11 @@ var _isoGridUtils = __webpack_require__(24);
 
 var _isoGridUtils2 = _interopRequireDefault(_isoGridUtils);
 
-var _landscapeSheet = __webpack_require__(7);
+var _landscapeSheet = __webpack_require__(9);
 
 var _landscapeSheet2 = _interopRequireDefault(_landscapeSheet);
 
-var _towersGreySheet = __webpack_require__(8);
+var _towersGreySheet = __webpack_require__(10);
 
 var _towersGreySheet2 = _interopRequireDefault(_towersGreySheet);
 
@@ -981,9 +429,9 @@ var _towersGrey = __webpack_require__(27);
 
 var _towersGrey2 = _interopRequireDefault(_towersGrey);
 
-var _gridConfig = __webpack_require__(10);
+var _gridConfig = __webpack_require__(5);
 
-var _spriteSheet = __webpack_require__(9);
+var _spriteSheet = __webpack_require__(11);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
@@ -1175,6 +623,597 @@ var IsoGrid = exports.IsoGrid = function () {
   }]);
 
   return IsoGrid;
+}();
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  'meta': { maxWidth: 133 },
+  'GRASS': { x: 1193, y: 0, width: 132, height: 99 },
+  'PATH_SN': {
+    x: 1325,
+    y: 0,
+    width: 132,
+    height: 99,
+    pathPoints: {
+      north: { x: 99, y: 20 },
+      south: { x: 34, y: 52 }
+    }
+  },
+  'PATH_WE': {
+    x: 928,
+    y: 230,
+    width: 132,
+    height: 99,
+    pathPoints: {
+      west: { x: 37, y: 22 },
+      east: { x: 100, y: 53 }
+    }
+  },
+  'CURVE_SE': {
+    x: 1720,
+    y: 99,
+    width: 132,
+    height: 99,
+    pathPoints: {
+      south: { x: 34, y: 51 },
+      middle: { x: 66, y: 43 },
+      east: { x: 98, y: 52 }
+    }
+  },
+  'CURVE_NE': {
+    x: 1060,
+    y: 396,
+    width: 132,
+    height: 99,
+    pathPoints: {
+      north: { x: 102, y: 23 },
+      middle: { x: 87, y: 37 },
+      east: { x: 101, y: 54 }
+    }
+  },
+  'CURVE_WS': {
+    x: 1060,
+    y: 297,
+    width: 132,
+    height: 99,
+    pathPoints: {
+      west: { x: 35, y: 22 },
+      middle: { x: 50, y: 36 },
+      south: { x: 36, y: 53 }
+    }
+  },
+  'CURVE_WN': {
+    x: 928,
+    y: 329,
+    width: 132,
+    height: 99,
+    pathPoints: {
+      west: { x: 36, y: 22 },
+      middle: { x: 70, y: 27 },
+      north: { x: 101, y: 22 }
+    }
+  },
+  'crystal_l_r': { x: 1720, y: 198, width: 132, height: 112 },
+  'crystal_b_t': { x: 1852, y: 114, width: 132, height: 121 },
+  'crystal_t_b': { x: 0, y: 297, width: 133, height: 127 },
+  'crystal_r_l': { x: 1852, y: 0, width: 132, height: 114 },
+  'river_curve_tr_br': { x: 1192, y: 99, width: 132, height: 99 },
+  'landscape_01': { x: 1061, y: 0, width: 132, height: 99 },
+  'bridge_tl_br': { x: 1060, y: 198, width: 132, height: 99 },
+  'landscape_05': { x: 1060, y: 99, width: 132, height: 99 },
+  'landscape_06': { x: 929, y: 0, width: 132, height: 99 },
+  'landscape_08': { x: 1852, y: 235, width: 132, height: 115 },
+  'landscape_09': { x: 1720, y: 409, width: 132, height: 99 },
+  'landscape_10': { x: 1720, y: 310, width: 132, height: 99 },
+  'landscape_11': { x: 1456, y: 198, width: 132, height: 99 },
+  'landscape_12': { x: 796, y: 313, width: 132, height: 99 },
+  'grass_double': { x: 796, y: 214, width: 132, height: 99 },
+  'landscape_14': { x: 665, y: 115, width: 132, height: 99 },
+  'landscape_15': { x: 796, y: 412, width: 132, height: 99 },
+  'grass_ramp_tr_bl': { x: 664, y: 317, width: 132, height: 99 },
+  'dirt_single': { x: 664, y: 234, width: 132, height: 83 },
+  'landscape_18': { x: 665, y: 0, width: 132, height: 115 },
+  'landscape_19': { x: 532, y: 234, width: 132, height: 99 },
+  'grass_ramp_bl_tr': { x: 532, y: 333, width: 132, height: 115 },
+  'grass_single': { x: 0, y: 424, width: 132, height: 83 },
+  'grass_double_dirt': { x: 928, y: 115, width: 132, height: 115 },
+  'grass_ramp_br_tl': { x: 797, y: 0, width: 132, height: 115 },
+  'landscape_24': { x: 1192, y: 198, width: 132, height: 99 },
+  'landscape_25': { x: 1192, y: 297, width: 132, height: 99 },
+  'grass_ramp_diag_r_l': { x: 1192, y: 396, width: 132, height: 99 },
+  'landscape_27': { x: 1324, y: 225, width: 132, height: 115 },
+  'landscape_30': { x: 1456, y: 99, width: 132, height: 99 },
+  'landscape_31': { x: 1324, y: 340, width: 132, height: 99 },
+  'river_tr_bl': { x: 1588, y: 99, width: 132, height: 99 },
+  'landscape_34': { x: 1588, y: 297, width: 132, height: 99 },
+  'landscape_35': { x: 1588, y: 396, width: 132, height: 99 },
+  'landscape_36': { x: 1589, y: 0, width: 132, height: 99 },
+  'river_tl_br': { x: 0, y: 198, width: 133, height: 99 },
+  'landscape_39': { x: 1457, y: 0, width: 132, height: 99 },
+  'rocks_2_r_l': { x: 0, y: 0, width: 133, height: 99 },
+  'rocks_1_tl': { x: 0, y: 99, width: 133, height: 99 },
+  'rocks_3': { x: 133, y: 0, width: 133, height: 102 },
+  'rocks_4': { x: 133, y: 102, width: 133, height: 102 },
+  'rocks_2_l_r': { x: 133, y: 204, width: 133, height: 99 },
+  'rocks_6': { x: 133, y: 303, width: 133, height: 99 },
+  'rocks_7': { x: 1588, y: 198, width: 132, height: 99 },
+  'rocks_8': { x: 133, y: 402, width: 133, height: 99 },
+  'trees_1': { x: 266, y: 241, width: 133, height: 111 },
+  'trees_10': { x: 1456, y: 297, width: 132, height: 130 },
+  'trees_11': { x: 266, y: 0, width: 133, height: 118 },
+  'trees_2_t_b': { x: 266, y: 118, width: 133, height: 123 },
+  'trees_3_tr_tl_bl': { x: 399, y: 127, width: 133, height: 121 },
+  'trees_3': { x: 266, y: 352, width: 133, height: 113 },
+  'trees_4': { x: 399, y: 0, width: 133, height: 127 },
+  'trees_5': { x: 1324, y: 99, width: 132, height: 126 },
+  'trees_6': { x: 399, y: 248, width: 133, height: 124 },
+  'trees_7': { x: 399, y: 372, width: 133, height: 121 },
+  'trees_2_tr_tl': { x: 532, y: 0, width: 133, height: 118 },
+  'trees_9': { x: 532, y: 118, width: 133, height: 116 }
+};
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  'meta': { maxWidth: 103 },
+  'tower_00': { x: 187, y: 150, width: 89, height: 100 },
+  'tower_01': { x: 447, y: 235, width: 79, height: 72 },
+  'tower_02': { x: 684, y: 72, width: 79, height: 72 },
+  'tower_03': { x: 0, y: 232, width: 95, height: 76 },
+  'tower_04': { x: 0, y: 156, width: 95, height: 76 },
+  'tower_05': { x: 103, y: 75, width: 90, height: 75 },
+  'base_ld_3br': { x: 103, y: 0, width: 90, height: 75, offsetToTop: 35 },
+  'tower_07': { x: 0, y: 0, width: 103, height: 78 },
+  'tower_08': { x: 526, y: 217, width: 79, height: 72 },
+  'tower_09': { x: 0, y: 78, width: 103, height: 78 },
+  'tower_10': { x: 93, y: 308, width: 92, height: 75 },
+  'tower_11': { x: 685, y: 286, width: 79, height: 72 },
+  'tower_12': { x: 606, y: 307, width: 79, height: 70 },
+  'tower_13': { x: 93, y: 383, width: 92, height: 75 },
+  'tower_14': { x: 95, y: 156, width: 92, height: 75 },
+  'tower_15': { x: 447, y: 156, width: 79, height: 79 },
+  'tower_16': { x: 763, y: 149, width: 79, height: 72 },
+  'tower_17': { x: 763, y: 79, width: 79, height: 70 },
+  'tower_18': { x: 363, y: 229, width: 84, height: 73 },
+  'tower_19': { x: 95, y: 231, width: 92, height: 75 },
+  'tower_20': { x: 362, y: 424, width: 86, height: 74 },
+  'tower_21': { x: 276, y: 103, width: 87, height: 82 },
+  'tower_22': { x: 684, y: 214, width: 79, height: 72 },
+  'tower_23': { x: 684, y: 144, width: 79, height: 70 },
+  'base_lgrect_dk_2br': { x: 363, y: 302, width: 84, height: 73 },
+  'middle_light-corner': { x: 610, y: 0, width: 79, height: 72, offsetToTop: 32 },
+  'base_light-rect2x_dark_2br-left': { x: 363, y: 82, width: 86, height: 74, offsetToTop: 34 },
+  'tower_27': { x: 274, y: 350, width: 89, height: 74 },
+  'tower_28': { x: 605, y: 228, width: 79, height: 79 },
+  'tower_29': { x: 605, y: 149, width: 79, height: 79 },
+  'tower_30': { x: 605, y: 79, width: 79, height: 70 },
+  'tower_31': { x: 363, y: 156, width: 84, height: 73 },
+  'tower_32': { x: 527, y: 433, width: 79, height: 72 },
+  'tower_33': { x: 527, y: 361, width: 79, height: 72 },
+  'tower_34': { x: 185, y: 306, width: 89, height: 74 },
+  'tower_35': { x: 185, y: 380, width: 89, height: 98 },
+  'top_block_ld': { x: 282, y: 0, width: 87, height: 82 },
+  'base_light-rect_dark_winl': { x: 369, y: 0, width: 83, height: 73, offsetToTop: 33 },
+  'middle_light-corner_win-left': { x: 449, y: 73, width: 79, height: 72, offsetToTop: 31 },
+  'tower_39': { x: 448, y: 386, width: 79, height: 72 },
+  'tower_40': { x: 764, y: 221, width: 78, height: 72 },
+  'top_green-tri_white-top': { x: 193, y: 0, width: 89, height: 103 },
+  'tower_42': { x: 763, y: 0, width: 79, height: 79 },
+  'tower_43': { x: 526, y: 289, width: 79, height: 72 },
+  'middle_light-corner_dark-base_win-left': { x: 685, y: 430, width: 79, height: 72, offsetToTop: 31 },
+  'tower_45': { x: 685, y: 358, width: 79, height: 72 },
+  'tower_46': { x: 0, y: 308, width: 93, height: 98 },
+  'tower_47': { x: 531, y: 0, width: 79, height: 79 },
+  'middle_light-corner_dark-base_win-right': { x: 606, y: 377, width: 79, height: 72, offsetToTop: 31 },
+  'tower_49': { x: 526, y: 145, width: 79, height: 72 },
+  'tower_50': { x: 0, y: 406, width: 93, height: 98 },
+  'tower_51': { x: 274, y: 424, width: 88, height: 82 },
+  'tower_52': { x: 452, y: 0, width: 79, height: 72 },
+  'tower_53': { x: 274, y: 250, width: 89, height: 100 },
+  'tower_54': { x: 447, y: 307, width: 79, height: 79 },
+  'spriteGroups': {
+    'CASTLE': ['base_light-rect2x_dark_2br-left', 'middle_light-corner_dark-base_win-right', 'middle_light-corner_win-left', 'top_green-tri_white-top'],
+    'TOWER': ['base_ld_3br', 'top_block_ld']
+  }
+};
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var SpriteSheet = function () {
+  function SpriteSheet(spriteSheetImage, spriteSheetMap, tileWidth) {
+    _classCallCheck(this, SpriteSheet);
+
+    this.image = spriteSheetImage;
+    this.spriteSheetMap = spriteSheetMap;
+
+    var meta = this.spriteSheetMap['meta'];
+    var maxWidth = meta.maxWidth;
+    this.scale = tileWidth / maxWidth;
+  }
+
+  _createClass(SpriteSheet, [{
+    key: 'draw',
+    value: function draw(context, bottomPoint, spriteKey) {
+      var verticalOffset = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+
+      var sprite = this.spriteSheetMap[spriteKey];
+      var dimensions = this.scaleToFit(sprite);
+
+      var x = bottomPoint.x - Math.round(dimensions.width / 2);
+      var y = bottomPoint.y - dimensions.height + verticalOffset;
+      context.drawImage(this.image, sprite.x, sprite.y, sprite.width, sprite.height, x, y, dimensions.width, dimensions.height);
+      return dimensions;
+    }
+  }, {
+    key: 'drawStacked',
+    value: function drawStacked(context, bottomPoint, spriteKeys) {
+      var verticalOffset = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+
+      var stackHeight = verticalOffset;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = spriteKeys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var spriteKey = _step.value;
+
+          var dimensions = this.draw(context, bottomPoint, spriteKey, stackHeight);
+          stackHeight -= dimensions.offsetToTop;
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
+  }, {
+    key: 'scaleToFit',
+    value: function scaleToFit(sprite) {
+      var offsetToTop = sprite.offsetToTop || 0;
+      return {
+        width: Math.round(sprite.width * this.scale),
+        height: Math.round(sprite.height * this.scale),
+        offsetToTop: Math.round(offsetToTop * this.scale)
+      };
+    }
+  }]);
+
+  return SpriteSheet;
+}();
+
+exports.default = SpriteSheet;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getTileConnections = getTileConnections;
+exports.getOppositeSide = getOppositeSide;
+
+var _gridConfig = __webpack_require__(5);
+
+function getTileConnections(tileKey) {
+  switch (tileKey) {
+    case _gridConfig.PATH_SN:
+      return ['south', 'north'];
+    case _gridConfig.PATH_WE:
+      return ['west', 'east'];
+    case _gridConfig.CURVE_SE:
+      return ['south', 'east'];
+    case _gridConfig.CURVE_WS:
+      return ['west', 'south'];
+    case _gridConfig.CURVE_NE:
+      return ['north', 'east'];
+    case _gridConfig.CURVE_WN:
+      return ['west', 'north'];
+  }
+}
+
+function getOppositeSide(side) {
+  switch (side) {
+    case 'north':
+      return 'south';
+    case 'south':
+      return 'north';
+    case 'east':
+      return 'west';
+    case 'west':
+      return 'east';
+  }
+}
+
+/***/ }),
+/* 13 */,
+/* 14 */,
+/* 15 */,
+/* 16 */,
+/* 17 */,
+/* 18 */,
+/* 19 */,
+/* 20 */,
+/* 21 */,
+/* 22 */,
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* global requestAnimationFrame */
+
+/**
+ * @typedef {Object} Drawable
+ * @property {Object} position
+ * @property {number} position.x
+ * @property {number} position.y
+ * @property {function} draw
+ */
+
+var _imageCache = __webpack_require__(0);
+
+var _isoGrid = __webpack_require__(8);
+
+var _goon = __webpack_require__(29);
+
+var _goon2 = _interopRequireDefault(_goon);
+
+var _random = __webpack_require__(4);
+
+var _random2 = _interopRequireDefault(_random);
+
+var _drawingUtils = __webpack_require__(2);
+
+var _tileUtils = __webpack_require__(12);
+
+var _lodash = __webpack_require__(30);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CANVAS_WIDTH = 1400;
+var CANVAS_HEIGHT = 800;
+
+(0, _imageCache.loadImageCache)(init);
+
+function init() {
+  var canvas = document.getElementById('canvas');
+  canvas.width = CANVAS_WIDTH;
+  canvas.height = CANVAS_HEIGHT;
+
+  var game = new Game(canvas);
+  game.init();
+}
+
+var Game = function () {
+  function Game(canvas) {
+    _classCallCheck(this, Game);
+
+    this.goons = [];
+    this.context = canvas.getContext('2d');
+    this.grid = new _isoGrid.IsoGrid(this, {
+      width: canvas.width,
+      height: canvas.height
+    });
+  }
+
+  _createClass(Game, [{
+    key: 'init',
+    value: function init() {
+      this.spanGoonOnRandomPosition();
+      this.startLoop();
+    }
+  }, {
+    key: 'startLoop',
+    value: function startLoop() {
+      this.lastTick = Date.now();
+      this.animationId = requestAnimationFrame(this.tick.bind(this));
+    }
+
+    /**
+     * Update state, render and restart the game loop every X ms.
+     */
+
+  }, {
+    key: 'tick',
+    value: function tick() {
+      if (!this.animationId) {
+        return;
+      }
+      var now = Date.now();
+      var delta = now - this.lastTick;
+
+      this.update(delta);
+
+      if (!this.animationId) {
+        return;
+      }
+      this.lastTick = now;
+      this.grid.drawGame(this.context);
+      this.drawGoonPath();
+      this.animationId = requestAnimationFrame(this.tick.bind(this));
+    }
+  }, {
+    key: 'update',
+    value: function update(delta) {
+      this.goons.forEach(function (goon) {
+        return goon.update(delta);
+      });
+    }
+  }, {
+    key: 'spanGoonOnRandomPosition',
+    value: function spanGoonOnRandomPosition() {
+      var spawnCell = _random2.default.getRandomElementFromArray(this.grid.getSpawnCells());
+      var spawnPosition = this.grid.isoGridUtils.getCellSideCenter(spawnCell.row, spawnCell.col, _isoGrid.FLOOR_HEIGHT, 'south' // TODO: tiles can have different entry points
+      );
+      var goon = new _goon2.default();
+      goon.position = spawnPosition;
+      goon.cell = spawnCell;
+      this.goons.push(goon);
+    }
+  }, {
+    key: 'getDrawables',
+    value: function getDrawables() {
+      return this.goons;
+    }
+
+    // Debug
+
+  }, {
+    key: 'drawGoonPath',
+    value: function drawGoonPath() {
+      var paths = this.getPaths();
+      (0, _drawingUtils.polygon)(this.context, paths[0], false, true);
+    }
+
+    // TODO Move to another place
+
+  }, {
+    key: 'getPaths',
+    value: function getPaths() {
+      var targetCell = this.grid.getTargetCell();
+      var sidesWithConnection = targetCell.getSidesWithConnection();
+      var allPaths = [];
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = sidesWithConnection[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var side = _step.value;
+
+          var connectedCell = targetCell.getCellConnectedAt(side);
+          if (!connectedCell) {
+            continue;
+          }
+          var entryPoint = targetCell.getEntryPointAt(side);
+          var paths = this.buildPaths(connectedCell, side, [entryPoint]);
+          allPaths = allPaths.concat(paths);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      return allPaths;
+    }
+  }, {
+    key: 'buildPaths',
+    value: function buildPaths(cell, targetSide, pathSoFar) {
+      var entrySide = (0, _tileUtils.getOppositeSide)(targetSide);
+      var newPath = _lodash2.default.clone(pathSoFar);
+      newPath.push(cell.getEntryPointAt(entrySide));
+      var middlePathPoint = cell.getMiddlePathPoint();
+      if (middlePathPoint) {
+        newPath.push(middlePathPoint);
+      }
+      if (cell.isSpawn()) {
+        var spawnSide = cell.getSpawnSide();
+        var spawnPoint = cell.getEntryPointAt(spawnSide);
+        newPath.push(spawnPoint);
+        return [newPath];
+      }
+      var allPaths = [];
+      var sidesWithConnection = cell.getSidesWithConnection().filter(function (side) {
+        return side !== entrySide;
+      });
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = sidesWithConnection[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var side = _step2.value;
+
+          var connectedCell = cell.getCellConnectedAt(side);
+          if (!connectedCell) {
+            continue;
+          }
+          var entryPoint = cell.getEntryPointAt(side);
+          var sidePath = _lodash2.default.clone(newPath);
+          sidePath.push(entryPoint);
+
+          var paths = this.buildPaths(connectedCell, side, sidePath);
+          allPaths = allPaths.concat(paths);
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+
+      return allPaths;
+    }
+  }]);
+
+  return Game;
 }();
 
 /***/ }),
@@ -1370,19 +1409,19 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _imageCache = __webpack_require__(0);
 
-var _landscapeSheet = __webpack_require__(7);
+var _landscapeSheet = __webpack_require__(9);
 
 var _landscapeSheet2 = _interopRequireDefault(_landscapeSheet);
 
-var _towersGreySheet = __webpack_require__(8);
+var _towersGreySheet = __webpack_require__(10);
 
 var _towersGreySheet2 = _interopRequireDefault(_towersGreySheet);
 
-var _spriteSheet = __webpack_require__(9);
+var _spriteSheet = __webpack_require__(11);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
-var _gridConfig = __webpack_require__(10);
+var _gridConfig = __webpack_require__(5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1507,9 +1546,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _tileUtils = __webpack_require__(11);
+var _tileUtils = __webpack_require__(12);
 
-var _isoGrid = __webpack_require__(23);
+var _isoGrid = __webpack_require__(8);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1581,14 +1620,17 @@ var Cell = function () {
     value: function getEntryPointAt(side) {
       var entryPoint = this.pathPoints[side];
       return {
-        x: entryPoint.x + this.origin.x,
+        x: entryPoint.x + this.origin.x - Math.round(_isoGrid.CELL_WIDTH / 2),
         y: entryPoint.y + this.origin.y
       };
     }
   }, {
     key: 'getMiddlePathPoint',
     value: function getMiddlePathPoint() {
-      return this.pathPoints['middle'];
+      if (!this.pathPoints['middle']) {
+        return undefined;
+      }
+      return this.getEntryPointAt('middle');
     }
   }]);
 

@@ -1,12 +1,10 @@
 import {
-  GRASS,
   PATH_SN,
   PATH_WE,
   CURVE_SE,
   CURVE_WS,
   CURVE_NE,
-  CURVE_WN,
-  CASTLE
+  CURVE_WN
 } from '../config/grid-config'
 
 export function getTileConnections (tileKey) {
