@@ -21,3 +21,9 @@ There are two:
 - Has `draw(context)` method
   - Uses **GameSheet** to draw tiles and objects stored in cells
   - Get drawables from grid and call draw
+
+### GameSheet (src/spritesheets/game-sheet.js)
+- Map sprite key to landscape-sheet.js or towers-grey-sheet.js
+- Has 2 instances of SpriteSheet for landscape-sheet.js and towers-grey-sheet.js
+- Has `draw(context)` method
+  - Delegate draw calls to SpriteSheet
