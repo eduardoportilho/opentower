@@ -27,3 +27,14 @@ There are two:
 - Has 2 instances of SpriteSheet for landscape-sheet.js and towers-grey-sheet.js
 - Has `draw(context)` method
   - Delegate draw calls to SpriteSheet
+
+### SpriteSheet (src/iso/sprite-sheet.js)
+- Has a reference to a sprite image file and it's map
+- Has `draw(context)` method (and drawStacked)
+- Scale tile before drawing (scaleToFit)
+
+
+## Proposed refactors:
+
+- Move landscape-sheet.js and towers-grey-sheet.js to config
+- Merge SpriteSheet and GameSheet
