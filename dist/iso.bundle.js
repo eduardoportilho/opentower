@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 23);
+/******/ 	return __webpack_require__(__webpack_require__.s = 24);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -405,7 +405,7 @@ var _imageCache = __webpack_require__(0);
 
 var _drawingUtils = __webpack_require__(2);
 
-var _isoGridUtils = __webpack_require__(24);
+var _isoGridUtils = __webpack_require__(25);
 
 var _isoGridUtils2 = _interopRequireDefault(_isoGridUtils);
 
@@ -417,15 +417,15 @@ var _towersGreySheet = __webpack_require__(10);
 
 var _towersGreySheet2 = _interopRequireDefault(_towersGreySheet);
 
-var _gameSheet = __webpack_require__(25);
+var _gameSheet = __webpack_require__(26);
 
 var _gameSheet2 = _interopRequireDefault(_gameSheet);
 
-var _landscape = __webpack_require__(26);
+var _landscape = __webpack_require__(27);
 
 var _landscape2 = _interopRequireDefault(_landscape);
 
-var _towersGrey = __webpack_require__(27);
+var _towersGrey = __webpack_require__(28);
 
 var _towersGrey2 = _interopRequireDefault(_towersGrey);
 
@@ -435,9 +435,13 @@ var _spriteSheet = __webpack_require__(11);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
-var _cell = __webpack_require__(28);
+var _cell = __webpack_require__(29);
 
 var _cell2 = _interopRequireDefault(_cell);
+
+var _lodash = __webpack_require__(13);
+
+var _lodash2 = _interopRequireDefault(_lodash);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -470,6 +474,7 @@ var IsoGrid = exports.IsoGrid = function () {
   _createClass(IsoGrid, [{
     key: '_buildGrid',
     value: function _buildGrid() {
+      var landscapeTileScaleFactor = this.landscapeSheet.scale;
       this.cells = [];
       for (var row = 0; row < this.rowCount; row++) {
         for (var col = 0; col < this.colCount; col++) {
@@ -489,7 +494,12 @@ var IsoGrid = exports.IsoGrid = function () {
             object: gridTileConfig.object,
             spawnSide: gridTileConfig.spawnSide,
             target: !!gridTileConfig.target,
-            pathPoints: spriteConfig.pathPoints || []
+            pathPoints: spriteConfig.pathPoints ? _lodash2.default.mapValues(spriteConfig.pathPoints, function (point) {
+              return {
+                x: Math.round(point.x * landscapeTileScaleFactor),
+                y: Math.round(point.y * landscapeTileScaleFactor)
+              };
+            }) : []
           }));
         }
       }
@@ -969,725 +979,7 @@ function getOppositeSide(side) {
 }
 
 /***/ }),
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */,
-/* 18 */,
-/* 19 */,
-/* 20 */,
-/* 21 */,
-/* 22 */,
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* global requestAnimationFrame */
-
-/**
- * @typedef {Object} Drawable
- * @property {Object} position
- * @property {number} position.x
- * @property {number} position.y
- * @property {function} draw
- */
-
-var _imageCache = __webpack_require__(0);
-
-var _isoGrid = __webpack_require__(8);
-
-var _goon = __webpack_require__(29);
-
-var _goon2 = _interopRequireDefault(_goon);
-
-var _random = __webpack_require__(4);
-
-var _random2 = _interopRequireDefault(_random);
-
-var _drawingUtils = __webpack_require__(2);
-
-var _tileUtils = __webpack_require__(12);
-
-var _lodash = __webpack_require__(30);
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var CANVAS_WIDTH = 1400;
-var CANVAS_HEIGHT = 800;
-
-(0, _imageCache.loadImageCache)(init);
-
-function init() {
-  var canvas = document.getElementById('canvas');
-  canvas.width = CANVAS_WIDTH;
-  canvas.height = CANVAS_HEIGHT;
-
-  var game = new Game(canvas);
-  game.init();
-}
-
-var Game = function () {
-  function Game(canvas) {
-    _classCallCheck(this, Game);
-
-    this.goons = [];
-    this.context = canvas.getContext('2d');
-    this.grid = new _isoGrid.IsoGrid(this, {
-      width: canvas.width,
-      height: canvas.height
-    });
-  }
-
-  _createClass(Game, [{
-    key: 'init',
-    value: function init() {
-      this.spanGoonOnRandomPosition();
-      this.startLoop();
-    }
-  }, {
-    key: 'startLoop',
-    value: function startLoop() {
-      this.lastTick = Date.now();
-      this.animationId = requestAnimationFrame(this.tick.bind(this));
-    }
-
-    /**
-     * Update state, render and restart the game loop every X ms.
-     */
-
-  }, {
-    key: 'tick',
-    value: function tick() {
-      if (!this.animationId) {
-        return;
-      }
-      var now = Date.now();
-      var delta = now - this.lastTick;
-
-      this.update(delta);
-
-      if (!this.animationId) {
-        return;
-      }
-      this.lastTick = now;
-      this.grid.drawGame(this.context);
-      this.drawGoonPath();
-      this.animationId = requestAnimationFrame(this.tick.bind(this));
-    }
-  }, {
-    key: 'update',
-    value: function update(delta) {
-      this.goons.forEach(function (goon) {
-        return goon.update(delta);
-      });
-    }
-  }, {
-    key: 'spanGoonOnRandomPosition',
-    value: function spanGoonOnRandomPosition() {
-      var spawnCell = _random2.default.getRandomElementFromArray(this.grid.getSpawnCells());
-      var spawnPosition = this.grid.isoGridUtils.getCellSideCenter(spawnCell.row, spawnCell.col, _isoGrid.FLOOR_HEIGHT, 'south' // TODO: tiles can have different entry points
-      );
-      var goon = new _goon2.default();
-      goon.position = spawnPosition;
-      goon.cell = spawnCell;
-      this.goons.push(goon);
-    }
-  }, {
-    key: 'getDrawables',
-    value: function getDrawables() {
-      return this.goons;
-    }
-
-    // Debug
-
-  }, {
-    key: 'drawGoonPath',
-    value: function drawGoonPath() {
-      var paths = this.getPaths();
-      (0, _drawingUtils.polygon)(this.context, paths[0], false, true);
-    }
-
-    // TODO Move to another place
-
-  }, {
-    key: 'getPaths',
-    value: function getPaths() {
-      var targetCell = this.grid.getTargetCell();
-      var sidesWithConnection = targetCell.getSidesWithConnection();
-      var allPaths = [];
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = sidesWithConnection[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var side = _step.value;
-
-          var connectedCell = targetCell.getCellConnectedAt(side);
-          if (!connectedCell) {
-            continue;
-          }
-          var entryPoint = targetCell.getEntryPointAt(side);
-          var paths = this.buildPaths(connectedCell, side, [entryPoint]);
-          allPaths = allPaths.concat(paths);
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-
-      return allPaths;
-    }
-  }, {
-    key: 'buildPaths',
-    value: function buildPaths(cell, targetSide, pathSoFar) {
-      var entrySide = (0, _tileUtils.getOppositeSide)(targetSide);
-      var newPath = _lodash2.default.clone(pathSoFar);
-      newPath.push(cell.getEntryPointAt(entrySide));
-      var middlePathPoint = cell.getMiddlePathPoint();
-      if (middlePathPoint) {
-        newPath.push(middlePathPoint);
-      }
-      if (cell.isSpawn()) {
-        var spawnSide = cell.getSpawnSide();
-        var spawnPoint = cell.getEntryPointAt(spawnSide);
-        newPath.push(spawnPoint);
-        return [newPath];
-      }
-      var allPaths = [];
-      var sidesWithConnection = cell.getSidesWithConnection().filter(function (side) {
-        return side !== entrySide;
-      });
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = sidesWithConnection[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var side = _step2.value;
-
-          var connectedCell = cell.getCellConnectedAt(side);
-          if (!connectedCell) {
-            continue;
-          }
-          var entryPoint = cell.getEntryPointAt(side);
-          var sidePath = _lodash2.default.clone(newPath);
-          sidePath.push(entryPoint);
-
-          var paths = this.buildPaths(connectedCell, side, sidePath);
-          allPaths = allPaths.concat(paths);
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-
-      return allPaths;
-    }
-  }]);
-
-  return Game;
-}();
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var IsoGridUtils = function () {
-  function IsoGridUtils(cellWidth, cellHeight, gridOrigin) {
-    _classCallCheck(this, IsoGridUtils);
-
-    this.cellWidth = cellWidth;
-    this.cellHeight = cellHeight;
-    this.gridOrigin = gridOrigin;
-  }
-
-  /**
-   * Top (top-left) corner position for the cell.
-   * @param  {number} row
-   * @param  {number} col
-   * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
-   * @return {Position} {x, y}
-   */
-
-
-  _createClass(IsoGridUtils, [{
-    key: 'getCellOrigin',
-    value: function getCellOrigin(row, col) {
-      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-
-      // http://clintbellanger.net/articles/isometric_math/
-      var halfHeigth = Math.round(this.cellHeight / 2);
-      var halfWidth = Math.round(this.cellWidth / 2);
-      return {
-        x: (col - row) * halfWidth + this.gridOrigin.x,
-        y: (col + row) * halfHeigth + this.gridOrigin.y + verticalOffset
-      };
-    }
-
-    /**
-     * Top, right, bottom and left corner positions for the cell.
-     * @param  {number} row
-     * @param  {number} col
-     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
-     * @return {Position[]} [{x, y}]
-     */
-
-  }, {
-    key: 'getCellCorners',
-    value: function getCellCorners(row, col) {
-      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-
-      var cellOrigin = this.getCellOrigin(row, col, verticalOffset);
-      var halfHeigth = Math.round(this.cellHeight / 2);
-      var halfWidth = Math.round(this.cellWidth / 2);
-      return [cellOrigin, { x: cellOrigin.x + halfWidth, y: cellOrigin.y + halfHeigth }, { x: cellOrigin.x, y: cellOrigin.y + this.cellHeight }, { x: cellOrigin.x - halfWidth, y: cellOrigin.y + halfHeigth }];
-    }
-
-    /**
-     * Right (top-right) corner position for the cell.
-     * @param  {number} row
-     * @param  {number} col
-     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
-     * @return {Position} {x, y}
-     */
-
-  }, {
-    key: 'getCellRight',
-    value: function getCellRight(row, col) {
-      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-
-      return this.getCellCorners(row, col, verticalOffset)[1];
-    }
-
-    /**
-     * Bottom (bottom-right) corner position for the cell.
-     * @param  {number} row
-     * @param  {number} col
-     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
-     * @return {Position} {x, y}
-     */
-
-  }, {
-    key: 'getCellBottom',
-    value: function getCellBottom(row, col) {
-      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-
-      return this.getCellCorners(row, col, verticalOffset)[2];
-    }
-
-    /**
-     * Left (bottom-left) corner position for the cell.
-     * @param  {number} row
-     * @param  {number} col
-     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
-     * @return {Position} {x, y}
-     */
-
-  }, {
-    key: 'getCellLeft',
-    value: function getCellLeft(row, col) {
-      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-
-      return this.getCellCorners(row, col, verticalOffset)[3];
-    }
-
-    /**
-     * Center position for the cell.
-     * @param  {number} row
-     * @param  {number} col
-     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
-     * @return {Position} {x, y}
-     */
-
-  }, {
-    key: 'getCellCenter',
-    value: function getCellCenter(row, col) {
-      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-
-      var origin = this.getCellOrigin(row, col, verticalOffset);
-      return {
-        x: origin.x,
-        y: origin.y + Math.round(this.cellHeight / 2)
-      };
-    }
-
-    /**
-     * Get the position in the center of the cell side in the provided direction.
-     * @param  {number} row
-     * @param  {number} col
-     * @param  {String} side - 'north', 'south', 'east' or 'west'
-     * @return {Position} {x, y}
-     */
-
-  }, {
-    key: 'getCellSideCenter',
-    value: function getCellSideCenter(row, col) {
-      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-      var side = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'west';
-
-      var origin = this.getCellOrigin(row, col, verticalOffset);
-      if (side === 'north') {
-        return {
-          x: origin.x + Math.round(this.cellWidth / 4),
-          y: origin.y + Math.round(this.cellHeight / 4)
-        };
-      } else if (side === 'east') {
-        return {
-          x: origin.x + Math.round(this.cellWidth / 4),
-          y: origin.y + Math.round(3 * this.cellHeight / 4)
-        };
-      } else if (side === 'south') {
-        return {
-          x: origin.x - Math.round(this.cellWidth / 4),
-          y: origin.y + Math.round(3 * this.cellHeight / 4)
-        };
-      } else if (side === 'west') {
-        return {
-          x: origin.x - Math.round(this.cellWidth / 4),
-          y: origin.y - Math.round(this.cellHeight / 4)
-        };
-      }
-    }
-  }]);
-
-  return IsoGridUtils;
-}();
-
-exports.default = IsoGridUtils;
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _imageCache = __webpack_require__(0);
-
-var _landscapeSheet = __webpack_require__(9);
-
-var _landscapeSheet2 = _interopRequireDefault(_landscapeSheet);
-
-var _towersGreySheet = __webpack_require__(10);
-
-var _towersGreySheet2 = _interopRequireDefault(_towersGreySheet);
-
-var _spriteSheet = __webpack_require__(11);
-
-var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
-
-var _gridConfig = __webpack_require__(5);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var tilesConfig = {
-  GRASS: {
-    isLandscapeSheet: true,
-    spriteKey: _gridConfig.GRASS
-  },
-  PATH_SN: {
-    isLandscapeSheet: true,
-    spriteKey: _gridConfig.PATH_SN
-  },
-  PATH_WE: {
-    isLandscapeSheet: true,
-    spriteKey: _gridConfig.PATH_WE
-  },
-  CURVE_SE: {
-    isLandscapeSheet: true,
-    spriteKey: _gridConfig.CURVE_SE
-  },
-  CURVE_WS: {
-    isLandscapeSheet: true,
-    spriteKey: _gridConfig.CURVE_WS
-  },
-  CURVE_NE: {
-    isLandscapeSheet: true,
-    spriteKey: _gridConfig.CURVE_NE
-  },
-  CURVE_WN: {
-    isLandscapeSheet: true,
-    spriteKey: _gridConfig.CURVE_WN
-  },
-  CASTLE: {
-    isTowersSheet: true,
-    spriteGroupKey: _gridConfig.CASTLE
-  }
-};
-
-var GameSheet = function () {
-  function GameSheet(cellWidth, floorHeight) {
-    _classCallCheck(this, GameSheet);
-
-    this.cellWidth = cellWidth;
-    this.floorHeight = floorHeight;
-    this.landscapeSheet = new _spriteSheet2.default(_imageCache.imageCache['landscape_sheet'], _landscapeSheet2.default, cellWidth);
-    this.towersGreySheet = new _spriteSheet2.default(_imageCache.imageCache['towers_grey_sheet'], _towersGreySheet2.default, cellWidth);
-  }
-
-  _createClass(GameSheet, [{
-    key: 'draw',
-    value: function draw(context, bottomPoint, tileKey, verticalOffset) {
-      var tileConfig = tilesConfig[tileKey];
-
-      if (tileConfig.isLandscapeSheet) {
-        this.landscapeSheet.draw(context, bottomPoint, tileConfig.spriteKey, verticalOffset);
-      } else if (tileConfig.isTowersSheet) {
-        var spriteKeys = _towersGreySheet2.default.spriteGroups[tileConfig.spriteGroupKey];
-        this.towersGreySheet.drawStacked(context, bottomPoint, spriteKeys, this.floorHeight);
-      }
-    }
-  }, {
-    key: 'getSpriteConfig',
-    value: function getSpriteConfig(tileKey) {
-      var tileConfig = tilesConfig[tileKey];
-      if (tileConfig.isLandscapeSheet) {
-        return _landscapeSheet2.default[tileConfig.spriteKey];
-      } else if (tileConfig.isTowersSheet) {
-        return _towersGreySheet2.default[tileConfig.spriteKey];
-      }
-    }
-  }]);
-
-  return GameSheet;
-}();
-
-exports.default = GameSheet;
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = [[{ spriteKey: 'GRASS' }, { spriteKey: 'CURVE_SE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WS' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'GRASS' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'trees_2_t_b' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'rocks_2_r_l' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_ramp_tr_bl' }, { spriteKey: 'grass_ramp_diag_r_l' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'rocks_2_l_r' }, { spriteKey: 'PATH_SN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_double_dirt' }, { spriteKey: 'grass_ramp_br_tl' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'trees_2_tr_tl' }, { spriteKey: 'PATH_SN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'crystal_b_t' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_ramp_bl_tr' }, { spriteKey: 'CURVE_SE' }, { spriteKey: 'bridge_tl_br' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'crystal_r_l' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'river_curve_tr_br' }, { spriteKey: 'river_tl_br' }, { spriteKey: 'river_tl_br' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'trees_3_tr_tl_bl' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'CURVE_NE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WN' }, { spriteKey: 'GRASS' }, { spriteKey: 'rocks_1_tl' }, { spriteKey: 'GRASS' }]];
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = [{
-  row: 0,
-  col: 9,
-  tiles: ['base_light-rect2x_dark_2br-left', 'middle_light-corner_dark-base_win-right', 'middle_light-corner_win-left', 'top_green-tri_white-top']
-}, {
-  row: 6,
-  col: 2,
-  tiles: ['base_ld_3br', 'top_block_ld']
-}];
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _tileUtils = __webpack_require__(12);
-
-var _isoGrid = __webpack_require__(8);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Cell = function () {
-  function Cell(_ref) {
-    var grid = _ref.grid,
-        row = _ref.row,
-        col = _ref.col,
-        tile = _ref.tile,
-        object = _ref.object,
-        spawnSide = _ref.spawnSide,
-        target = _ref.target,
-        pathPoints = _ref.pathPoints;
-
-    _classCallCheck(this, Cell);
-
-    this.grid = grid;
-    this.row = row;
-    this.col = col;
-    this.tile = tile;
-    this.object = object;
-    this.spawnSide = spawnSide;
-    this.target = target;
-    this.pathPoints = pathPoints;
-    this.origin = this.grid.isoGridUtils.getCellOrigin(this.row, this.col, _isoGrid.FLOOR_HEIGHT);
-  }
-
-  _createClass(Cell, [{
-    key: 'isSpawn',
-    value: function isSpawn() {
-      return this.spawnSide !== undefined;
-    }
-  }, {
-    key: 'isTarget',
-    value: function isTarget() {
-      return this.target === true;
-    }
-  }, {
-    key: 'getSpawnSide',
-    value: function getSpawnSide() {
-      return this.spawnSide;
-    }
-  }, {
-    key: 'getSidesWithConnection',
-    value: function getSidesWithConnection() {
-      return (0, _tileUtils.getTileConnections)(this.tile);
-    }
-  }, {
-    key: 'getCellConnectedAt',
-    value: function getCellConnectedAt(side) {
-      var row = this.row;
-      var col = this.col;
-      if (side === 'north') {
-        row -= 1;
-      } else if (side === 'south') {
-        row += 1;
-      } else if (side === 'east') {
-        col += 1;
-      } else if (side === 'west') {
-        col -= 1;
-      }
-      if (row < 0 || row >= this.grid.rowCount || col < 0 || col >= this.grid.colCount) {
-        return undefined;
-      }
-      return this.grid.getCell(row, col);
-    }
-  }, {
-    key: 'getEntryPointAt',
-    value: function getEntryPointAt(side) {
-      var entryPoint = this.pathPoints[side];
-      return {
-        x: entryPoint.x + this.origin.x - Math.round(_isoGrid.CELL_WIDTH / 2),
-        y: entryPoint.y + this.origin.y
-      };
-    }
-  }, {
-    key: 'getMiddlePathPoint',
-    value: function getMiddlePathPoint() {
-      if (!this.pathPoints['middle']) {
-        return undefined;
-      }
-      return this.getEntryPointAt('middle');
-    }
-  }]);
-
-  return Cell;
-}();
-
-exports.default = Cell;
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _imageCache = __webpack_require__(0);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var GOON_IMAGE_SIZE = {
-  width: 14,
-  height: 20
-};
-
-var Goon = function () {
-  function Goon() {
-    _classCallCheck(this, Goon);
-
-    // position of the bottom-left corner of the image
-    this.position = null;
-    this.cell = null;
-  }
-
-  _createClass(Goon, [{
-    key: 'draw',
-    value: function draw(context) {
-      var img = _imageCache.imageCache['goon-1'];
-      context.drawImage(img, this.position.x, this.position.y - GOON_IMAGE_SIZE.height);
-    }
-  }, {
-    key: 'update',
-    value: function update(delta) {}
-  }]);
-
-  return Goon;
-}();
-
-exports.default = Goon;
-
-/***/ }),
-/* 30 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -18776,10 +18068,681 @@ exports.default = Goon;
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31), __webpack_require__(32)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(30), __webpack_require__(31)(module)))
 
 /***/ }),
-/* 31 */
+/* 14 */,
+/* 15 */,
+/* 16 */,
+/* 17 */,
+/* 18 */,
+/* 19 */,
+/* 20 */,
+/* 21 */,
+/* 22 */,
+/* 23 */,
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* global requestAnimationFrame */
+
+/**
+ * @typedef {Object} Drawable
+ * @property {Object} position
+ * @property {number} position.x
+ * @property {number} position.y
+ * @property {function} draw
+ */
+
+var _imageCache = __webpack_require__(0);
+
+var _isoGrid = __webpack_require__(8);
+
+var _goon = __webpack_require__(32);
+
+var _goon2 = _interopRequireDefault(_goon);
+
+var _random = __webpack_require__(4);
+
+var _random2 = _interopRequireDefault(_random);
+
+var _drawingUtils = __webpack_require__(2);
+
+var _tileUtils = __webpack_require__(12);
+
+var _lodash = __webpack_require__(13);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CANVAS_WIDTH = 1400;
+var CANVAS_HEIGHT = 800;
+
+(0, _imageCache.loadImageCache)(init);
+
+function init() {
+  var canvas = document.getElementById('canvas');
+  canvas.width = CANVAS_WIDTH;
+  canvas.height = CANVAS_HEIGHT;
+
+  var game = new Game(canvas);
+  game.init();
+}
+
+var Game = function () {
+  function Game(canvas) {
+    _classCallCheck(this, Game);
+
+    this.goons = [];
+    this.context = canvas.getContext('2d');
+    this.grid = new _isoGrid.IsoGrid(this, {
+      width: canvas.width,
+      height: canvas.height
+    });
+  }
+
+  _createClass(Game, [{
+    key: 'init',
+    value: function init() {
+      this.spanGoonOnRandomPosition();
+      this.startLoop();
+    }
+  }, {
+    key: 'startLoop',
+    value: function startLoop() {
+      this.lastTick = Date.now();
+      this.animationId = requestAnimationFrame(this.tick.bind(this));
+    }
+
+    /**
+     * Update state, render and restart the game loop every X ms.
+     */
+
+  }, {
+    key: 'tick',
+    value: function tick() {
+      if (!this.animationId) {
+        return;
+      }
+      var now = Date.now();
+      var delta = now - this.lastTick;
+
+      this.update(delta);
+
+      if (!this.animationId) {
+        return;
+      }
+      this.lastTick = now;
+      this.grid.drawGame(this.context);
+      this.drawGoonPath();
+      this.animationId = requestAnimationFrame(this.tick.bind(this));
+    }
+  }, {
+    key: 'update',
+    value: function update(delta) {
+      this.goons.forEach(function (goon) {
+        return goon.update(delta);
+      });
+    }
+  }, {
+    key: 'spanGoonOnRandomPosition',
+    value: function spanGoonOnRandomPosition() {
+      var spawnCell = _random2.default.getRandomElementFromArray(this.grid.getSpawnCells());
+      var spawnPosition = this.grid.isoGridUtils.getCellSideCenter(spawnCell.row, spawnCell.col, _isoGrid.FLOOR_HEIGHT, 'south' // TODO: tiles can have different entry points
+      );
+      var goon = new _goon2.default();
+      goon.position = spawnPosition;
+      goon.cell = spawnCell;
+      this.goons.push(goon);
+    }
+  }, {
+    key: 'getDrawables',
+    value: function getDrawables() {
+      return this.goons;
+    }
+
+    // Debug
+
+  }, {
+    key: 'drawGoonPath',
+    value: function drawGoonPath() {
+      var paths = this.getPaths();
+      (0, _drawingUtils.polygon)(this.context, paths[0], false, true);
+    }
+
+    // TODO Move to another place
+
+  }, {
+    key: 'getPaths',
+    value: function getPaths() {
+      var targetCell = this.grid.getTargetCell();
+      var sidesWithConnection = targetCell.getSidesWithConnection();
+      var allPaths = [];
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = sidesWithConnection[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var side = _step.value;
+
+          var connectedCell = targetCell.getCellConnectedAt(side);
+          if (!connectedCell) {
+            continue;
+          }
+          var entryPoint = targetCell.getEntryPointAt(side);
+          var paths = this.buildPaths(connectedCell, side, [entryPoint]);
+          allPaths = allPaths.concat(paths);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      return allPaths;
+    }
+  }, {
+    key: 'buildPaths',
+    value: function buildPaths(cell, targetSide, pathSoFar) {
+      var entrySide = (0, _tileUtils.getOppositeSide)(targetSide);
+      var newPath = _lodash2.default.clone(pathSoFar);
+      newPath.push(cell.getEntryPointAt(entrySide));
+      var middlePathPoint = cell.getMiddlePathPoint();
+      if (middlePathPoint) {
+        newPath.push(middlePathPoint);
+      }
+      if (cell.isSpawn()) {
+        var spawnSide = cell.getSpawnSide();
+        var spawnPoint = cell.getEntryPointAt(spawnSide);
+        newPath.push(spawnPoint);
+        return [newPath];
+      }
+      var allPaths = [];
+      var sidesWithConnection = cell.getSidesWithConnection().filter(function (side) {
+        return side !== entrySide;
+      });
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = sidesWithConnection[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var side = _step2.value;
+
+          var connectedCell = cell.getCellConnectedAt(side);
+          if (!connectedCell) {
+            continue;
+          }
+          var entryPoint = cell.getEntryPointAt(side);
+          var sidePath = _lodash2.default.clone(newPath);
+          sidePath.push(entryPoint);
+
+          var paths = this.buildPaths(connectedCell, side, sidePath);
+          allPaths = allPaths.concat(paths);
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+
+      return allPaths;
+    }
+  }]);
+
+  return Game;
+}();
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var IsoGridUtils = function () {
+  function IsoGridUtils(cellWidth, cellHeight, gridOrigin) {
+    _classCallCheck(this, IsoGridUtils);
+
+    this.cellWidth = cellWidth;
+    this.cellHeight = cellHeight;
+    this.gridOrigin = gridOrigin;
+  }
+
+  /**
+   * Top (top-left) corner position for the cell.
+   * @param  {number} row
+   * @param  {number} col
+   * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
+   * @return {Position} {x, y}
+   */
+
+
+  _createClass(IsoGridUtils, [{
+    key: 'getCellOrigin',
+    value: function getCellOrigin(row, col) {
+      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+      // http://clintbellanger.net/articles/isometric_math/
+      var halfHeigth = Math.round(this.cellHeight / 2);
+      var halfWidth = Math.round(this.cellWidth / 2);
+      return {
+        x: (col - row) * halfWidth + this.gridOrigin.x,
+        y: (col + row) * halfHeigth + this.gridOrigin.y + verticalOffset
+      };
+    }
+
+    /**
+     * Top, right, bottom and left corner positions for the cell.
+     * @param  {number} row
+     * @param  {number} col
+     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
+     * @return {Position[]} [{x, y}]
+     */
+
+  }, {
+    key: 'getCellCorners',
+    value: function getCellCorners(row, col) {
+      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+      var cellOrigin = this.getCellOrigin(row, col, verticalOffset);
+      var halfHeigth = Math.round(this.cellHeight / 2);
+      var halfWidth = Math.round(this.cellWidth / 2);
+      return [cellOrigin, { x: cellOrigin.x + halfWidth, y: cellOrigin.y + halfHeigth }, { x: cellOrigin.x, y: cellOrigin.y + this.cellHeight }, { x: cellOrigin.x - halfWidth, y: cellOrigin.y + halfHeigth }];
+    }
+
+    /**
+     * Right (top-right) corner position for the cell.
+     * @param  {number} row
+     * @param  {number} col
+     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
+     * @return {Position} {x, y}
+     */
+
+  }, {
+    key: 'getCellRight',
+    value: function getCellRight(row, col) {
+      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+      return this.getCellCorners(row, col, verticalOffset)[1];
+    }
+
+    /**
+     * Bottom (bottom-right) corner position for the cell.
+     * @param  {number} row
+     * @param  {number} col
+     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
+     * @return {Position} {x, y}
+     */
+
+  }, {
+    key: 'getCellBottom',
+    value: function getCellBottom(row, col) {
+      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+      return this.getCellCorners(row, col, verticalOffset)[2];
+    }
+
+    /**
+     * Left (bottom-left) corner position for the cell.
+     * @param  {number} row
+     * @param  {number} col
+     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
+     * @return {Position} {x, y}
+     */
+
+  }, {
+    key: 'getCellLeft',
+    value: function getCellLeft(row, col) {
+      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+      return this.getCellCorners(row, col, verticalOffset)[3];
+    }
+
+    /**
+     * Center position for the cell.
+     * @param  {number} row
+     * @param  {number} col
+     * @param  {number} verticalOffset - offset to added to the vertical coordinate (eg. floor height)
+     * @return {Position} {x, y}
+     */
+
+  }, {
+    key: 'getCellCenter',
+    value: function getCellCenter(row, col) {
+      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+      var origin = this.getCellOrigin(row, col, verticalOffset);
+      return {
+        x: origin.x,
+        y: origin.y + Math.round(this.cellHeight / 2)
+      };
+    }
+
+    /**
+     * Get the position in the center of the cell side in the provided direction.
+     * @param  {number} row
+     * @param  {number} col
+     * @param  {String} side - 'north', 'south', 'east' or 'west'
+     * @return {Position} {x, y}
+     */
+
+  }, {
+    key: 'getCellSideCenter',
+    value: function getCellSideCenter(row, col) {
+      var verticalOffset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+      var side = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'west';
+
+      var origin = this.getCellOrigin(row, col, verticalOffset);
+      if (side === 'north') {
+        return {
+          x: origin.x + Math.round(this.cellWidth / 4),
+          y: origin.y + Math.round(this.cellHeight / 4)
+        };
+      } else if (side === 'east') {
+        return {
+          x: origin.x + Math.round(this.cellWidth / 4),
+          y: origin.y + Math.round(3 * this.cellHeight / 4)
+        };
+      } else if (side === 'south') {
+        return {
+          x: origin.x - Math.round(this.cellWidth / 4),
+          y: origin.y + Math.round(3 * this.cellHeight / 4)
+        };
+      } else if (side === 'west') {
+        return {
+          x: origin.x - Math.round(this.cellWidth / 4),
+          y: origin.y - Math.round(this.cellHeight / 4)
+        };
+      }
+    }
+  }]);
+
+  return IsoGridUtils;
+}();
+
+exports.default = IsoGridUtils;
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _imageCache = __webpack_require__(0);
+
+var _landscapeSheet = __webpack_require__(9);
+
+var _landscapeSheet2 = _interopRequireDefault(_landscapeSheet);
+
+var _towersGreySheet = __webpack_require__(10);
+
+var _towersGreySheet2 = _interopRequireDefault(_towersGreySheet);
+
+var _spriteSheet = __webpack_require__(11);
+
+var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
+
+var _gridConfig = __webpack_require__(5);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var tilesConfig = {
+  GRASS: {
+    isLandscapeSheet: true,
+    spriteKey: _gridConfig.GRASS
+  },
+  PATH_SN: {
+    isLandscapeSheet: true,
+    spriteKey: _gridConfig.PATH_SN
+  },
+  PATH_WE: {
+    isLandscapeSheet: true,
+    spriteKey: _gridConfig.PATH_WE
+  },
+  CURVE_SE: {
+    isLandscapeSheet: true,
+    spriteKey: _gridConfig.CURVE_SE
+  },
+  CURVE_WS: {
+    isLandscapeSheet: true,
+    spriteKey: _gridConfig.CURVE_WS
+  },
+  CURVE_NE: {
+    isLandscapeSheet: true,
+    spriteKey: _gridConfig.CURVE_NE
+  },
+  CURVE_WN: {
+    isLandscapeSheet: true,
+    spriteKey: _gridConfig.CURVE_WN
+  },
+  CASTLE: {
+    isTowersSheet: true,
+    spriteGroupKey: _gridConfig.CASTLE
+  }
+};
+
+var GameSheet = function () {
+  function GameSheet(cellWidth, floorHeight) {
+    _classCallCheck(this, GameSheet);
+
+    this.cellWidth = cellWidth;
+    this.floorHeight = floorHeight;
+    this.landscapeSheet = new _spriteSheet2.default(_imageCache.imageCache['landscape_sheet'], _landscapeSheet2.default, cellWidth);
+    this.towersGreySheet = new _spriteSheet2.default(_imageCache.imageCache['towers_grey_sheet'], _towersGreySheet2.default, cellWidth);
+  }
+
+  _createClass(GameSheet, [{
+    key: 'draw',
+    value: function draw(context, bottomPoint, tileKey, verticalOffset) {
+      var tileConfig = tilesConfig[tileKey];
+
+      if (tileConfig.isLandscapeSheet) {
+        this.landscapeSheet.draw(context, bottomPoint, tileConfig.spriteKey, verticalOffset);
+      } else if (tileConfig.isTowersSheet) {
+        var spriteKeys = _towersGreySheet2.default.spriteGroups[tileConfig.spriteGroupKey];
+        this.towersGreySheet.drawStacked(context, bottomPoint, spriteKeys, this.floorHeight);
+      }
+    }
+  }, {
+    key: 'getSpriteConfig',
+    value: function getSpriteConfig(tileKey) {
+      var tileConfig = tilesConfig[tileKey];
+      if (tileConfig.isLandscapeSheet) {
+        return _landscapeSheet2.default[tileConfig.spriteKey];
+      } else if (tileConfig.isTowersSheet) {
+        return _towersGreySheet2.default[tileConfig.spriteKey];
+      }
+    }
+  }]);
+
+  return GameSheet;
+}();
+
+exports.default = GameSheet;
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = [[{ spriteKey: 'GRASS' }, { spriteKey: 'CURVE_SE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WS' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'GRASS' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'trees_2_t_b' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'rocks_2_r_l' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_ramp_tr_bl' }, { spriteKey: 'grass_ramp_diag_r_l' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'rocks_2_l_r' }, { spriteKey: 'PATH_SN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_double_dirt' }, { spriteKey: 'grass_ramp_br_tl' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'trees_2_tr_tl' }, { spriteKey: 'PATH_SN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'crystal_b_t' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'grass_ramp_bl_tr' }, { spriteKey: 'CURVE_SE' }, { spriteKey: 'bridge_tl_br' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WN' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'trees_2_t_b' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'river_tr_bl' }, { spriteKey: 'crystal_r_l' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'river_curve_tr_br' }, { spriteKey: 'river_tl_br' }, { spriteKey: 'river_tl_br' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'trees_3_tr_tl_bl' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }], [{ spriteKey: 'GRASS' }, { spriteKey: 'PATH_SN' }, { spriteKey: 'GRASS' }, { spriteKey: 'GRASS' }, { spriteKey: 'CURVE_NE' }, { spriteKey: 'PATH_WE' }, { spriteKey: 'CURVE_WN' }, { spriteKey: 'GRASS' }, { spriteKey: 'rocks_1_tl' }, { spriteKey: 'GRASS' }]];
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = [{
+  row: 0,
+  col: 9,
+  tiles: ['base_light-rect2x_dark_2br-left', 'middle_light-corner_dark-base_win-right', 'middle_light-corner_win-left', 'top_green-tri_white-top']
+}, {
+  row: 6,
+  col: 2,
+  tiles: ['base_ld_3br', 'top_block_ld']
+}];
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _tileUtils = __webpack_require__(12);
+
+var _isoGrid = __webpack_require__(8);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Cell = function () {
+  function Cell(_ref) {
+    var grid = _ref.grid,
+        row = _ref.row,
+        col = _ref.col,
+        tile = _ref.tile,
+        object = _ref.object,
+        spawnSide = _ref.spawnSide,
+        target = _ref.target,
+        pathPoints = _ref.pathPoints;
+
+    _classCallCheck(this, Cell);
+
+    this.grid = grid;
+    this.row = row;
+    this.col = col;
+    this.tile = tile;
+    this.object = object;
+    this.spawnSide = spawnSide;
+    this.target = target;
+    this.pathPoints = pathPoints;
+    this.origin = this.grid.isoGridUtils.getCellOrigin(this.row, this.col, _isoGrid.FLOOR_HEIGHT);
+  }
+
+  _createClass(Cell, [{
+    key: 'isSpawn',
+    value: function isSpawn() {
+      return this.spawnSide !== undefined;
+    }
+  }, {
+    key: 'isTarget',
+    value: function isTarget() {
+      return this.target === true;
+    }
+  }, {
+    key: 'getSpawnSide',
+    value: function getSpawnSide() {
+      return this.spawnSide;
+    }
+  }, {
+    key: 'getSidesWithConnection',
+    value: function getSidesWithConnection() {
+      return (0, _tileUtils.getTileConnections)(this.tile);
+    }
+  }, {
+    key: 'getCellConnectedAt',
+    value: function getCellConnectedAt(side) {
+      var row = this.row;
+      var col = this.col;
+      if (side === 'north') {
+        row -= 1;
+      } else if (side === 'south') {
+        row += 1;
+      } else if (side === 'east') {
+        col += 1;
+      } else if (side === 'west') {
+        col -= 1;
+      }
+      if (row < 0 || row >= this.grid.rowCount || col < 0 || col >= this.grid.colCount) {
+        return undefined;
+      }
+      return this.grid.getCell(row, col);
+    }
+  }, {
+    key: 'getEntryPointAt',
+    value: function getEntryPointAt(side) {
+      var entryPoint = this.pathPoints[side];
+      return {
+        x: entryPoint.x + this.origin.x - Math.round(_isoGrid.CELL_WIDTH / 2),
+        y: entryPoint.y + this.origin.y
+      };
+    }
+  }, {
+    key: 'getMiddlePathPoint',
+    value: function getMiddlePathPoint() {
+      if (!this.pathPoints['middle']) {
+        return undefined;
+      }
+      return this.getEntryPointAt('middle');
+    }
+  }]);
+
+  return Cell;
+}();
+
+exports.default = Cell;
+
+/***/ }),
+/* 30 */
 /***/ (function(module, exports) {
 
 var g;
@@ -18806,7 +18769,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -18832,6 +18795,53 @@ module.exports = function(module) {
 	return module;
 };
 
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _imageCache = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var GOON_IMAGE_SIZE = {
+  width: 14,
+  height: 20
+};
+
+var Goon = function () {
+  function Goon() {
+    _classCallCheck(this, Goon);
+
+    // position of the bottom-left corner of the image
+    this.position = null;
+    this.cell = null;
+  }
+
+  _createClass(Goon, [{
+    key: 'draw',
+    value: function draw(context) {
+      var img = _imageCache.imageCache['goon-1'];
+      context.drawImage(img, this.position.x, this.position.y - GOON_IMAGE_SIZE.height);
+    }
+  }, {
+    key: 'update',
+    value: function update(delta) {}
+  }]);
+
+  return Goon;
+}();
+
+exports.default = Goon;
 
 /***/ })
 /******/ ]);

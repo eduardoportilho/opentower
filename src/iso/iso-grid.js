@@ -12,6 +12,7 @@ import {gridConfig} from '../config/grid-config'
 
 import SpriteSheet from './sprite-sheet'
 import Cell from './cell'
+import _ from 'lodash'
 
 // full: 128 x 64 x 32
 export const CELL_WIDTH = 64
@@ -36,6 +37,7 @@ export class IsoGrid {
   }
 
   _buildGrid () {
+    const landscapeTileScaleFactor = this.landscapeSheet.scale
     this.cells = []
     for (let row = 0; row < this.rowCount; row++) {
       for (let col = 0; col < this.colCount; col++) {
@@ -55,7 +57,12 @@ export class IsoGrid {
           object: gridTileConfig.object,
           spawnSide: gridTileConfig.spawnSide,
           target: !!gridTileConfig.target,
-          pathPoints: spriteConfig.pathPoints || []
+          pathPoints: spriteConfig.pathPoints ? _.mapValues(spriteConfig.pathPoints, point => (
+            {
+              x: Math.round(point.x * landscapeTileScaleFactor),
+              y: Math.round(point.y * landscapeTileScaleFactor)
+            }
+          )) : []
         }))
       }
     }
