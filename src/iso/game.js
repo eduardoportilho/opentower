@@ -88,6 +88,7 @@ class Game {
     const goon = new Goon()
     goon.position = spawnPosition
     goon.cell = spawnCell
+    goon.path = this.getPaths()[0]
     this.goons.push(goon)
   }
 

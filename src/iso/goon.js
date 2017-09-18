@@ -10,6 +10,11 @@ export default class Goon {
     // position of the bottom-left corner of the image
     this.position = null
     this.cell = null
+
+    this.speed = 20
+    this._residualStep = 0
+    this.pathPoints = [] // list of points
+    this.currentPathPoint index = -1
   }
 
   draw (context) {
@@ -18,5 +23,6 @@ export default class Goon {
   }
 
   update (delta) {
+    const step = (this.speed * delta / 1000.0) + this._residualStep
   }
 }
