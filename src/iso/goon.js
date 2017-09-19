@@ -15,7 +15,7 @@ export default class Goon {
     this.speed = 20
     this._residualStep = 0
     this.pathPoints = [] // list of points
-    this.currentPathPoint index = -1
+    this.currentPathPointIndex = -1
   }
 
   draw (context) {
@@ -24,6 +24,14 @@ export default class Goon {
   }
 
   update (delta) {
+    if (!this.pathPoints || this.currentPathPointIndex >= this.pathPoints.length - 1) {
+      return
+    }
     const step = (this.speed * delta / 1000.0) + this._residualStep
+    const intStep = Math.floor(step)
+    this._residualStep = step - intStep
+
+    const nextPathPoint = this.pathPoints[this.currentPathPointIndex + 1]
+    const nextPosition = getPointInLine(this.position, nextPathPoint, intStep, true)
   }
 }
