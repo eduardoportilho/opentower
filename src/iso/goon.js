@@ -1,4 +1,5 @@
 import {imageCache} from '../image-cache.js'
+import {getPointInLine} from './utils/geometry-utils'
 
 const GOON_IMAGE_SIZE = {
   width: 14,

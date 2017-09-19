@@ -1,4 +1,4 @@
-import {getPointInLine, isEqualPoints} from './geometry-utils'
+import {getPointInLine, isEqualPoints} from './utils/geometry-utils'
 import {circle} from './utils/drawing-utils'
 import {getGame} from './game.js'
 

@@ -1,5 +1,5 @@
 import {imageCache} from './image-cache.js'
-import {getPointInLine} from './geometry-utils'
+import {getPointInLine} from './utils/geometry-utils'
 import {getGame} from './game.js'
 
 const GOON_IMAGE_SIZE = {

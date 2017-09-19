@@ -1,4 +1,4 @@
-import {calculateDistance, getAngleRadians} from './geometry-utils'
+import {calculateDistance, getAngleRadians} from './utils/geometry-utils'
 import {roundRect, circle} from './utils/drawing-utils'
 import {getGame} from './game.js'
 import Bullet from './bullet.js'
