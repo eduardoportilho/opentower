@@ -11,10 +11,9 @@
 import {loadImageCache} from '../image-cache.js'
 import {IsoGrid, FLOOR_HEIGHT} from './iso-grid.js'
 import Goon from './goon.js'
+import {getPaths} from './path.js'
 import random from '../utils/random'
 import {polygon} from '../utils/drawing-utils'
-import {getOppositeSide} from '../utils/tile-utils'
-import _ from 'lodash'
 
 const CANVAS_WIDTH = 1400
 const CANVAS_HEIGHT = 800
@@ -98,56 +97,7 @@ class Game {
 
   // Debug
   drawGoonPath () {
-    const paths = this.getPaths()
+    const paths = getPaths(this.grid.getTargetCell())
     polygon(this.context, paths[0], false, true)
-  }
-
-  // TODO Move to another place
-  getPaths () {
-    const targetCell = this.grid.getTargetCell()
-    const sidesWithConnection = targetCell.getSidesWithConnection()
-    let allPaths = []
-    for (let side of sidesWithConnection) {
-      let connectedCell = targetCell.getCellConnectedAt(side)
-      if (!connectedCell) {
-        continue
-      }
-      let entryPoint = targetCell.getEntryPointAt(side)
-      let paths = this.buildPaths(connectedCell, side, [entryPoint])
-      allPaths = allPaths.concat(paths)
-    }
-    return allPaths
-  }
-
-  buildPaths (cell, targetSide, pathSoFar) {
-    const entrySide = getOppositeSide(targetSide)
-    const newPath = _.clone(pathSoFar)
-    newPath.push(cell.getEntryPointAt(entrySide))
-    const middlePathPoint = cell.getMiddlePathPoint()
-    if (middlePathPoint) {
-      newPath.push(middlePathPoint)
-    }
-    if (cell.isSpawn()) {
-      const spawnSide = cell.getSpawnSide()
-      const spawnPoint = cell.getEntryPointAt(spawnSide)
-      newPath.push(spawnPoint)
-      return [newPath]
-    }
-    let allPaths = []
-    const sidesWithConnection = cell.getSidesWithConnection()
-      .filter(side => side !== entrySide)
-    for (let side of sidesWithConnection) {
-      let connectedCell = cell.getCellConnectedAt(side)
-      if (!connectedCell) {
-        continue
-      }
-      let entryPoint = cell.getEntryPointAt(side)
-      let sidePath = _.clone(newPath)
-      sidePath.push(entryPoint)
-
-      let paths = this.buildPaths(connectedCell, side, sidePath)
-      allPaths = allPaths.concat(paths)
-    }
-    return allPaths
   }
 }

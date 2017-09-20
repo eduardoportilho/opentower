@@ -125,6 +125,96 @@ function loadImageCache(onLoadComplete) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+/**
+ * Calculate the distance between 2 points.
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @return {number} distance
+ */
+var calculateDistance = exports.calculateDistance = function calculateDistance(pointA, pointB) {
+  var dx = pointB.x - pointA.x;
+  var dy = pointB.y - pointA.y;
+  return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+};
+
+/**
+ * Let L be the line formed by the 2 given points `origin` and `anyPointInLine`.
+ * Return the point in L with the given distance to `origin`.
+ * @param  {Point} origin - Origin point.
+ * @param  {Point} secondPointInLine - Another point in the desired line (define direction).
+ * @param  {number} distance - Distance from origin to the returned point in pixels.
+ * @param  {boolean} maxOnSecondPoint - If true, returns the second point if the result is beyond it in the line..
+ * @return {Point} Point in L with the given distance to `origin`.
+ */
+var getPointInLine = exports.getPointInLine = function getPointInLine(origin, secondPointInLine, distance) {
+  var maxOnSecondPoint = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+  var hyp = calculateDistance(origin, secondPointInLine);
+  var dx = secondPointInLine.x - origin.x;
+  var dy = secondPointInLine.y - origin.y;
+  var sin = dy / hyp;
+  var cos = dx / hyp;
+
+  var dyStep = sin * distance;
+  var dxStep = cos * distance;
+
+  if (maxOnSecondPoint) {
+    if (Math.abs(dxStep) > Math.abs(dx)) {
+      dxStep = dx;
+    }
+    if (Math.abs(dyStep) > Math.abs(dy)) {
+      dyStep = dy;
+    }
+  }
+  var nextX = origin.x + dxStep;
+  var nextY = origin.y + dyStep;
+  return { x: nextX, y: nextY };
+};
+
+/**
+ * Return the angle between the line conecting 2 points and the horizontal axis.
+ *
+ * Angle signal:
+ *  B     |     B
+ *    (-) | (-)
+ * -------A-------
+ *    (+) | (+)
+ *  B     |     B
+ *
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @return {number} Angle in radians.
+ */
+var getAngleRadians = exports.getAngleRadians = function getAngleRadians(pointA, pointB) {
+  var dy = pointB.y - pointA.y;
+  var hyp = calculateDistance(pointA, pointB);
+  var sin = dy / hyp;
+  return Math.asin(sin);
+};
+
+/**
+ * Check is two points are in the same position given th tolerance.
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @param  {number} tolerance
+ * @return {boolean}
+ */
+var isEqualPoints = exports.isEqualPoints = function isEqualPoints(pointA, pointB) {
+  var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+
+  return Math.abs(pointA.x - pointB.x) <= tolerance && Math.abs(pointA.y - pointB.y) <= tolerance;
+};
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.buildSquarePath = buildSquarePath;
 exports.roundRect = roundRect;
 exports.circle = circle;
@@ -250,7 +340,6 @@ function polygon(ctx, corners, fill, stroke) {
 }
 
 /***/ }),
-/* 3 */,
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -403,7 +492,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _imageCache = __webpack_require__(0);
 
-var _drawingUtils = __webpack_require__(2);
+var _drawingUtils = __webpack_require__(3);
 
 var _isoGridUtils = __webpack_require__(25);
 
@@ -18105,17 +18194,13 @@ var _goon = __webpack_require__(32);
 
 var _goon2 = _interopRequireDefault(_goon);
 
+var _path = __webpack_require__(33);
+
 var _random = __webpack_require__(4);
 
 var _random2 = _interopRequireDefault(_random);
 
-var _drawingUtils = __webpack_require__(2);
-
-var _tileUtils = __webpack_require__(12);
-
-var _lodash = __webpack_require__(13);
-
-var _lodash2 = _interopRequireDefault(_lodash);
+var _drawingUtils = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18199,6 +18284,7 @@ var Game = function () {
       var goon = new _goon2.default();
       goon.position = spawnPosition;
       goon.cell = spawnCell;
+      goon.path = this.getPaths()[0];
       this.goons.push(goon);
     }
   }, {
@@ -18212,106 +18298,8 @@ var Game = function () {
   }, {
     key: 'drawGoonPath',
     value: function drawGoonPath() {
-      var paths = this.getPaths();
+      var paths = (0, _path.getPaths)(this.grid.getTargetCell());
       (0, _drawingUtils.polygon)(this.context, paths[0], false, true);
-    }
-
-    // TODO Move to another place
-
-  }, {
-    key: 'getPaths',
-    value: function getPaths() {
-      var targetCell = this.grid.getTargetCell();
-      var sidesWithConnection = targetCell.getSidesWithConnection();
-      var allPaths = [];
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = sidesWithConnection[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var side = _step.value;
-
-          var connectedCell = targetCell.getCellConnectedAt(side);
-          if (!connectedCell) {
-            continue;
-          }
-          var entryPoint = targetCell.getEntryPointAt(side);
-          var paths = this.buildPaths(connectedCell, side, [entryPoint]);
-          allPaths = allPaths.concat(paths);
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-
-      return allPaths;
-    }
-  }, {
-    key: 'buildPaths',
-    value: function buildPaths(cell, targetSide, pathSoFar) {
-      var entrySide = (0, _tileUtils.getOppositeSide)(targetSide);
-      var newPath = _lodash2.default.clone(pathSoFar);
-      newPath.push(cell.getEntryPointAt(entrySide));
-      var middlePathPoint = cell.getMiddlePathPoint();
-      if (middlePathPoint) {
-        newPath.push(middlePathPoint);
-      }
-      if (cell.isSpawn()) {
-        var spawnSide = cell.getSpawnSide();
-        var spawnPoint = cell.getEntryPointAt(spawnSide);
-        newPath.push(spawnPoint);
-        return [newPath];
-      }
-      var allPaths = [];
-      var sidesWithConnection = cell.getSidesWithConnection().filter(function (side) {
-        return side !== entrySide;
-      });
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = sidesWithConnection[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var side = _step2.value;
-
-          var connectedCell = cell.getCellConnectedAt(side);
-          if (!connectedCell) {
-            continue;
-          }
-          var entryPoint = cell.getEntryPointAt(side);
-          var sidePath = _lodash2.default.clone(newPath);
-          sidePath.push(entryPoint);
-
-          var paths = this.buildPaths(connectedCell, side, sidePath);
-          allPaths = allPaths.concat(paths);
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-
-      return allPaths;
     }
   }]);
 
@@ -18811,6 +18799,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _imageCache = __webpack_require__(0);
 
+var _geometryUtils = __webpack_require__(2);
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var GOON_IMAGE_SIZE = {
@@ -18825,6 +18815,11 @@ var Goon = function () {
     // position of the bottom-left corner of the image
     this.position = null;
     this.cell = null;
+
+    this.speed = 20;
+    this._residualStep = 0;
+    this.pathPoints = []; // list of points
+    this.currentPathPointIndex = -1;
   }
 
   _createClass(Goon, [{
@@ -18835,13 +18830,137 @@ var Goon = function () {
     }
   }, {
     key: 'update',
-    value: function update(delta) {}
+    value: function update(delta) {
+      if (!this.pathPoints || this.currentPathPointIndex >= this.pathPoints.length - 1) {
+        return;
+      }
+      var step = this.speed * delta / 1000.0 + this._residualStep;
+      var intStep = Math.floor(step);
+      this._residualStep = step - intStep;
+
+      var nextPathPoint = this.pathPoints[this.currentPathPointIndex + 1];
+      var nextPosition = (0, _geometryUtils.getPointInLine)(this.position, nextPathPoint, intStep, true);
+      console.log('>>>', nextPosition);
+    }
   }]);
 
   return Goon;
 }();
 
 exports.default = Goon;
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getPaths = getPaths;
+exports.buildPaths = buildPaths;
+
+var _tileUtils = __webpack_require__(12);
+
+var _lodash = __webpack_require__(13);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function getPaths(targetCell) {
+  var sidesWithConnection = targetCell.getSidesWithConnection();
+  var allPaths = [];
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = sidesWithConnection[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var side = _step.value;
+
+      var connectedCell = targetCell.getCellConnectedAt(side);
+      if (!connectedCell) {
+        continue;
+      }
+      var entryPoint = targetCell.getEntryPointAt(side);
+      var paths = buildPaths(connectedCell, side, [entryPoint]);
+      allPaths = allPaths.concat(paths);
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+
+  return allPaths;
+}
+
+function buildPaths(cell, targetSide, pathSoFar) {
+  var entrySide = (0, _tileUtils.getOppositeSide)(targetSide);
+  var newPath = _lodash2.default.clone(pathSoFar);
+  newPath.push(cell.getEntryPointAt(entrySide));
+  var middlePathPoint = cell.getMiddlePathPoint();
+  if (middlePathPoint) {
+    newPath.push(middlePathPoint);
+  }
+  if (cell.isSpawn()) {
+    var spawnSide = cell.getSpawnSide();
+    var spawnPoint = cell.getEntryPointAt(spawnSide);
+    newPath.push(spawnPoint);
+    return [newPath];
+  }
+  var allPaths = [];
+  var sidesWithConnection = cell.getSidesWithConnection().filter(function (side) {
+    return side !== entrySide;
+  });
+  var _iteratorNormalCompletion2 = true;
+  var _didIteratorError2 = false;
+  var _iteratorError2 = undefined;
+
+  try {
+    for (var _iterator2 = sidesWithConnection[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+      var side = _step2.value;
+
+      var connectedCell = cell.getCellConnectedAt(side);
+      if (!connectedCell) {
+        continue;
+      }
+      var entryPoint = cell.getEntryPointAt(side);
+      var sidePath = _lodash2.default.clone(newPath);
+      sidePath.push(entryPoint);
+
+      var paths = buildPaths(connectedCell, side, sidePath);
+      allPaths = allPaths.concat(paths);
+    }
+  } catch (err) {
+    _didIteratorError2 = true;
+    _iteratorError2 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion2 && _iterator2.return) {
+        _iterator2.return();
+      }
+    } finally {
+      if (_didIteratorError2) {
+        throw _iteratorError2;
+      }
+    }
+  }
+
+  return allPaths;
+}
 
 /***/ })
 /******/ ]);

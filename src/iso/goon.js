@@ -1,5 +1,5 @@
 import {imageCache} from '../image-cache.js'
-import {getPointInLine} from './utils/geometry-utils'
+import {getPointInLine} from '../utils/geometry-utils'
 
 const GOON_IMAGE_SIZE = {
   width: 14,
@@ -33,5 +33,6 @@ export default class Goon {
 
     const nextPathPoint = this.pathPoints[this.currentPathPointIndex + 1]
     const nextPosition = getPointInLine(this.position, nextPathPoint, intStep, true)
+    console.log(`>>>`, nextPosition)
   }
 }

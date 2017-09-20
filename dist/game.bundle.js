@@ -430,6 +430,96 @@ var Game = function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+/**
+ * Calculate the distance between 2 points.
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @return {number} distance
+ */
+var calculateDistance = exports.calculateDistance = function calculateDistance(pointA, pointB) {
+  var dx = pointB.x - pointA.x;
+  var dy = pointB.y - pointA.y;
+  return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+};
+
+/**
+ * Let L be the line formed by the 2 given points `origin` and `anyPointInLine`.
+ * Return the point in L with the given distance to `origin`.
+ * @param  {Point} origin - Origin point.
+ * @param  {Point} secondPointInLine - Another point in the desired line (define direction).
+ * @param  {number} distance - Distance from origin to the returned point in pixels.
+ * @param  {boolean} maxOnSecondPoint - If true, returns the second point if the result is beyond it in the line..
+ * @return {Point} Point in L with the given distance to `origin`.
+ */
+var getPointInLine = exports.getPointInLine = function getPointInLine(origin, secondPointInLine, distance) {
+  var maxOnSecondPoint = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+  var hyp = calculateDistance(origin, secondPointInLine);
+  var dx = secondPointInLine.x - origin.x;
+  var dy = secondPointInLine.y - origin.y;
+  var sin = dy / hyp;
+  var cos = dx / hyp;
+
+  var dyStep = sin * distance;
+  var dxStep = cos * distance;
+
+  if (maxOnSecondPoint) {
+    if (Math.abs(dxStep) > Math.abs(dx)) {
+      dxStep = dx;
+    }
+    if (Math.abs(dyStep) > Math.abs(dy)) {
+      dyStep = dy;
+    }
+  }
+  var nextX = origin.x + dxStep;
+  var nextY = origin.y + dyStep;
+  return { x: nextX, y: nextY };
+};
+
+/**
+ * Return the angle between the line conecting 2 points and the horizontal axis.
+ *
+ * Angle signal:
+ *  B     |     B
+ *    (-) | (-)
+ * -------A-------
+ *    (+) | (+)
+ *  B     |     B
+ *
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @return {number} Angle in radians.
+ */
+var getAngleRadians = exports.getAngleRadians = function getAngleRadians(pointA, pointB) {
+  var dy = pointB.y - pointA.y;
+  var hyp = calculateDistance(pointA, pointB);
+  var sin = dy / hyp;
+  return Math.asin(sin);
+};
+
+/**
+ * Check is two points are in the same position given th tolerance.
+ * @param  {Point} pointA
+ * @param  {Point} pointB
+ * @param  {number} tolerance
+ * @return {boolean}
+ */
+var isEqualPoints = exports.isEqualPoints = function isEqualPoints(pointA, pointB) {
+  var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+
+  return Math.abs(pointA.x - pointB.x) <= tolerance && Math.abs(pointA.y - pointB.y) <= tolerance;
+};
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.buildSquarePath = buildSquarePath;
 exports.roundRect = roundRect;
 exports.circle = circle;
@@ -553,96 +643,6 @@ function polygon(ctx, corners, fill, stroke) {
   fill && ctx.fill();
   stroke && ctx.stroke();
 }
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-/**
- * Calculate the distance between 2 points.
- * @param  {Point} pointA
- * @param  {Point} pointB
- * @return {number} distance
- */
-var calculateDistance = exports.calculateDistance = function calculateDistance(pointA, pointB) {
-  var dx = pointB.x - pointA.x;
-  var dy = pointB.y - pointA.y;
-  return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-};
-
-/**
- * Let L be the line formed by the 2 given points `origin` and `anyPointInLine`.
- * Return the point in L with the given distance to `origin`.
- * @param  {Point} origin - Origin point.
- * @param  {Point} secondPointInLine - Another point in the desired line (define direction).
- * @param  {number} distance - Distance from origin to the returned point in pixels.
- * @param  {boolean} maxOnSecondPoint - If true, returns the second point if the result is beyond it in the line..
- * @return {Point} Point in L with the given distance to `origin`.
- */
-var getPointInLine = exports.getPointInLine = function getPointInLine(origin, secondPointInLine, distance) {
-  var maxOnSecondPoint = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-
-  var hyp = calculateDistance(origin, secondPointInLine);
-  var dx = secondPointInLine.x - origin.x;
-  var dy = secondPointInLine.y - origin.y;
-  var sin = dy / hyp;
-  var cos = dx / hyp;
-
-  var dyStep = sin * distance;
-  var dxStep = cos * distance;
-
-  if (maxOnSecondPoint) {
-    if (Math.abs(dxStep) > Math.abs(dx)) {
-      dxStep = dx;
-    }
-    if (Math.abs(dyStep) > Math.abs(dy)) {
-      dyStep = dy;
-    }
-  }
-  var nextX = origin.x + dxStep;
-  var nextY = origin.y + dyStep;
-  return { x: nextX, y: nextY };
-};
-
-/**
- * Return the angle between the line conecting 2 points and the horizontal axis.
- *
- * Angle signal:
- *  B     |     B
- *    (-) | (-)
- * -------A-------
- *    (+) | (+)
- *  B     |     B
- *
- * @param  {Point} pointA
- * @param  {Point} pointB
- * @return {number} Angle in radians.
- */
-var getAngleRadians = exports.getAngleRadians = function getAngleRadians(pointA, pointB) {
-  var dy = pointB.y - pointA.y;
-  var hyp = calculateDistance(pointA, pointB);
-  var sin = dy / hyp;
-  return Math.asin(sin);
-};
-
-/**
- * Check is two points are in the same position given th tolerance.
- * @param  {Point} pointA
- * @param  {Point} pointB
- * @param  {number} tolerance
- * @return {boolean}
- */
-var isEqualPoints = exports.isEqualPoints = function isEqualPoints(pointA, pointB) {
-  var tolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
-
-  return Math.abs(pointA.x - pointB.x) <= tolerance && Math.abs(pointA.y - pointB.y) <= tolerance;
-};
 
 /***/ }),
 /* 4 */
@@ -1271,9 +1271,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _geometryUtils = __webpack_require__(3);
+var _geometryUtils = __webpack_require__(2);
 
-var _drawingUtils = __webpack_require__(2);
+var _drawingUtils = __webpack_require__(3);
 
 var _game = __webpack_require__(1);
 
@@ -1465,9 +1465,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _geometryUtils = __webpack_require__(3);
+var _geometryUtils = __webpack_require__(2);
 
-var _drawingUtils = __webpack_require__(2);
+var _drawingUtils = __webpack_require__(3);
 
 var _game = __webpack_require__(1);
 
@@ -1627,7 +1627,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _imageCache = __webpack_require__(0);
 
-var _geometryUtils = __webpack_require__(3);
+var _geometryUtils = __webpack_require__(2);
 
 var _game = __webpack_require__(1);
 
