@@ -1,5 +1,5 @@
 import {imageCache} from '../image-cache.js'
-import {getPointInLine} from '../utils/geometry-utils'
+import {getPointInLine, calculateDistance, isEqualPoints} from '../utils/geometry-utils'
 
 const GOON_IMAGE_SIZE = {
   width: 14,
@@ -28,11 +28,19 @@ export default class Goon {
       return
     }
     const step = (this.speed * delta / 1000.0) + this._residualStep
-    const intStep = Math.floor(step)
-    this._residualStep = step - intStep
+    const stepRounded = Math.floor(step)
+    this._residualStep = step - stepRounded
+    let traveledDistance = 0
 
-    const nextPathPoint = this.pathPoints[this.currentPathPointIndex + 1]
-    const nextPosition = getPointInLine(this.position, nextPathPoint, intStep, true)
-    console.log(`>>>`, nextPosition)
+    while (Math.floor(traveledDistance) < stepRounded && this.currentPathPointIndex < this.pathPoints.length) {
+      let nextPathPoint = this.pathPoints[this.currentPathPointIndex + 1]
+      let nextPosition = getPointInLine(this.position, nextPathPoint, stepRounded, true)
+      traveledDistance += calculateDistance(this.position, nextPosition)
+      this.position = nextPosition
+
+      if (isEqualPoints(nextPosition, nextPathPoint)) {
+        this.currentPathPointIndex += 1
+      }
+    }
   }
 }
