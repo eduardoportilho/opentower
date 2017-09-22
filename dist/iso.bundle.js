@@ -598,6 +598,7 @@ var IsoGrid = exports.IsoGrid = function () {
     value: function drawGame(context) {
       var _this = this;
 
+      context.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height);
       this.cells.forEach(function (cell) {
         var row = cell.row,
             col = cell.col,
@@ -652,7 +653,7 @@ var IsoGrid = exports.IsoGrid = function () {
         }
       }
 
-      // ladscape
+      // landscape
       for (var _row = 0; _row < _landscape2.default.length; _row++) {
         var tileRow = _landscape2.default[_row];
         for (var _col = 0; _col < tileRow.length; _col++) {
@@ -18265,7 +18266,7 @@ var Game = function () {
       }
       this.lastTick = now;
       this.grid.drawGame(this.context);
-      this.drawGoonPath();
+      // this.drawGoonPath()
       this.animationId = requestAnimationFrame(this.tick.bind(this));
     }
   }, {
@@ -18284,7 +18285,7 @@ var Game = function () {
       var goon = new _goon2.default();
       goon.position = spawnPosition;
       goon.cell = spawnCell;
-      goon.path = this.getPaths()[0];
+      goon.pathPoints = (0, _path.getPaths)(this.grid.getTargetCell())[0];
       this.goons.push(goon);
     }
   }, {
@@ -18835,12 +18836,20 @@ var Goon = function () {
         return;
       }
       var step = this.speed * delta / 1000.0 + this._residualStep;
-      var intStep = Math.floor(step);
-      this._residualStep = step - intStep;
+      var stepRounded = Math.floor(step);
+      this._residualStep = step - stepRounded;
+      var traveledDistance = 0;
 
-      var nextPathPoint = this.pathPoints[this.currentPathPointIndex + 1];
-      var nextPosition = (0, _geometryUtils.getPointInLine)(this.position, nextPathPoint, intStep, true);
-      console.log('>>>', nextPosition);
+      while (Math.floor(traveledDistance) < stepRounded && this.currentPathPointIndex < this.pathPoints.length) {
+        var nextPathPoint = this.pathPoints[this.currentPathPointIndex + 1];
+        var nextPosition = (0, _geometryUtils.getPointInLine)(this.position, nextPathPoint, stepRounded, true);
+        traveledDistance += (0, _geometryUtils.calculateDistance)(this.position, nextPosition);
+        this.position = nextPosition;
+
+        if ((0, _geometryUtils.isEqualPoints)(nextPosition, nextPathPoint)) {
+          this.currentPathPointIndex += 1;
+        }
+      }
     }
   }]);
 
@@ -18904,7 +18913,9 @@ function getPaths(targetCell) {
     }
   }
 
-  return allPaths;
+  return allPaths.map(function (path) {
+    return _lodash2.default.reverse(path);
+  });
 }
 
 function buildPaths(cell, targetSide, pathSoFar) {

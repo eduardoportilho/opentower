@@ -13,7 +13,7 @@ export function getPaths (targetCell) {
     let paths = buildPaths(connectedCell, side, [entryPoint])
     allPaths = allPaths.concat(paths)
   }
-  return allPaths
+  return allPaths.map(path => _.reverse(path))
 }
 
 export function buildPaths (cell, targetSide, pathSoFar) {

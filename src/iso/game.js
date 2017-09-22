@@ -66,7 +66,7 @@ class Game {
     }
     this.lastTick = now
     this.grid.drawGame(this.context)
-    this.drawGoonPath()
+    // this.drawGoonPath()
     this.animationId = requestAnimationFrame(this.tick.bind(this))
   }
 
@@ -87,7 +87,7 @@ class Game {
     const goon = new Goon()
     goon.position = spawnPosition
     goon.cell = spawnCell
-    goon.path = this.getPaths()[0]
+    goon.pathPoints = getPaths(this.grid.getTargetCell())[0]
     this.goons.push(goon)
   }
 

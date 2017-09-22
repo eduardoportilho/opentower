@@ -69,6 +69,7 @@ export class IsoGrid {
   }
 
   drawGame (context) {
+    context.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height)
     this.cells.forEach(cell => {
       const {row, col, tile, tileConfig} = cell
       // tile
@@ -97,7 +98,7 @@ export class IsoGrid {
       }
     }
 
-    // ladscape
+    // landscape
     for (let row = 0; row < landscapeTiles.length; row++) {
       let tileRow = landscapeTiles[row]
       for (let col = 0; col < tileRow.length; col++) {
