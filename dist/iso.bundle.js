@@ -603,14 +603,14 @@ var IsoGrid = exports.IsoGrid = function () {
         var row = cell.row,
             col = cell.col,
             tile = cell.tile,
-            tileConfig = cell.tileConfig;
+            object = cell.object;
         // tile
 
         _this.gameSheet.draw(context, _this.isoGridUtils.getCellBottom(row, col), tile);
 
         // tile objects
-        if (tileConfig && tileConfig.object) {
-          _this.gameSheet.draw(context, _this.isoGridUtils.getCellBottom(row, col), tileConfig.object);
+        if (object) {
+          _this.gameSheet.draw(context, _this.isoGridUtils.getCellBottom(row, col), object);
         }
       });
 

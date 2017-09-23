@@ -71,13 +71,13 @@ export class IsoGrid {
   drawGame (context) {
     context.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height)
     this.cells.forEach(cell => {
-      const {row, col, tile, tileConfig} = cell
+      const {row, col, tile, object} = cell
       // tile
       this.gameSheet.draw(context, this.isoGridUtils.getCellBottom(row, col), tile)
 
       // tile objects
-      if (tileConfig && tileConfig.object) {
-        this.gameSheet.draw(context, this.isoGridUtils.getCellBottom(row, col), tileConfig.object)
+      if (object) {
+        this.gameSheet.draw(context, this.isoGridUtils.getCellBottom(row, col), object)
       }
     })
 
